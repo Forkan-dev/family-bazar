@@ -4,6 +4,8 @@ import { Head, useForm } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 import VInputField from '@/components/VInputField.vue';
 import { Link } from '@inertiajs/vue3';
+import { VButton } from '@/components/ui/button';
+import VFileInput from '@/components/ui/VFileInput.vue';
 
 const props = defineProps({
     product: Object,
@@ -17,14 +19,21 @@ const form = useForm({
     description: props.product?.description || '',
     price: props.product?.price || 0,
     stock: props.product?.stock || 0,
-    image_url: props.product?.image_url || '',
+    image: null as File | null,
     categories: props.product?.categories.map((c: any) => c.id) || [],
     tags: props.product?.tags.map((t: any) => t.id) || [],
 });
 
+form.transform(data => ({
+    ...data,
+    image: data.image || undefined,
+}));
+
 const submit = () => {
     if (props.product) {
-        form.put(route('products.update', props.product.id));
+        form.post(route('products.update', props.product.id), {
+            _method: 'put',
+        });
     } else {
         form.post(route('products.store'));
     }
@@ -87,8 +96,19 @@ watch(() => form.name, (newName) => {
 
                                 <v-row dense>
                                     <v-col cols="12">
-                                        <VInputField v-model="form.image_url" label="Image URL"
-                                            :error-messages="form.errors.image_url"></VInputField>
+                                        <VFileInput
+                                            v-model="form.image"
+                                            title="Product Image"
+                                            variant="outlined"
+                                            :error-messages="form.errors.image"
+                                            accept="image/*"
+                                        ></VFileInput>
+                                        <v-img
+                                            v-if="product?.image_url"
+                                            :src="product.image_url"
+                                            height="100"
+                                            class="mt-2"
+                                        ></v-img>
                                     </v-col>
                                 </v-row>
 
@@ -105,9 +125,9 @@ watch(() => form.name, (newName) => {
                                     </v-col>
                                 </v-row>
 
-                                <v-btn type="submit" color="primary" :disabled="form.processing">
+                                <VButton type="submit" :disabled="form.processing" size="default">
                                     {{ props.product ? 'Update' : 'Create' }}
-                                </v-btn>
+                                </VButton>
                             </v-form>
                         </v-card-text>
                     </v-card>

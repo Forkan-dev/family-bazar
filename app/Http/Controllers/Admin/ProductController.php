@@ -9,6 +9,7 @@ use App\Models\Product\Tag;
 use App\Http\Requests\Admin\Product\StoreProductRequest;
 use App\Http\Requests\Admin\Product\UpdateProductRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class ProductController extends Controller
@@ -42,7 +43,14 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        $product = Product::create($request->validated());
+        $validatedData = $request->validated();
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('products', 'public');
+            $validatedData['image_url'] = Storage::url($path);
+        }
+
+        $product = Product::create($validatedData);
         $product->categories()->sync($request->input('categories', []));
         $product->tags()->sync($request->input('tags', []));
 
@@ -78,7 +86,20 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, Product $product)
     {
-        $product->update($request->validated());
+        $validatedData = $request->validated();
+
+        if ($request->hasFile('image')) {
+            // Delete old image
+            if ($product->image_url) {
+                $oldImagePath = str_replace('/storage', '', $product->image_url);
+                Storage::disk('public')->delete($oldImagePath);
+            }
+
+            $path = $request->file('image')->store('products', 'public');
+            $validatedData['image_url'] = Storage::url($path);
+        }
+
+        $product->update($validatedData);
         $product->categories()->sync($request->input('categories', []));
         $product->tags()->sync($request->input('tags', []));
 

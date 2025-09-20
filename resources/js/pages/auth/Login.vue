@@ -2,7 +2,7 @@
 import AuthenticatedSessionController from '@/actions/App/Http/Controllers/Auth/AuthenticatedSessionController';
 import InputError from '@/components/InputError.vue';
 import TextLink from '@/components/TextLink.vue';
-import { Button } from '@/components/ui/button';
+import { VButton } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -85,7 +85,7 @@ defineProps<{
                     </Label>
                 </div>
 
-                <Button
+                <VButton
                     type="submit"
                     class="mt-4 w-full"
                     :tabindex="4"
@@ -97,7 +97,7 @@ defineProps<{
                         class="h-4 w-4 animate-spin"
                     />
                     Log in
-                </Button>
+            </VButton>
             </div>
 
             <div class="text-center text-sm text-muted-foreground">

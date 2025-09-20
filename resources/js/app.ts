@@ -7,10 +7,16 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import 'vuetify/dist/vuetify.min.css';
+import { VFileUpload } from 'vuetify/labs/VFileUpload';
+import 'vuetify/styles';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist';
 import '../css/app.css';
 
 const vuetify = createVuetify({
+    components: {
+        VFileUpload,
+        ...components,
+    },
     theme: {
         defaultTheme: 'dark',
         variations: {
@@ -69,7 +75,6 @@ const vuetify = createVuetify({
             },
         },
     },
-    components,
     directives,
 });
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
