@@ -12,17 +12,19 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
+        'title_en',
+        'title_bn',
         'slug',
         'description',
         'price',
         'stock',
         'image_url',
+        'category_id',
     ];
 
-    public function categories()
+    public function category()
     {
-        return $this->belongsToMany(Category::class);
+        return $this->belongsTo(Category::class);
     }
 
     public function tags()

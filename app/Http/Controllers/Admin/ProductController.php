@@ -51,7 +51,6 @@ class ProductController extends Controller
         }
 
         $product = Product::create($validatedData);
-        $product->categories()->sync($request->input('categories', []));
         $product->tags()->sync($request->input('tags', []));
 
         return redirect()->route('products.index')->with('success', 'Product created successfully.');
@@ -100,7 +99,6 @@ class ProductController extends Controller
         }
 
         $product->update($validatedData);
-        $product->categories()->sync($request->input('categories', []));
         $product->tags()->sync($request->input('tags', []));
 
         return redirect()->route('products.index')->with('success', 'Product updated successfully.');

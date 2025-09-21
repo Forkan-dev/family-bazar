@@ -28,7 +28,7 @@ class StoreProductRequest extends FormRequest
             'price' => ['required', 'numeric'],
             'stock' => ['required', 'integer'],
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
-            'categories' => ['nullable', 'array'],
+            'category_id' => ['nullable', 'integer', 'exists:categories,id'],
             'tags' => ['nullable', 'array'],
         ];
     }

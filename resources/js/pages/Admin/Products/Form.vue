@@ -1,16 +1,25 @@
 <script setup lang="ts">
 import MasterLayout from '@/layouts/MasterLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import VInputField from '@/components/VInputField.vue';
 import { Link } from '@inertiajs/vue3';
 import { VButton } from '@/components/ui/button';
 import VFileInput from '@/components/ui/VFileInput.vue';
+import singleSearchSelect from '@/components/ui/singleSearchSelect.vue';
+import multiSearchTagSelect from '@/components/ui/multiSearchTagSelect.vue';
 
 const props = defineProps({
     product: Object,
     categories: Array,
     tags: Array,
+});
+
+const categoryOptions = computed(() => {
+    return props.categories.map((category) => ({
+        ...category,
+        displayName: `${category.title_en} (${category.title_bn})`,
+    }));
 });
 
 const form = useForm({
@@ -20,7 +29,7 @@ const form = useForm({
     price: props.product?.price || 0,
     stock: props.product?.stock || 0,
     image: null as File | null,
-    categories: props.product?.categories.map((c: any) => c.id) || [],
+    category_id: props.product?.category_id || null,
     tags: props.product?.tags.map((t: any) => t.id) || [],
 });
 
@@ -114,9 +123,9 @@ watch(() => form.name, (newName) => {
 
                                 <v-row dense>
                                     <v-col cols="12" md="6">
-                                        <v-select v-model="form.categories" :items="categories" item-title="name"
-                                            item-value="id" label="Categories" multiple chips variant="outlined"
-                                            density="compact" :error-messages="form.errors.categories"></v-select>
+                                        <v-select v-model="form.category_id" :items="categoryOptions" item-title="displayName"
+                                            item-value="id" label="Category" variant="outlined"
+                                            density="compact" :error-messages="form.errors.category_id"></v-select>
                                     </v-col>
                                     <v-col cols="12" md="6">
                                         <v-select v-model="form.tags" :items="tags" item-title="name"
