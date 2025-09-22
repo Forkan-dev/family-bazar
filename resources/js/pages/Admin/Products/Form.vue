@@ -23,7 +23,8 @@ const categoryOptions = computed(() => {
 });
 
 const form = useForm({
-    name: props.product?.name || '',
+    title_en: props.product?.title_en || '',
+    title_bn: props.product?.title_bn || '',
     slug: props.product?.slug || '',
     description: props.product?.description || '',
     price: props.product?.price || 0,
@@ -49,7 +50,7 @@ const submit = () => {
 };
 
 // Watch for changes in name to auto-generate slug
-watch(() => form.name, (newName) => {
+watch(() => form.title_en, (newName) => {
     if (!props.product) { // Only auto-generate for new products
         form.slug = newName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
     }
@@ -59,7 +60,7 @@ watch(() => form.name, (newName) => {
 <template>
     <MasterLayout>
 
-        <Head :title="form.name ? form.name : 'Create Product'" />
+        <Head :title="form.title_en ? form.title_en : 'Create Product'" />
 
         <v-container>
             <v-row>
@@ -76,30 +77,37 @@ watch(() => form.name, (newName) => {
                             <v-form @submit.prevent="submit">
                                 <v-row dense>
                                     <v-col cols="12" md="6">
-                                        <VInputField v-model="form.name" label="Product Name"
-                                            :error-messages="form.errors.name" required></VInputField>
+                                        <VInputField v-model="form.title_en" label="Title EN"
+                                            :error-messages="form.errors.title_en" required class="mb-1"></VInputField>
                                     </v-col>
                                     <v-col cols="12" md="6">
+                                        <VInputField v-model="form.title_bn" label="Title BN"
+                                            :error-messages="form.errors.title_bn" class="mb-1"></VInputField>
+                                    </v-col>
+                                </v-row>
+
+                                <v-row dense>
+                                     <v-col cols="12">
                                         <VInputField v-model="form.slug" label="Slug"
-                                            :error-messages="form.errors.slug" required></VInputField>
+                                            :error-messages="form.errors.slug" required class="mb-1"></VInputField>
                                     </v-col>
                                 </v-row>
 
                                 <v-row dense>
                                     <v-col cols="12">
                                         <VInputField v-model="form.description" label="Description"
-                                            :error-messages="form.errors.description" multiline></VInputField>
+                                            :error-messages="form.errors.description" multiline class="mb-1"></VInputField>
                                     </v-col>
                                 </v-row>
 
                                 <v-row dense>
                                     <v-col cols="12" md="6">
                                         <VInputField v-model="form.price" label="Price" type="number" step="0.01"
-                                            :error-messages="form.errors.price" required></VInputField>
+                                            :error-messages="form.errors.price" required class="mb-1"></VInputField>
                                     </v-col>
                                     <v-col cols="12" md="6">
                                         <VInputField v-model="form.stock" label="Stock" type="number"
-                                            :error-messages="form.errors.stock" required></VInputField>
+                                            :error-messages="form.errors.stock" required class="mb-1"></VInputField>
                                     </v-col>
                                 </v-row>
 
@@ -111,6 +119,7 @@ watch(() => form.name, (newName) => {
                                             variant="outlined"
                                             :error-messages="form.errors.image"
                                             accept="image/*"
+                                            class="mb-1"
                                         ></VFileInput>
                                         <v-img
                                             v-if="product?.image_url"
@@ -125,12 +134,12 @@ watch(() => form.name, (newName) => {
                                     <v-col cols="12" md="6">
                                         <v-select v-model="form.category_id" :items="categoryOptions" item-title="displayName"
                                             item-value="id" label="Category" variant="outlined"
-                                            density="compact" :error-messages="form.errors.category_id"></v-select>
+                                            density="compact" :error-messages="form.errors.category_id" class="mb-1"></v-select>
                                     </v-col>
                                     <v-col cols="12" md="6">
                                         <v-select v-model="form.tags" :items="tags" item-title="name"
                                             item-value="id" label="Tags" multiple chips variant="outlined"
-                                            density="compact" :error-messages="form.errors.tags"></v-select>
+                                            density="compact" :error-messages="form.errors.tags" class="mb-1"></v-select>
                                     </v-col>
                                 </v-row>
 

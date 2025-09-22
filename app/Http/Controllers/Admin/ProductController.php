@@ -19,7 +19,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with(['categories', 'tags'])->get();
+        $products = Product::with(['category', 'tags'])->get();
         return Inertia::render('Admin/Products/Index', [
             'products' => $products,
         ]);
@@ -71,7 +71,7 @@ class ProductController extends Controller
     {
         $categories = Category::all();
         $tags = Tag::all();
-        $product->load('categories', 'tags');
+        $product->load('category', 'tags');
 
         return Inertia::render('Admin/Products/Form', [
             'product' => $product,

@@ -13,13 +13,17 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('title_en');
-            $table->string('title_bn')->nullable();
+            $table->string('name_en'); // English name
+            $table->string('name_bn')->nullable(); // Bengali name
             $table->string('slug')->unique();
-            $table->text('description')->nullable();
+            $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->decimal('price', 8, 2);
-            $table->unsignedInteger('stock')->default(0);
+            $table->decimal('quantity', 8, 2); // Numeric quantity (e.g., 3)
+            $table->foreignId('unit_id')->constrained()->onDelete('cascade');
+            $table->text('description')->nullable();
             $table->string('image_url')->nullable();
+            $table->decimal('stock_quantity', 8, 2)->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

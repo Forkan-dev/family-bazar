@@ -4,31 +4,53 @@ namespace App\Models\Product;
 
 use App\Models\Product\Category;
 use App\Models\Product\Tag;
+use App\Models\Product\Unit; // Import the Unit model
+use App\Models\Product\Review; // Import the Review model
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'title_en',
-        'title_bn',
+        'name_en',
+        'name_bn',
         'slug',
         'description',
         'price',
-        'stock',
+        'quantity',
+        'unit_id',
         'image_url',
+        'stock_quantity',
+        'is_active',
         'category_id',
     ];
 
-    public function category()
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
+
+    public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
 
-    public function tags()
+    public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class);
+    }
+
+    public function unit(): BelongsTo
+    {
+        return $this->belongsTo(Unit::class);
+    }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
     }
 }
