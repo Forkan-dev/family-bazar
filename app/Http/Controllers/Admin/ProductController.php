@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product\Category;
 use App\Models\Product\Product;
 use App\Models\Product\Tag;
+use App\Models\Product\Unit;
 use App\Http\Requests\Admin\Product\StoreProductRequest;
 use App\Http\Requests\Admin\Product\UpdateProductRequest;
 use Illuminate\Http\Request;
@@ -30,11 +31,13 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $categories = Category::all();
+        $categories = Category::whereNull('parent_id')->get();
         $tags = Tag::all();
+        $units = Unit::all();
         return Inertia::render('Admin/Products/Form', [
             'categories' => $categories,
             'tags' => $tags,
+            'units' => $units,
         ]);
     }
 
@@ -69,14 +72,16 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        $categories = Category::all();
+        $categories = Category::whereNull('parent_id')->get();
         $tags = Tag::all();
+        $units = Unit::all();
         $product->load('category', 'tags');
 
         return Inertia::render('Admin/Products/Form', [
             'product' => $product,
             'categories' => $categories,
             'tags' => $tags,
+            'units' => $units,
         ]);
     }
 
@@ -111,5 +116,11 @@ class ProductController extends Controller
     {
         $product->delete();
         return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
+    }
+
+    public function getSubCategories(Request $request, $id)
+    {
+        $subcategories = Category::where('parent_id', $id)->get();
+        return response()->json($subcategories);
     }
 }

@@ -13,6 +13,7 @@ Route::get('dashboard', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('products', App\Http\Controllers\Admin\ProductController::class);
+    Route::get('/categories/{id}/sub-categories', [App\Http\Controllers\Admin\ProductController::class, 'getSubCategories'])->name('categories.subcategories');
 });
 
 require __DIR__.'/settings.php';

@@ -22,6 +22,12 @@ const internalValue = computed({
 
 <template>
     <v-textarea
+        v-if="multiline"
+        v-model="internalValue"
+        :label="label"
+        :error-messages="errorMessages"
+        variant="outlined"
+        density="compact"
         class="mb-1"
         v-bind="otherProps"
     ></v-textarea>

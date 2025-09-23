@@ -1,0 +1,248 @@
+/* Field States */
+.v-field__outline {
+  --v-field-border-opacity: 0.3;
+}
+/* Vuetify Dark Mode Compatible Compact Form */
+
+/* Form Section Styling */
+.form-section {
+  margin-bottom: 24px;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(var(--v-border-color), 0.12);
+  background: rgba(var(--v-theme-surface), 0.02);
+}
+
+.form-section-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: rgb(var(--v-theme-on-surface));
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-section-title .v-icon {
+  font-size: 20px;
+  color: rgb(var(--v-theme-primary));
+}
+
+/* Compact Form Inputs */
+.v-text-field,
+.v-select,
+.v-textarea,
+.v-autocomplete,
+.v-file-input {
+  margin-bottom: 12px !important;
+}
+
+.v-text-field .v-input__control,
+.v-select .v-input__control,
+.v-autocomplete .v-input__control {
+  min-height: 40px !important;
+}
+
+.v-text-field .v-field,
+.v-select .v-field,
+.v-textarea .v-field,
+.v-autocomplete .v-field,
+.v-file-input .v-field {
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  /* Input background - subtle and adaptive to theme */
+  background-color: rgba(var(--v-theme-on-surface), 0.04) !important;
+}
+
+/* Light theme specific background */
+.v-theme--light .v-field {
+  background-color: rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Dark theme specific background */
+.v-theme--dark .v-field {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.v-text-field .v-field__input,
+.v-select .v-field__input,
+.v-autocomplete .v-field__input {
+  min-height: 40px !important;
+  padding: 10px 14px !important;
+  font-size: 14px !important;
+  background: transparent !important;
+}
+
+.v-textarea .v-field__input {
+  padding: 12px 14px !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  background: transparent !important;
+}
+
+/* Dark Mode Label Fix */
+.v-label {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: rgb(var(--v-theme-on-surface)) !important;
+  opacity: 0.8 !important;
+}
+
+.v-field--focused .v-label {
+  color: rgb(var(--v-theme-primary)) !important;
+  opacity: 1 !important;
+}
+
+/* Dark Mode Placeholder Fix */
+.v-field__input input::placeholder,
+.v-field__input textarea::placeholder {
+  color: rgb(var(--v-theme-on-surface)) !important;
+  opacity: 0.5 !important;
+}
+
+/* Field States */
+.v-field__outline {
+  --v-field-border-opacity: 0.2;
+}
+
+.v-field:hover .v-field__outline {
+  --v-field-border-opacity: 0.4;
+}
+
+.v-field--focused .v-field__outline {
+  --v-field-border-width: 2px;
+  --v-field-border-opacity: 1;
+}
+
+/* Error and Success States */
+.v-field--error .v-field__outline {
+  --v-field-border-color: rgb(var(--v-theme-error));
+}
+
+.v-field--success .v-field__outline {
+  --v-field-border-color: rgb(var(--v-theme-success));
+}
+
+/* Input Details */
+.v-input__details {
+  padding-inline: 4px !important;
+  min-height: 20px !important;
+  margin-top: 4px !important;
+}
+
+.v-messages {
+  min-height: 16px !important;
+  font-size: 12px !important;
+  opacity: 0.8;
+}
+
+/* Selection Controls */
+.v-checkbox,
+.v-radio,
+.v-switch {
+  margin-bottom: 8px !important;
+}
+
+.v-selection-control {
+  min-height: 36px !important;
+}
+
+/* Chips in Select */
+.v-select .v-chip {
+  height: 24px !important;
+  font-size: 12px !important;
+}
+
+/* File Input Specific */
+.v-file-input .v-field__input {
+  padding: 8px 14px !important;
+}
+
+.v-file-input .v-field__prepend-inner {
+  padding-top: 8px;
+}
+
+/* Density Compact Override */
+.v-input--density-compact {
+  --v-input-control-height: 40px;
+}
+
+.v-input--density-compact .v-field__input {
+  min-height: 40px !important;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+
+/* Form Grid Spacing */
+.v-row.dense {
+  margin: 0 -6px;
+}
+
+.v-row.dense > .v-col {
+  padding: 0 6px;
+}
+
+/* Button Styling */
+.v-btn {
+  border-radius: 8px !important;
+  text-transform: none !important;
+  font-weight: 500 !important;
+  box-shadow: none !important;
+}
+
+.v-btn:hover {
+  box-shadow: 0 2px 8px rgba(var(--v-theme-primary), 0.2) !important;
+}
+
+/* Card Styling */
+.v-card {
+  border-radius: 12px !important;
+  border: 1px solid rgba(var(--v-border-color), 0.12);
+}
+
+.v-card-title {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  padding: 20px 24px 16px !important;
+}
+
+.v-card-text {
+  padding: 0 24px 24px !important;
+}
+
+/* Image Preview */
+.v-img {
+  border-radius: 8px;
+  border: 1px solid rgba(var(--v-border-color), 0.12);
+}
+
+/* Utility Classes */
+.form-compact .v-input {
+  margin-bottom: 8px !important;
+}
+
+.form-compact .v-input__details {
+  min-height: 16px !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .form-section {
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+
+  .form-section-title {
+    font-size: 15px;
+    margin-bottom: 12px;
+  }
+
+  .v-card-title {
+    padding: 16px 20px 12px !important;
+    font-size: 18px !important;
+  }
+
+  .v-card-text {
+    padding: 0 20px 20px !important;
+  }
+}

@@ -11,6 +11,7 @@ import { VFileUpload } from 'vuetify/labs/VFileUpload';
 import 'vuetify/styles';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist';
 import '../css/app.css';
+import '../css/custom-ui.css';
 
 const vuetify = createVuetify({
     components: {
