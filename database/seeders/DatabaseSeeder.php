@@ -24,6 +24,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CategorySeeder::class,
             TagSeeder::class,
+            DivisionSeeder::class,
+            DistrictSeeder::class,
+            UpazilaSeeder::class,
+            UnionSeeder::class,
         ]);
     }
 }
