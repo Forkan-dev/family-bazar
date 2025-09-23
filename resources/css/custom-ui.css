@@ -34,7 +34,7 @@
 .v-textarea,
 .v-autocomplete,
 .v-file-input {
-  margin-bottom: 12px !important;
+  margin-bottom: -5px !important;
 }
 
 .v-text-field .v-input__control,
