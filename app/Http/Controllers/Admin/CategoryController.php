@@ -123,31 +123,18 @@ class CategoryController extends Controller
             'parent_id' => 'nullable|exists:categories,id',
         ]);
 
-        $data = $request->except('image'); // image field টি প্রথমে বাদ দিন
+        $data = $request->except('image');
 
-        // যদি নতুন image upload করা হয়
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $filename = time() . '_' . $file->getClientOriginalName();
             $file->move(public_path('images/category'), $filename);
 
-            // পুরানো image delete করুন যদি থাকে
             if ($category->image && file_exists(public_path($category->image))) {
                 unlink(public_path($category->image));
             }
 
-            $data['image'] = 'images/category/' . $filename; // নতুন filename assign করুন
-        } elseif ($request->input('image') === null && $category->image) {
-            // যদি কোনো নতুন image upload না হয়, কিন্তু image field টি explicitly null পাঠানো হয় (অর্থাৎ, user image clear করেছে)
-            // এবং পুরানো image থাকে, তাহলে পুরানো image delete করুন
-            if (file_exists(public_path($category->image))) {
-                unlink(public_path($category->image));
-            }
-            $data['image'] = null; // database থেকে image field টি remove করুন
-        } else {
-            // যদি কোনো নতুন image upload না হয় এবং image field explicitly null না হয়,
-            // তাহলে পুরানো image path টি ধরে রাখুন
-            $data['image'] = $category->image;
+            $data['image'] = 'images/category/' . $filename;
         }
 
         $category->update($data);

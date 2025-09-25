@@ -24,6 +24,7 @@ const props = defineProps<{
 }>();
 
 const form = useForm({
+    _method: 'put',
     title_en: props.category.title_en,
     title_bn: props.category.title_bn,
     slug: props.category.slug,
@@ -36,7 +37,7 @@ const form = useForm({
 const isEdit = computed(() => !!props.category?.id);
 
 const submit = () => {
-    form.put(route('categories.update', props.category.id));
+    form.post(route('categories.update', props.category.id));
 };
 
 watch(
@@ -171,14 +172,14 @@ watch(
                                         </v-col>
                                         <v-col cols="12" md="6">
                                            <!-- Existing Image Display -->
-                                           <div v-if="props.category.image" class="mb-4">
+                                           <div v-if="props.category.image && !form.image" class="mb-4">
                                                <img :src="`/${props.category.image}`" alt="Category Image" class="w-24 h-24 object-cover rounded-lg" />
                                                <p class="text-sm text-gray-500 mt-1">Current Image</p>
                                            </div>
 
                                             <!-- Image upload field -->
                                             <v-file-input
-                                                v-model="form.image"
+                                                @change="form.image = $event.target.files[0]"
                                                 label="Upload New Image"
                                                 placeholder="Choose file"
                                                 :error-messages="
