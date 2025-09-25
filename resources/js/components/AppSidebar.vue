@@ -87,9 +87,18 @@ const logout = () => {
                     />
                     </Link>
 
-
-
-
+                <Link :href="route('locations.index')" style="text-decoration: none; color: inherit;">
+                    <v-list-item
+                        prepend-icon="mdi-map-marker"
+                        title="Locations"
+                        value="locations"
+                        :active="route().current('locations.index')
+                            || route().current('locations.create')
+                            || route().current('locations.edit')"
+                        rounded="xl"
+                        class="ma-2"
+                    />
+                    </Link>
 
             <v-list-item prepend-icon="mdi-account" title="My Account" value="account"
                 :active="activeItem === 'account'" @click="activeItem = 'account'" rounded="xl" class="ma-2">

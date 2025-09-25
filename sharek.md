@@ -14,3 +14,9 @@ this is vue page file : resources\js\pages\Admin\Brand\index.vue
 this is brand image file : public\images\brand 
 i save in database image like this images/brand/pran.jpg 
 here image not showing fix this 
+
+
+this is edit file : resources\js\pages\Admin\Location\Edit.vue 
+this is migration file : database\migrations\2026_09_23_000003_create_unions_table.php
+this is controller : app\Http\Controllers\Admin\UnionController.php 
+when i edit here old name not showing . fix this error 

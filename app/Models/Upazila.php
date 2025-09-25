@@ -11,4 +11,9 @@ class Upazila extends Model
         'name_en',
         'name_bn',
     ];
+
+    public function district()
+    {
+        return $this->belongsTo(District::class);
+    }
 }
