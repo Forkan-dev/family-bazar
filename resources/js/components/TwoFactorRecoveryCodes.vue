@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Button } from '@/components/ui/button';
+import { VButton } from '@/components/ui/button';
 import {
     Card,
     CardContent,

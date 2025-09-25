@@ -37,7 +37,7 @@ const logout = () => {
             </v-list-item>
             </Link>
 
-            <v-list-group value="Products">
+            <v-list-group value="Products ">
                 <template v-slot:activator="{ props }">
                     <v-list-item v-bind="props" prepend-icon="mdi-package-variant" title="Products"></v-list-item>
                 </template>
@@ -56,18 +56,26 @@ const logout = () => {
                         :active="route().current('categories.index') || route().current('categories.create') || route().current('categories.edit')"
                         rounded="xl" class="ma-2 ps-10"
                     ></v-list-item>
-                </Link>
-
-                <Link :href="route('tags.index')" style="text-decoration: none; color: inherit;">
-                    <v-list-item
-                        prepend-icon="mdi-tag"
-                        title="Tags"
-                        value="tags"
-                        :active="route().current('tags.index') || route().current('tags.create') || route().current('tags.edit')"
-                        rounded="xl" class="ma-2 ps-10"
-                    ></v-list-item>
                 </Link> -->
+
+
             </v-list-group>
+
+                <Link :href="route('categories.index')" style="text-decoration: none; color: inherit;">
+                    <v-list-item
+                        prepend-icon="mdi-shape"
+                        title="Categories"
+                        value="categories"
+                        :active="route().current('categories.index')
+                            || route().current('categories.create')
+                            || route().current('categories.edit')"
+                        rounded="xl"
+                        class="ma-2"
+                    />
+                    </Link>
+
+
+
 
             <v-list-item prepend-icon="mdi-account" title="My Account" value="account"
                 :active="activeItem === 'account'" @click="activeItem = 'account'" rounded="xl" class="ma-2">
