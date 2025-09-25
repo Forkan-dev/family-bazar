@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             DistrictSeeder::class,
             UpazilaSeeder::class,
             UnionSeeder::class,
+            BrandSeeder::class,
         ]);
     }
 }
