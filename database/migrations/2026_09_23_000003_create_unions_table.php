@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('upazila_id')->constrained('upazilas')->onDelete('cascade');
             $table->string('name_en');
-            $table->string('name_bn');
+            $table->string('name_bn')->nullable();
             $table->timestamps();
         });
     }
