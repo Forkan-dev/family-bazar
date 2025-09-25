@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { VButton } from '@/components/ui/button';
 import MasterLayout from '@/layouts/MasterLayout.vue';
-import { Head, Link ,router } from '@inertiajs/vue3';
-
+import { Head, Link, router } from '@inertiajs/vue3';
 
 import { ref } from 'vue';
 
@@ -15,6 +14,7 @@ const headers = [
     { title: 'Title (BANGLA)', key: 'title_bn' },
     { title: 'Slug', key: 'slug' },
     { title: 'SubCategory', key: 'subCategory' },
+    { title: 'Image', key: 'image' },
     { title: 'Actions', key: 'actions', sortable: false },
 ];
 
@@ -80,7 +80,19 @@ const deleteCategory = (id: number) => {
                                             item.title_bn
                                         }})
                                     </span>
-                                    <span v-else>  </span>
+                                    <span v-else> </span>
+                                </template>
+
+                                <template v-slot:item.image="{ item }">
+                                    <v-img
+                                        v-if="item.image"
+                                        :src="`/${item.image}`"
+                                        alt="Category Image"
+                                        max-width="80"
+                                        max-height="50"
+                                        contain
+                                    ></v-img>
+                                    <span v-else>NA</span>
                                 </template>
 
                                 <!-- Actions Column -->

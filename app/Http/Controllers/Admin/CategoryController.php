@@ -45,14 +45,27 @@ class CategoryController extends Controller
             'slug' => 'required|string|max:255|unique:categories',
             'description' => 'nullable|string',
             'icon' => 'nullable|string',
-            'image' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // ✅ validate file
             'parent_id' => 'nullable|exists:categories,id',
         ]);
 
-        Category::create($request->all());
+        $data = $request->all();
 
-        return redirect()->route('categories.index');
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->move(public_path('images/category'), $imageName);
+
+            // Save relative path to DB
+            $data['image'] = 'images/category/' . $imageName;
+        }
+
+        Category::create($data);
+
+        return redirect()->route('categories.index')->with('success', 'Category created successfully.');
     }
+
 
     /**
      * Display the specified resource.
@@ -81,6 +94,23 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    // public function update(Request $request, Category $category)
+    // {
+    //     $request->validate([
+    //         'title_en' => 'required|string|max:255',
+    //         'title_bn' => 'required|string|max:255',
+    //         'slug' => 'required|string|max:255|unique:categories,slug,' . $category->id,
+    //         'description' => 'nullable|string',
+    //         'icon' => 'nullable|string',
+    //         'image' => 'nullable|string',
+    //         'parent_id' => 'nullable|exists:categories,id',
+    //     ]);
+
+    //     $category->update($request->all());
+
+    //     return redirect()->route('categories.index');
+    // }
+
     public function update(Request $request, Category $category)
     {
         $request->validate([
@@ -89,14 +119,42 @@ class CategoryController extends Controller
             'slug' => 'required|string|max:255|unique:categories,slug,' . $category->id,
             'description' => 'nullable|string',
             'icon' => 'nullable|string',
-            'image' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // validate image
             'parent_id' => 'nullable|exists:categories,id',
         ]);
 
-        $category->update($request->all());
+        $data = $request->except('image'); // image field টি প্রথমে বাদ দিন
 
-        return redirect()->route('categories.index');
+        // যদি নতুন image upload করা হয়
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('images/category'), $filename);
+
+            // পুরানো image delete করুন যদি থাকে
+            if ($category->image && file_exists(public_path($category->image))) {
+                unlink(public_path($category->image));
+            }
+
+            $data['image'] = 'images/category/' . $filename; // নতুন filename assign করুন
+        } elseif ($request->input('image') === null && $category->image) {
+            // যদি কোনো নতুন image upload না হয়, কিন্তু image field টি explicitly null পাঠানো হয় (অর্থাৎ, user image clear করেছে)
+            // এবং পুরানো image থাকে, তাহলে পুরানো image delete করুন
+            if (file_exists(public_path($category->image))) {
+                unlink(public_path($category->image));
+            }
+            $data['image'] = null; // database থেকে image field টি remove করুন
+        } else {
+            // যদি কোনো নতুন image upload না হয় এবং image field explicitly null না হয়,
+            // তাহলে পুরানো image path টি ধরে রাখুন
+            $data['image'] = $category->image;
+        }
+
+        $category->update($data);
+
+        return redirect()->route('categories.index')->with('success', 'Category updated successfully!');
     }
+
 
     /**
      * Remove the specified resource from storage.

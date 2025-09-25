@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import MasterLayout from '@/layouts/MasterLayout.vue';
+import { computed, watch } from 'vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { VTextField } from 'vuetify/components';
 
@@ -9,17 +10,17 @@ import { VTextField } from 'vuetify/components';
 
 // props: Inertia থেকে category data ও categories list
 const props = defineProps<{
-  category: {
-    id: number,
-    title_en: string,
-    title_bn: string,
-    slug: string,
-    description?: string,
-    icon?: string,
-    image?: string,
-    parent_id?: number | null
-  },
-  categories: Array<{ id: number; title_en: string; title_bn: string }>
+    category: {
+        id: number;
+        title_en: string;
+        title_bn: string;
+        slug: string;
+        description?: string;
+        icon?: string;
+        image?: string;
+        parent_id?: number | null;
+    };
+    categories: Array<{ id: number; title_en: string; title_bn: string }>;
 }>();
 
 const form = useForm({
@@ -28,13 +29,24 @@ const form = useForm({
     slug: props.category.slug,
     description: props.category.description,
     icon: props.category.icon,
-    image: props.category.image,
+    image: null, // Initialize as null for file input
     parent_id: props.category.parent_id,
 });
+
+const isEdit = computed(() => !!props.category?.id);
 
 const submit = () => {
     form.put(route('categories.update', props.category.id));
 };
+
+watch(
+    () => form.image,
+    () => {
+        if (form.errors.image) {
+            form.clearErrors('image');
+        }
+    },
+);
 </script>
 
 <template>
@@ -158,45 +170,67 @@ const submit = () => {
                                             />
                                         </v-col>
                                         <v-col cols="12" md="6">
-                                            <v-text-field
+                                           <!-- Existing Image Display -->
+                                           <div v-if="props.category.image" class="mb-4">
+                                               <img :src="`/${props.category.image}`" alt="Category Image" class="w-24 h-24 object-cover rounded-lg" />
+                                               <p class="text-sm text-gray-500 mt-1">Current Image</p>
+                                           </div>
+
+                                            <!-- Image upload field -->
+                                            <v-file-input
                                                 v-model="form.image"
-                                                placeholder="Image"
+                                                label="Upload New Image"
+                                                placeholder="Choose file"
                                                 :error-messages="
                                                     form.errors.image
                                                 "
                                                 density="compact"
                                                 variant="outlined"
                                                 hide-details="auto"
-                                            />
+                                                accept="image/*"
+                                                show-size
+                                                clearable
+                                            ></v-file-input>
                                         </v-col>
                                     </v-row>
                                 </div>
 
                                 <!-- ✅ Parent -->
                                 <div class="form-section mb-6">
-                            <div class="form-section-title d-flex align-center mb-3">
-                                <v-icon class="me-2" color="purple">mdi-family-tree</v-icon>
-                                <span class="text-h6 font-weight-medium">Parent Category</span>
-                            </div>
+                                    <div
+                                        class="form-section-title d-flex align-center mb-3"
+                                    >
+                                        <v-icon class="me-2" color="purple"
+                                            >mdi-family-tree</v-icon
+                                        >
+                                        <span class="text-h6 font-weight-medium"
+                                            >Parent Category</span
+                                        >
+                                    </div>
 
-                            <v-row dense>
-                                <v-col cols="12" md="6">
-                                    <v-select
-                                        v-model="form.parent_id"
-                                        :items="props.categories"
-                                        :item-title="cat => `${cat.title_en} (${cat.title_bn})`"
-                                        item-value="id"
-                                        label="Select Parent Category"
-                                        placeholder="Choose a Parent Category"
-                                        clearable
-                                        density="compact"
-                                        variant="outlined"
-                                        :error-messages="form.errors.parent_id"
-                                        hide-details="auto"
-                                    />
-                                </v-col>
-                            </v-row>
-                        </div>
+                                    <v-row dense>
+                                        <v-col cols="12" md="6">
+                                            <v-select
+                                                v-model="form.parent_id"
+                                                :items="props.categories"
+                                                :item-title="
+                                                    (cat) =>
+                                                        `${cat.title_en} (${cat.title_bn})`
+                                                "
+                                                item-value="id"
+                                                label="Select Parent Category"
+                                                placeholder="Choose a Parent Category"
+                                                clearable
+                                                density="compact"
+                                                variant="outlined"
+                                                :error-messages="
+                                                    form.errors.parent_id
+                                                "
+                                                hide-details="auto"
+                                            />
+                                        </v-col>
+                                    </v-row>
+                                </div>
 
                                 <!-- ✅ Submit -->
                                 <v-btn

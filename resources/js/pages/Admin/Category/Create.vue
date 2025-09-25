@@ -4,9 +4,8 @@ import { Head, useForm } from '@inertiajs/vue3';
 import { VTextField } from 'vuetify/components';
 
 const props = defineProps<{
-  categories: Array<{ id: number; title_en: string; title_bn: string }>
+    categories: Array<{ id: number; title_en: string; title_bn: string }>;
 }>();
-
 
 const form = useForm({
     title_en: '',
@@ -14,7 +13,7 @@ const form = useForm({
     slug: '',
     description: '',
     icon: '',
-    image: '',
+    image: null,
     parent_id: null,
 });
 
@@ -143,19 +142,22 @@ const submit = () => {
                                     </v-col>
 
                                     <v-col cols="12" md="6">
-                                        <v-text-field
+                                        <v-file-input
                                             v-model="form.image"
-                                            placeholder="Image"
+                                            label="Category Image"
+                                            placeholder="Upload image"
+                                            show-size
+                                            truncate-length="15"
+                                            accept="image/*"
                                             :error-messages="form.errors.image"
                                             density="compact"
                                             variant="outlined"
                                             hide-details="auto"
+                                            clearable
                                         />
                                     </v-col>
                                 </v-row>
                             </div>
-
-
 
                             <div class="form-section mb-6">
                                 <div
