@@ -24,3 +24,5 @@ declare module 'vue' {
         $headManager: ReturnType<typeof createHeadManager>;
     }
 }
+
+declare function route(name: string, params?: Record<string, any>): string;

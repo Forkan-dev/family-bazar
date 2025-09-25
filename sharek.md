@@ -6,3 +6,11 @@ database\migrations\2025_09_23_171855_create_upazilas_table.php create a seeder 
 
 this is my json .chittagong_upazila_unions_full.json this is my seeder : database\seeders\UnionSeeder.php
 this is my migration :database\migrations\2026_09_23_000003_create_unions_table.php
+
+
+
+this is migraton file :database\migrations\2025_09_23_162857_create_brands_table.php
+this is vue page file : resources\js\pages\Admin\Brand\index.vue 
+this is brand image file : public\images\brand 
+i save in database image like this images/brand/pran.jpg 
+here image not showing fix this 

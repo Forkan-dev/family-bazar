@@ -188,7 +188,7 @@ class BrandSeeder extends Seeder
                 [
                     'en_name' => $brand['en_name'],
                     'bn_name' => $brand['bn_name'],
-                    'image' => 'images/brand/' . Str::slug($brand['en_name']) . '.jpg',
+                    'image' => '',
                 ]
             );
         }

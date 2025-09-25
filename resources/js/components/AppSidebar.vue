@@ -74,6 +74,20 @@ const logout = () => {
                     />
                     </Link>
 
+                <Link :href="route('brands.index')" style="text-decoration: none; color: inherit;">
+                    <v-list-item
+                        prepend-icon="mdi-tag"
+                        title="Brands"
+                        value="brands"
+                        :active="route().current('brands.index')
+                            || route().current('brands.create')
+                            || route().current('brands.edit')"
+                        rounded="xl"
+                        class="ma-2"
+                    />
+                    </Link>
+
+
 
 
 

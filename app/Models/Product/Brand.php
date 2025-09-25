@@ -10,4 +10,10 @@ class Brand extends Model
     use HasFactory;
 
     protected $fillable = ['en_name', 'bn_name', 'slug', 'image'];
+
+    // Accessor for image_url
+    public function getImageUrlAttribute()
+    {
+        return $this->image ? asset($this->image) : null;
+    }
 }
