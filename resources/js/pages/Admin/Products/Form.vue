@@ -13,6 +13,7 @@ const props = defineProps({
     categories: Array,
     tags: Array,
     units: Array,
+    brands: Array,
 });
 
 const parent_category_id = ref(null);
@@ -32,16 +33,17 @@ const form = useForm({
     description: props.product?.description || '',
     price: props.product?.price || 0,
     stock_quantity: props.product?.stock_quantity || 0,
-    image: null as File | null,
+    images: [] as File[],
     category_id: props.product?.category_id || null,
     unit_id: props.product?.unit_id || null,
+    brand_id: props.product?.brand_id || null,
     quantity: props.product?.quantity || 0,
     tags: props.product?.tags?.map((t: any) => t.id) || [],
 });
 
 form.transform(data => ({
     ...data,
-    image: data.image || undefined,
+    images: data.images.length > 0 ? data.images : undefined,
 }));
 
 const submit = () => {
@@ -229,6 +231,19 @@ watch(() => form.title_en, (newName) => {
                                                 prepend-inner-icon="mdi-weight"
                                             />
                                         </v-col>
+                                        <v-col cols="12" md="6">
+                                            <v-select
+                                                v-model="form.brand_id"
+                                                :items="brands"
+                                                item-title="en_name"
+                                                item-value="id"
+                                                label="Brand"
+                                                variant="outlined"
+                                                density="compact"
+                                                :error-messages="form.errors.brand_id"
+                                                prepend-inner-icon="mdi-tag"
+                                            />
+                                        </v-col>
                                     </v-row>
                                 </div>
 
@@ -236,27 +251,37 @@ watch(() => form.title_en, (newName) => {
                                 <div class="form-section">
                                     <div class="form-section-title">
                                         <v-icon>mdi-image</v-icon>
-                                        Product Image
+                                        Product Images
                                     </div>
                                     <v-row dense>
-                                        <v-col cols="12" md="8">
+                                        <v-col cols="12">
                                             <VFileInput
-                                                v-model="form.image"
-                                                title="Upload Product Image"
+                                                v-model="form.images"
+                                                title="Upload Product Images"
                                                 variant="outlined"
                                                 density="compact"
-                                                :error-messages="form.errors.image"
+                                                :error-messages="form.errors.images"
                                                 accept="image/*"
                                                 prepend-icon=""
                                                 prepend-inner-icon="mdi-camera"
+                                                multiple
                                             />
                                         </v-col>
-                                        <v-col cols="12" md="4" v-if="product?.image_url">
-                                            <div class="text-caption mb-2">Current Image</div>
+                                    </v-row>
+                                    <v-row dense v-if="product?.documents?.length > 0">
+                                        <v-col cols="12">
+                                            <div class="text-caption mb-2">Current Images</div>
+                                        </v-col>
+                                        <v-col
+                                            v-for="image in product.documents"
+                                            :key="image.id"
+                                            cols="6"
+                                            sm="4"
+                                            md="3"
+                                        >
                                             <v-img
-                                                :src="product.image_url"
+                                                :src="image.file_path"
                                                 height="100"
-                                                max-width="150"
                                                 class="rounded"
                                             />
                                         </v-col>

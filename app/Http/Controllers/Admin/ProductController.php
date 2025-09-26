@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product\Brand;
 use App\Models\Product\Category;
 use App\Models\Product\Product;
 use App\Models\Product\Tag;
@@ -34,10 +35,12 @@ class ProductController extends Controller
         $categories = Category::whereNull('parent_id')->get();
         $tags = Tag::all();
         $units = Unit::all();
+        $brands = Brand::all();
         return Inertia::render('Admin/Products/Form', [
             'categories' => $categories,
             'tags' => $tags,
             'units' => $units,
+            'brands' => $brands,
         ]);
     }
 
@@ -48,15 +51,23 @@ class ProductController extends Controller
     {
         $validatedData = $request->validated();
 
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('products', 'public');
-            $validatedData['image_url'] = Storage::url($path);
+        $product = Product::create($validatedData);
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('products', 'public');
+                $product->documents()->create([
+                    'file_path' => $path,
+                    'file_name' => $image->getClientOriginalName(),
+                    'mime_type' => $image->getClientMimeType(),
+                    'file_size' => $image->getSize(),
+                ]);
+            }
         }
 
-        $product = Product::create($validatedData);
         $product->tags()->sync($request->input('tags', []));
 
-        return redirect()->route('products.index')->with('success', 'Product created successfully.');
+        return redirect()->route('product.products.index')->with('success', 'Product created successfully.');
     }
 
     /**
@@ -75,13 +86,15 @@ class ProductController extends Controller
         $categories = Category::whereNull('parent_id')->get();
         $tags = Tag::all();
         $units = Unit::all();
-        $product->load('category', 'tags');
+        $brands = Brand::all();
+        $product->load('category', 'tags', 'documents');
 
         return Inertia::render('Admin/Products/Form', [
             'product' => $product,
             'categories' => $categories,
             'tags' => $tags,
             'units' => $units,
+            'brands' => $brands,
         ]);
     }
 
@@ -92,21 +105,25 @@ class ProductController extends Controller
     {
         $validatedData = $request->validated();
 
-        if ($request->hasFile('image')) {
-            // Delete old image
-            if ($product->image_url) {
-                $oldImagePath = str_replace('/storage', '', $product->image_url);
-                Storage::disk('public')->delete($oldImagePath);
-            }
+        $product->update($validatedData);
 
-            $path = $request->file('image')->store('products', 'public');
-            $validatedData['image_url'] = Storage::url($path);
+        if ($request->hasFile('images')) {
+            // The user can upload new images, but we are not deleting old ones.
+            // Deleting images should be a separate action on the frontend.
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('products', 'public');
+                $product->documents()->create([
+                    'file_path' => $path,
+                    'file_name' => $image->getClientOriginalName(),
+                    'mime_type' => $image->getClientMimeType(),
+                    'file_size' => $image->getSize(),
+                ]);
+            }
         }
 
-        $product->update($validatedData);
         $product->tags()->sync($request->input('tags', []));
 
-        return redirect()->route('products.index')->with('success', 'Product updated successfully.');
+        return redirect()->route('product.products.index')->with('success', 'Product updated successfully.');
     }
 
     /**

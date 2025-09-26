@@ -2,6 +2,8 @@
 
 namespace App\Models\Product;
 
+use App\Models\Document;
+use App\Models\Product\Brand; // Import the Brand model
 use App\Models\Product\Category;
 use App\Models\Product\Tag;
 use App\Models\Product\Unit; // Import the Unit model
@@ -24,7 +26,7 @@ class Product extends Model
         'price',
         'quantity',
         'unit_id',
-        'image_url',
+        'brand_id', // Add this line
         'stock_quantity',
         'is_active',
         'category_id',
@@ -34,9 +36,19 @@ class Product extends Model
         'is_active' => 'boolean',
     ];
 
+    public function documents()
+    {
+        return $this->morphMany(Document::class, 'documentable');
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function brand(): BelongsTo // Add this method
+    {
+        return $this->belongsTo(Brand::class);
     }
 
     public function tags(): BelongsToMany
