@@ -13,26 +13,25 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        $json = file_get_contents(database_path('data/grocery_categories.json'));
-        $categories = json_decode($json, true);
+        $json = file_get_contents(database_path('data/three_level_grocery.json'));
+        $data = json_decode($json, true);
 
-        foreach ($categories as $categoryData) {
-            $parentCategory = Category::create([
-                'title_en' => $categoryData['en'],
-                'title_bn' => $categoryData['bn'],
-                'slug' => Str::slug($categoryData['en']),
-            ]);
+        $this->createCategory($data);
+    }
 
-            $subcategories = [];
-            foreach ($categoryData['subcategories'] as $subcategory) {
-                $subcategories[] = [
-                    'title_en' => $subcategory['en'],
-                    'title_bn' => $subcategory['bn'],
-                    'slug' => Str::slug($subcategory['en']),
-                ];
+    private function createCategory(array $categoryData, int $parentId = null): void
+    {
+        $category = Category::create([
+            'title_en' => $categoryData['en'],
+            'title_bn' => $categoryData['bn'],
+            'slug' => Str::slug($categoryData['en']),
+            'parent_id' => $parentId,
+        ]);
+
+        if (isset($categoryData['children'])) {
+            foreach ($categoryData['children'] as $childData) {
+                $this->createCategory($childData, $category->id);
             }
-
-            $parentCategory->children()->createMany($subcategories);
         }
     }
 }

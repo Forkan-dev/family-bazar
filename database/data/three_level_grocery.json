@@ -1,0 +1,87 @@
+
+{
+  "en": "Grocery",
+  "bn": "মুদি",
+  "children": [
+    {
+      "en": "Fruits & Vegetables",
+      "bn": "ফল ও সবজি",
+      "children": [
+        {"en": "Fresh Fruits", "bn": "তাজা ফল"},
+        {"en": "Fresh Vegetables", "bn": "তাজা সবজি"},
+        {"en": "Herbs", "bn": "শাক"},
+        {"en": "Organic Produce", "bn": "জৈব পণ্য"},
+        {"en": "Salad Kits", "bn": "সালাদ কিট"},
+        {"en": "Cut Fruits & Vegetables", "bn": "কাটা ফল ও সবজি"},
+        {"en": "Exotic Fruits & Vegetables", "bn": "বিদেশী ফল ও সবজি"},
+        {"en": "Seasonal Fruits", "bn": "মৌসুমি ফল"},
+        {"en": "Seasonal Vegetables", "bn": "মৌসুমি সবজি"},
+        {"en": "Leafy Greens", "bn": "শাক-সবজি"}
+      ]
+    },
+    {
+      "en": "Dairy & Eggs",
+      "bn": "দুগ্ধ ও ডিম",
+      "children": [
+        {"en": "Milk", "bn": "দুধ"},
+        {"en": "Eggs", "bn": "ডিম"},
+        {"en": "Yogurt", "bn": "দই"},
+        {"en": "Butter & Margarine", "bn": "মাখন ও মার্জারিন"},
+        {"en": "Cheese", "bn": "পনির"},
+        {"en": "Cream", "bn": "ক্রিম"},
+        {"en": "Lactose-Free", "bn": "ল্যাকটোজ-মুক্ত"},
+        {"en": "Soy & Plant-Based Milk", "bn": "সয়া ও উদ্ভিদ-ভিত্তিক দুধ"},
+        {"en": "Ghee", "bn": "ঘি"},
+        {"en": "Condensed Milk", "bn": "কনডেন্সড মিল্ক"}
+      ]
+    },
+    {
+      "en": "Meat & Fish",
+      "bn": "মাংস ও মাছ",
+      "children": [
+        {"en": "Chicken", "bn": "মুরগি"},
+        {"en": "Beef", "bn": "গরুর মাংস"},
+        {"en": "Mutton", "bn": "খাসির মাংস"},
+        {"en": "Fish", "bn": "মাছ"},
+        {"en": "Shrimp & Prawns", "bn": "চিংড়ি"},
+        {"en": "Sausages", "bn": "সসেজ"},
+        {"en": "Bacon & Ham", "bn": "বেকন ও হ্যাম"},
+        {"en": "Frozen Fish", "bn": "হিমায়িত মাছ"},
+        {"en": "Processed Meat", "bn": "প্রক্রিয়াজাত মাংস"},
+        {"en": "Marine Fish", "bn": "সামুদ্রিক মাছ"}
+      ]
+    },
+    {
+      "en": "Pantry Staples",
+      "bn": "প্যান্ট্রি স্টেপল",
+      "children": [
+        {"en": "Rice", "bn": "চাল"},
+        {"en": "Flour", "bn": "ময়দা"},
+        {"en": "Lentils & Pulses", "bn": "ডাল"},
+        {"en": "Sugar & Sweeteners", "bn": "চিনি ও মিষ্টি"},
+        {"en": "Salt", "bn": "লবণ"},
+        {"en": "Spices", "bn": "মশলা"},
+        {"en": "Cooking Oil", "bn": "রান্নার তেল"},
+        {"en": "Grains", "bn": "শস্য"},
+        {"en": "Pasta & Noodles", "bn": "পাস্তা ও নুডলস"},
+        {"en": "Canned Food", "bn": "টিনজাত খাবার"}
+      ]
+    },
+    {
+      "en": "Beverages",
+      "bn": "পানীয়",
+      "children": [
+        {"en": "Water", "bn": "জল"},
+        {"en": "Juice", "bn": "জুস"},
+        {"en": "Soft Drinks", "bn": "কোমল পানীয়"},
+        {"en": "Tea & Coffee", "bn": "চা ও কফি"},
+        {"en": "Energy Drinks", "bn": "এনার্জি ড্রিংকস"},
+        {"en": "Syrups & Powders", "bn": "সিরাপ ও পাউডার"},
+        {"en": "Milk Drinks", "bn": "দুধের পানীয়"},
+        {"en": "Sports Drinks", "bn": "স্পোর্টস ড্রিংকস"},
+        {"en": "Coconut Water", "bn": "ডাবের জল"},
+        {"en": "Herbal Drinks", "bn": "ভেষজ পানীয়"}
+      ]
+    }
+  ]
+}
