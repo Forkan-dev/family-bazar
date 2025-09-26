@@ -1,8 +1,11 @@
+
 <script setup lang="ts">
 import MasterLayout from '@/layouts/MasterLayout.vue';
 import { computed, watch } from 'vue';
-import { Head, useForm } from '@inertiajs/vue3';
-import { VTextField } from 'vuetify/components';
+import { Head, useForm, Link } from '@inertiajs/vue3';
+import VInputField from '@/components/VInputField.vue';
+import { VButton } from '@/components/ui/button';
+import VFileInput from '@/components/ui/VFileInput.vue';
 
 const props = defineProps<{
     brand: {
@@ -11,6 +14,7 @@ const props = defineProps<{
         bn_name: string;
         slug: string;
         image?: string;
+        image_url?: string;
     };
 }>();
 
@@ -19,155 +23,108 @@ const form = useForm({
     en_name: props.brand.en_name,
     bn_name: props.brand.bn_name,
     slug: props.brand.slug,
-    image: null, // Initialize as null for file input
+    image: null as File | null,
 });
 
-const isEdit = computed(() => !!props.brand?.id);
-
 const submit = () => {
-    form.post(route('brands.update', props.brand.id));
+    form.post(route('product.brands.update', props.brand.id));
 };
 
-watch(
-    () => form.image,
-    () => {
-        if (form.errors.image) {
-            form.clearErrors('image');
-        }
-    },
-);
 </script>
 
 <template>
     <MasterLayout>
         <Head title="Edit Brand" />
-
         <v-container>
             <v-row>
                 <v-col cols="12">
                     <v-card>
-                        <v-card-title>Edit Brand</v-card-title>
-
-                        <v-card-text class="mt-5">
+                        <v-card-title class="d-flex align-center justify-space-between">
+                            Edit Brand
+                            <Link :href="route('product.brands.index')">
+                                <VButton variant="outlined">
+                                    <v-icon left class="mr-2">mdi-arrow-left</v-icon>
+                                    Back to Brands
+                                </VButton>
+                            </Link>
+                        </v-card-title>
+                        <v-divider></v-divider>
+                        <v-card-text>
                             <v-form @submit.prevent="submit">
-                                <!-- ✅ Basic Information -->
-                                <div class="form-section mb-6">
-                                    <div
-                                        class="form-section-title d-flex align-center mb-3"
+                                <v-row>
+                                    <v-col cols="12" md="6">
+                                        <VInputField
+                                            v-model="form.en_name"
+                                            label="Name (English)"
+                                            :error-messages="form.errors.en_name"
+                                            required
+                                            density="compact"
+                                            variant="outlined"
+                                        />
+                                    </v-col>
+                                    <v-col cols="12" md="6">
+                                        <VInputField
+                                            v-model="form.bn_name"
+                                            label="Name (Bengali)"
+                                            :error-messages="form.errors.bn_name"
+                                            density="compact"
+                                            variant="outlined"
+                                        />
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <VInputField
+                                            v-model="form.slug"
+                                            label="URL Slug"
+                                            :error-messages="form.errors.slug"
+                                            required
+                                            density="compact"
+                                            variant="outlined"
+                                        />
+                                    </v-col>
+                                    <v-col cols="12" md="6">
+                                        <VFileInput
+                                            v-model="form.image"
+                                            title="Upload New Image"
+                                            variant="outlined"
+                                            density="compact"
+                                            :error-messages="form.errors.image"
+                                            accept="image/*"
+                                            prepend-icon=""
+                                            prepend-inner-icon="mdi-camera"
+                                        />
+                                    </v-col>
+                                    <v-col cols="12" md="6" v-if="props.brand.image_url">
+                                        <div class="text-caption mb-2">Current Image</div>
+                                        <v-img
+                                            :src="props.brand.image_url"
+                                            height="100"
+                                            max-width="150"
+                                            class="rounded"
+                                        />
+                                    </v-col>
+                                </v-row>
+
+                                <div class="d-flex gap-3 mt-8">
+                                    <VButton
+                                        type="submit"
+                                        :disabled="form.processing"
+                                        :loading="form.processing"
+                                        size="large"
                                     >
-                                        <v-icon class="me-2" color="primary"
-                                            >mdi-information</v-icon
+                                        <v-icon left>mdi-content-save</v-icon>
+                                        Update Brand
+                                    </VButton>
+
+                                    <Link :href="route('product.brands.index')">
+                                        <VButton
+                                            variant="tonal"
+                                            size="large"
                                         >
-                                        <span class="text-h6 font-weight-medium"
-                                            >Basic Information</span
-                                        >
-                                    </div>
-                                    <v-row dense>
-                                        <v-col cols="12" md="6">
-                                            <v-text-field
-                                                v-model="form.en_name"
-                                                placeholder="Name (English)"
-                                                :error-messages="
-                                                    form.errors.en_name
-                                                "
-                                                required
-                                                density="compact"
-                                                variant="outlined"
-                                                hide-details="auto"
-                                            />
-                                        </v-col>
-                                        <v-col cols="12" md="6">
-                                            <v-text-field
-                                                v-model="form.bn_name"
-                                                placeholder="Name (Bangla)"
-                                                :error-messages="
-                                                    form.errors.bn_name
-                                                "
-                                                required
-                                                density="compact"
-                                                variant="outlined"
-                                                hide-details="auto"
-                                            />
-                                        </v-col>
-                                    </v-row>
+                                            <v-icon left>mdi-close</v-icon>
+                                            Cancel
+                                        </VButton>
+                                    </Link>
                                 </div>
-
-                                <!-- ✅ SEO -->
-                                <div class="form-section mb-6">
-                                    <div
-                                        class="form-section-title d-flex align-center mb-3"
-                                    >
-                                        <v-icon class="me-2" color="green"
-                                            >mdi-tag</v-icon
-                                        >
-                                        <span class="text-h6 font-weight-medium"
-                                            >SEO Settings</span
-                                        >
-                                    </div>
-                                    <v-row dense>
-                                        <v-col cols="12" md="6">
-                                            <v-text-field
-                                                v-model="form.slug"
-                                                placeholder="Slug"
-                                                :error-messages="
-                                                    form.errors.slug
-                                                "
-                                                required
-                                                density="compact"
-                                                variant="outlined"
-                                                hide-details="auto"
-                                            />
-                                        </v-col>
-                                    </v-row>
-                                </div>
-
-                                <!-- ✅ Media -->
-                                <div class="form-section mb-6">
-                                    <div
-                                        class="form-section-title d-flex align-center mb-3"
-                                    >
-                                        <v-icon class="me-2" color="orange"
-                                            >mdi-image</v-icon
-                                        >
-                                        <span class="text-h6 font-weight-medium"
-                                            >Media</span
-                                        >
-                                    </div>
-                                    <v-row dense>
-                                        <v-col cols="12" md="6">
-                                           <!-- Existing Image Display -->
-                                           <div v-if="props.brand.image && !form.image" class="mb-4">
-                                               <img :src="`/${props.brand.image}`" alt="Brand Image" class="w-24 h-24 object-cover rounded-lg" />
-                                               <p class="text-sm text-gray-500 mt-1">Current Image</p>
-                                           </div>
-
-                                            <!-- Image upload field -->
-                                            <v-file-input
-                                                @change="form.image = $event.target.files[0]"
-                                                label="Upload New Image"
-                                                placeholder="Choose file"
-                                                :error-messages="
-                                                    form.errors.image
-                                                "
-                                                density="compact"
-                                                variant="outlined"
-                                                hide-details="auto"
-                                                accept="image/*"
-                                                show-size
-                                                clearable
-                                            ></v-file-input>
-                                        </v-col>
-                                    </v-row>
-                                </div>
-
-                                <!-- ✅ Submit -->
-                                <v-btn
-                                    type="submit"
-                                    color="primary"
-                                    :loading="form.processing"
-                                >
-                                    {{ isEdit ? 'Update' : 'Save' }}
-                                </v-btn>
                             </v-form>
                         </v-card-text>
                     </v-card>

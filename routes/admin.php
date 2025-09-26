@@ -13,6 +13,5 @@ Route::middleware('guest:admin')->group(function () {
 
 Route::prefix('admin')->middleware(['auth', 'verified'])->group(function () {
     Route::resource('categories', CategoryController::class);
-    Route::resource('brands', BrandController::class);
     Route::resource('locations', UnionController::class);
 });

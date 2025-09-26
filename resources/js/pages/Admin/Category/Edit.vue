@@ -1,14 +1,10 @@
 <script setup lang="ts">
+import { VButton } from '@/components/ui/button';
+import VFileInput from '@/components/ui/VFileInput.vue';
+import VInputField from '@/components/VInputField.vue';
 import MasterLayout from '@/layouts/MasterLayout.vue';
-import { computed, watch } from 'vue';
-import { Head, useForm } from '@inertiajs/vue3';
-import { VTextField } from 'vuetify/components';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 
-// const props = defineProps({
-//     category: Object,
-// });
-
-// props: Inertia থেকে category data ও categories list
 const props = defineProps<{
     category: {
         id: number;
@@ -18,6 +14,7 @@ const props = defineProps<{
         description?: string;
         icon?: string;
         image?: string;
+        image_url?: string;
         parent_id?: number | null;
     };
     categories: Array<{ id: number; title_en: string; title_bn: string }>;
@@ -30,217 +27,153 @@ const form = useForm({
     slug: props.category.slug,
     description: props.category.description,
     icon: props.category.icon,
-    image: null, // Initialize as null for file input
+    image: null as File | null,
     parent_id: props.category.parent_id,
 });
 
-const isEdit = computed(() => !!props.category?.id);
-
 const submit = () => {
-    form.post(route('categories.update', props.category.id));
+    form.post(route('product.categories.update', props.category.id));
 };
-
-watch(
-    () => form.image,
-    () => {
-        if (form.errors.image) {
-            form.clearErrors('image');
-        }
-    },
-);
 </script>
 
 <template>
     <MasterLayout>
         <Head title="Edit Category" />
-
         <v-container>
             <v-row>
                 <v-col cols="12">
                     <v-card>
-                        <v-card-title>Edit Category</v-card-title>
-
-                        <v-card-text class="mt-5">
+                        <v-card-title
+                            class="d-flex align-center justify-space-between"
+                        >
+                            Edit Category
+                            <Link :href="route('product.categories.index')">
+                                <VButton variant="outlined">
+                                    <v-icon left class="mr-2"
+                                        >mdi-arrow-left</v-icon
+                                    >
+                                    Back to Categories
+                                </VButton>
+                            </Link>
+                        </v-card-title>
+                        <v-divider></v-divider>
+                        <v-card-text>
                             <v-form @submit.prevent="submit">
-                                <!-- ✅ Basic Information -->
-                                <div class="form-section mb-6">
-                                    <div
-                                        class="form-section-title d-flex align-center mb-3"
+                                <v-row>
+                                    <v-col cols="12" md="6">
+                                        <VInputField
+                                            v-model="form.title_en"
+                                            label="Title (English)"
+                                            :error-messages="
+                                                form.errors.title_en
+                                            "
+                                            required
+                                            density="compact"
+                                            variant="outlined"
+                                        />
+                                    </v-col>
+                                    <v-col cols="12" md="6">
+                                        <VInputField
+                                            v-model="form.title_bn"
+                                            label="Title (Bengali)"
+                                            :error-messages="
+                                                form.errors.title_bn
+                                            "
+                                            density="compact"
+                                            variant="outlined"
+                                        />
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <VInputField
+                                            v-model="form.slug"
+                                            label="URL Slug"
+                                            :error-messages="form.errors.slug"
+                                            required
+                                            density="compact"
+                                            variant="outlined"
+                                        />
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <VInputField
+                                            v-model="form.description"
+                                            label="Description"
+                                            :error-messages="
+                                                form.errors.description
+                                            "
+                                            multiline
+                                            density="compact"
+                                            variant="outlined"
+                                            rows="3"
+                                        />
+                                    </v-col>
+                                    <v-col cols="12" md="6">
+                                        <v-select
+                                            v-model="form.parent_id"
+                                            :items="props.categories"
+                                            :item-title="
+                                                (cat) =>
+                                                    `${cat.title_en} (${cat.title_bn})`
+                                            "
+                                            item-value="id"
+                                            label="Parent Category"
+                                            variant="outlined"
+                                            density="compact"
+                                            :error-messages="
+                                                form.errors.parent_id
+                                            "
+                                            prepend-inner-icon="mdi-folder-tree"
+                                            clearable
+                                        />
+                                    </v-col>
+                                    <v-col cols="12" md="8">
+                                        <v-file-input
+                                            v-model="form.image"
+                                            title="Upload Category Image"
+                                            variant="outlined"
+                                            density="compact"
+                                            :error-messages="form.errors.image"
+                                            accept="image/*"
+                                            prepend-inner-icon="mdi-camera"
+                                        />
+                                    </v-col>
+                                    <v-col
+                                        cols="12"
+                                        v-if="props.category.image_url"
                                     >
-                                        <v-icon class="me-2" color="primary"
-                                            >mdi-information</v-icon
-                                        >
-                                        <span class="text-h6 font-weight-medium"
-                                            >Basic Information</span
-                                        >
-                                    </div>
-                                    <v-row dense>
-                                        <v-col cols="12" md="6">
-                                            <v-text-field
-                                                v-model="form.title_en"
-                                                placeholder="Title (English)"
-                                                :error-messages="
-                                                    form.errors.title_en
-                                                "
-                                                required
-                                                density="compact"
-                                                variant="outlined"
-                                                hide-details="auto"
-                                            />
-                                        </v-col>
-                                        <v-col cols="12" md="6">
-                                            <v-text-field
-                                                v-model="form.title_bn"
-                                                placeholder="Title (Bangla)"
-                                                :error-messages="
-                                                    form.errors.title_bn
-                                                "
-                                                required
-                                                density="compact"
-                                                variant="outlined"
-                                                hide-details="auto"
-                                            />
-                                        </v-col>
-                                    </v-row>
-                                </div>
+                                        <div class="text-caption mb-2">
+                                            Current Image
+                                        </div>
+                                        <v-img
+                                            :src="props.category.image_url"
+                                            height="100"
+                                            max-width="150"
+                                            class="rounded"
+                                        />
+                                    </v-col>
+                                </v-row>
 
-                                <!-- ✅ SEO -->
-                                <div class="form-section mb-6">
-                                    <div
-                                        class="form-section-title d-flex align-center mb-3"
+                                <div class="d-flex mt-8 gap-3">
+                                    <VButton
+                                        type="submit"
+                                        :disabled="form.processing"
+                                        :loading="form.processing"
+                                        size="large"
                                     >
-                                        <v-icon class="me-2" color="green"
-                                            >mdi-tag</v-icon
-                                        >
-                                        <span class="text-h6 font-weight-medium"
-                                            >SEO Settings</span
-                                        >
-                                    </div>
-                                    <v-row dense>
-                                        <v-col cols="12" md="6">
-                                            <v-text-field
-                                                v-model="form.slug"
-                                                placeholder="Slug"
-                                                :error-messages="
-                                                    form.errors.slug
-                                                "
-                                                required
-                                                density="compact"
-                                                variant="outlined"
-                                                hide-details="auto"
-                                            />
-                                        </v-col>
-                                        <v-col cols="12" md="6">
-                                            <v-text-field
-                                                v-model="form.description"
-                                                placeholder="Description"
-                                                :error-messages="
-                                                    form.errors.description
-                                                "
-                                                density="compact"
-                                                variant="outlined"
-                                                hide-details="auto"
-                                            />
-                                        </v-col>
-                                    </v-row>
-                                </div>
+                                        <v-icon left>mdi-content-save</v-icon>
+                                        Update Category
+                                    </VButton>
 
-                                <!-- ✅ Media -->
-                                <div class="form-section mb-6">
-                                    <div
-                                        class="form-section-title d-flex align-center mb-3"
+                                    <Link
+                                        :href="
+                                            route('product.categories.index')
+                                        "
                                     >
-                                        <v-icon class="me-2" color="orange"
-                                            >mdi-image</v-icon
-                                        >
-                                        <span class="text-h6 font-weight-medium"
-                                            >Media</span
-                                        >
-                                    </div>
-                                    <v-row dense>
-                                        <v-col cols="12" md="6">
-                                            <v-text-field
-                                                v-model="form.icon"
-                                                placeholder="Icon"
-                                                :error-messages="
-                                                    form.errors.icon
-                                                "
-                                                density="compact"
-                                                variant="outlined"
-                                                hide-details="auto"
-                                            />
-                                        </v-col>
-                                        <v-col cols="12" md="6">
-                                           <!-- Existing Image Display -->
-                                           <div v-if="props.category.image && !form.image" class="mb-4">
-                                               <img :src="`/${props.category.image}`" alt="Category Image" class="w-24 h-24 object-cover rounded-lg" />
-                                               <p class="text-sm text-gray-500 mt-1">Current Image</p>
-                                           </div>
-
-                                            <!-- Image upload field -->
-                                            <v-file-input
-                                                @change="form.image = $event.target.files[0]"
-                                                label="Upload New Image"
-                                                placeholder="Choose file"
-                                                :error-messages="
-                                                    form.errors.image
-                                                "
-                                                density="compact"
-                                                variant="outlined"
-                                                hide-details="auto"
-                                                accept="image/*"
-                                                show-size
-                                                clearable
-                                            ></v-file-input>
-                                        </v-col>
-                                    </v-row>
+                                        <VButton variant="tonal" size="large">
+                                            <v-icon left>mdi-close</v-icon>
+                                            Cancel
+                                        </VButton>
+                                    </Link>
                                 </div>
-
-                                <!-- ✅ Parent -->
-                                <div class="form-section mb-6">
-                                    <div
-                                        class="form-section-title d-flex align-center mb-3"
-                                    >
-                                        <v-icon class="me-2" color="purple"
-                                            >mdi-family-tree</v-icon
-                                        >
-                                        <span class="text-h6 font-weight-medium"
-                                            >Parent Category</span
-                                        >
-                                    </div>
-
-                                    <v-row dense>
-                                        <v-col cols="12" md="6">
-                                            <v-select
-                                                v-model="form.parent_id"
-                                                :items="props.categories"
-                                                :item-title="
-                                                    (cat) =>
-                                                        `${cat.title_en} (${cat.title_bn})`
-                                                "
-                                                item-value="id"
-                                                label="Select Parent Category"
-                                                placeholder="Choose a Parent Category"
-                                                clearable
-                                                density="compact"
-                                                variant="outlined"
-                                                :error-messages="
-                                                    form.errors.parent_id
-                                                "
-                                                hide-details="auto"
-                                            />
-                                        </v-col>
-                                    </v-row>
-                                </div>
-
-                                <!-- ✅ Submit -->
-                                <v-btn
-                                    type="submit"
-                                    color="primary"
-                                    :loading="form.processing"
-                                >
-                                    {{ isEdit ? 'Update' : 'Save' }}
-                                </v-btn>
                             </v-form>
                         </v-card-text>
                     </v-card>

@@ -35,3 +35,7 @@ this is category seeder: database\seeders\CategorySeeder.php
 this is brand seeder: database\seeders\BrandSeeder.php 
 now give me real 2000 products to category wish subcategory and if need using brand order null . 
 and save json here public\data
+
+
+resources\js\pages\Admin\Category follow same desing and implement                                      │
+│   resources\js\pages\Admin\Brand same style all same desing in Brand
