@@ -9,6 +9,7 @@ use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Illuminate\Support\Facades\Route;
 
 
+
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -16,16 +17,17 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         channels: __DIR__.'/../routes/channels.php',
         health: '/up',
-        then: function () {
-            // 👇 এখানে আপনার admin.php রেজিস্টার করুন
+        // Method 1: Using 'using' parameter (Laravel 11+ preferred way)
+        using: function () {
             Route::middleware('web')
-                ->prefix('admin')
-                ->name('admin.')
-                ->group(base_path('routes/admin.php'));
-        }
+                ->group(base_path('routes/backend.php'));
+        },
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
+        $middleware->encryptCookies(except: [
+            'appearance',
+            'sidebar_state'
+        ]);
 
         $middleware->web(append: [
             HandleAppearance::class,
@@ -34,5 +36,26 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
-    })->create();
+        // Exception handling configuration
+    })
+    ->create();
+
+// Alternative Method 2: Register in RouteServiceProvider or AppServiceProvider
+// In app/Providers/AppServiceProvider.php boot() method:
+/*
+public function boot(): void
+{
+    Route::middleware('web')
+        ->group(base_path('routes/backend.php'));
+}
+*/
+
+// Alternative Method 3: Multiple route files in 'using'
+/*
+using: function () {
+    Route::middleware('web')->group(base_path('routes/backend.php'));
+    Route::middleware('web')->group(base_path('routes/admin.php'));
+    Route::middleware(['web', 'auth'])->group(base_path('routes/user.php'));
+},
+*/
+

@@ -21,7 +21,7 @@ const search = ref('');
 
 const deleteUnion = (id: number) => {
     if (confirm('Are you sure you want to delete this union?')) {
-        router.delete(route('locations.destroy', id), {
+        router.delete(route('product.locations.destroy', id), {
             onSuccess: () => alert('Union deleted successfully.'),
             onError: (errors) => console.error(errors),
         });
@@ -44,7 +44,7 @@ const deleteUnion = (id: number) => {
                             <VButton>
                                 <v-icon left>mdi-plus</v-icon>
                                 <Link
-                                    :href="route('locations.create')"
+                                    :href="route('product.locations.create')"
                                     class="mr-2"
                                 >
                                     Add Union
@@ -74,7 +74,7 @@ const deleteUnion = (id: number) => {
                                 <template v-slot:item.actions="{ item }">
                                     <Link
                                         :href="
-                                            route('locations.edit', item.id)
+                                            route('product.locations.edit', item.id)
                                         "
                                     >
                                         <v-icon small class="me-2"

@@ -39,12 +39,12 @@ const deleteProduct = (id: number) => {
                     <v-card>
                         <v-card-title class="d-flex align-center justify-space-between">
                             Products
+                            <Link :href="route('product.products.create')">
                             <VButton>
                                 <v-icon left>mdi-plus</v-icon>
-                                <Link :href="route('products.create')" class="mr-2">
-                                    Add Product
-                                </Link>
+                                Add Product
                             </VButton>
+                            </Link>
                         </v-card-title>
 
                         <v-card-text>

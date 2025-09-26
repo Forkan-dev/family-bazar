@@ -22,7 +22,7 @@ const search = ref('');
 
 const deleteCategory = (id: number) => {
     if (confirm('Are you sure you want to delete this category?')) {
-        router.delete(route('categories.destroy', id), {
+        router.delete(route('product.categories.destroy', id), {
             onSuccess: () => alert('Category deleted successfully.'),
             onError: (errors) => console.error(errors),
         });
@@ -45,7 +45,7 @@ const deleteCategory = (id: number) => {
                             <VButton>
                                 <v-icon left>mdi-plus</v-icon>
                                 <Link
-                                    :href="route('categories.create')"
+                                    :href="route('product.categories.create')"
                                     class="mr-2"
                                 >
                                     Add Category
@@ -99,7 +99,7 @@ const deleteCategory = (id: number) => {
                                 <template v-slot:item.actions="{ item }">
                                     <Link
                                         :href="
-                                            route('categories.edit', item.id)
+                                            route('product.categories.edit', item.id)
                                         "
                                     >
                                         <v-icon small class="me-2"

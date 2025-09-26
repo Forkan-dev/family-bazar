@@ -21,7 +21,7 @@ const search = ref('');
 
 const deleteBrand = (id: number) => {
     if (confirm('Are you sure you want to delete this brand?')) {
-        router.delete(route('brands.destroy', id), {
+        router.delete(route('product.brands.destroy', id), {
             onSuccess: () => alert('Brand deleted successfully.'),
             onError: (errors) => console.error(errors),
         });
@@ -44,7 +44,7 @@ const deleteBrand = (id: number) => {
                             <VButton>
                                 <v-icon left>mdi-plus</v-icon>
                                 <Link
-                                    :href="route('brands.create')"
+                                    :href="route('product.brands.create')"
                                     class="mr-2"
                                 >
                                     Add Brand
@@ -85,7 +85,7 @@ const deleteBrand = (id: number) => {
 
                                 <!-- Actions Column -->
                                 <template v-slot:item.actions="{ item }">
-                                    <Link :href="route('brands.edit', item.id)">
+                                    <Link :href="route('product.brands.edit', item.id)">
                                         <v-icon small class="me-2"
                                             >mdi-pencil</v-icon
                                         >
