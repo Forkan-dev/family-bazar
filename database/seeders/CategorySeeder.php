@@ -13,7 +13,8 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        $json = file_get_contents(database_path('data/three_level_grocery.json'));
+        $json = file_get_contents(public_path('data/three_level_grocery.json'));
+
         $data = json_decode($json, true);
 
         $this->createCategory($data);

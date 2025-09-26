@@ -26,3 +26,9 @@ when i edit here old name not showing . fix this error
  > this is my migration  : database\migrations\2025_09_19_195105_create_categories_table.php
  php this is my seeder file :database\seeders\CategorySeeder.php                             │
 │   now  First create Category Gorcery and create Grocery which parent_id =1  wish 100 Category then 100 Category wish create  250 subcategory english and bangla name  for production   json file crate here   database\data and add to seeder
+
+
+
+
+this is my migration : database\migrations\2025_09_19_195116_create_products_table.php
+
