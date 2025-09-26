@@ -21,7 +21,8 @@ The Minimum Viable Product (MVP) focuses on this core feature: bringing the loca
     - `app/Models`: Eloquent models for database interaction.
         - `Product`: Models related to products, categories, and tags.
     - `routes`: Defines the application's routes.
-        - `web.php`: Web routes.
+        - `web.php`: Contains the main landing page route.
+        - `backend.php`: Contains all backend-related routes, such as the dashboard and product management. These routes are protected by the `auth` and `verified` middleware.
         - `auth.php`: Authentication routes.
         - `settings.php`: User settings routes.
     - `database/migrations`: Database schema migrations.
