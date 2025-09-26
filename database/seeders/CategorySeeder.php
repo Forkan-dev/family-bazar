@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Product\Category;
+use Illuminate\Support\Str;
 
 class CategorySeeder extends Seeder
 {
@@ -12,43 +13,26 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        $grocery = Category::create([
-            'title_en' => 'Grocery',
-            'title_bn' => 'মুদি',
-            'slug' => 'grocery',
-        ]);
+        $json = file_get_contents(database_path('data/grocery_categories.json'));
+        $categories = json_decode($json, true);
 
-        $grocery->children()->createMany([
-            [
-                'title_en' => 'Spice (Moshla)',
-                'title_bn' => 'মসলা',
-                'slug' => 'spice-moshla',
-            ],
-            [
-                'title_en' => 'Noodles',
-                'title_bn' => 'নুডলস',
-                'slug' => 'noodles',
-            ],
-            [
-                'title_en' => 'Pasta',
-                'title_bn' => 'পাস্তা',
-                'slug' => 'pasta',
-            ],
-            [
-                'title_en' => 'Dairy',
-                'title_bn' => 'দুগ্ধ',
-                'slug' => 'dairy',
-            ],
-            [
-                'title_en' => 'Vegetable',
-                'title_bn' => 'সবজি',
-                'slug' => 'vegetable',
-            ],
-            [
-                'title_en' => 'Bakery',
-                'title_bn' => 'বেকারি',
-                'slug' => 'bakery',
-            ],
-        ]);
+        foreach ($categories as $categoryData) {
+            $parentCategory = Category::create([
+                'title_en' => $categoryData['en'],
+                'title_bn' => $categoryData['bn'],
+                'slug' => Str::slug($categoryData['en']),
+            ]);
+
+            $subcategories = [];
+            foreach ($categoryData['subcategories'] as $subcategory) {
+                $subcategories[] = [
+                    'title_en' => $subcategory['en'],
+                    'title_bn' => $subcategory['bn'],
+                    'slug' => Str::slug($subcategory['en']),
+                ];
+            }
+
+            $parentCategory->children()->createMany($subcategories);
+        }
     }
 }
