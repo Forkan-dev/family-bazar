@@ -54,7 +54,7 @@ if (isGroupActive(['products', 'categories', 'tags'])) {
                 </Link>
 
                 <!-- Products Section -->
-                <v-list-group  value="Product" class="mb-1">
+                <v-list-group value="Product" class="mb-1">
                     <template v-slot:activator="{ props }">
                         <v-list-item v-bind="props" prepend-icon="mdi-package-variant" title="Product " rounded="lg"
                             :active="isGroupActive(['products', 'categories', 'tags'])" />

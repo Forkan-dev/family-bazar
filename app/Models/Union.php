@@ -14,4 +14,9 @@ class Union extends Model
         'name_en',
         'name_bn',
     ];
+
+    public function upazila()
+    {
+        return $this->belongsTo(Upazila::class);
+    }
 }

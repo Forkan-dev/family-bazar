@@ -2,8 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Union;
+use App\Models\Upazila;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Support\Facades\File;
 
 class UnionSeeder extends Seeder
 {
@@ -11,26 +14,33 @@ class UnionSeeder extends Seeder
      * Run the database seeds.
      */
     public function run(): void
-    {
-        // This is an example for one upazila. You can follow the same pattern to add the rest of the unions.
-        $bandarbanSadar = \App\Models\Upazila::where('name_en', 'Bandarban Sadar')->first();
+   {
+        // JSON ফাইল থেকে ডেটা পড়া
+        $jsonPath = database_path('data/chittagong_upazila_unions_full.json');
+        $json = File::get($jsonPath);
+        $data = json_decode($json, true);
 
-        if ($bandarbanSadar) {
-            $unions = [
-                ['name_en' => 'Bandarban Sadar Union', 'name_bn' => 'বান্দরবান সদর ইউনিয়ন'],
-                ['name_en' => 'Kuhalong Union', 'name_bn' => 'কুহালং ইউনিয়ন'],
-                ['name_en' => 'Rajbila Union', 'name_bn' => 'রাজবিলা ইউনিয়ন'],
-                ['name_en' => 'Suwalok Union', 'name_bn' => 'সুয়ালক ইউনিয়ন'],
-                ['name_en' => 'Tangkabati Union', 'name_bn' => 'টংকাবতী ইউনিয়ন'],
-            ];
+        // upazilas লুপ চালানো
+        foreach ($data['upazilas'] as $upazilaData) {
+            $upazila = Upazila::where('name_en', $upazilaData['name'])->first();
 
-            foreach ($unions as $union) {
-                \App\Models\Union::create([
-                    'upazila_id' => $bandarbanSadar->id,
-                    'name_en' => $union['name_en'],
-                    'name_bn' => $union['name_bn'],
-                ]);
+            if ($upazila) {
+                foreach ($upazilaData['unions'] as $unionName) {
+                    Union::updateOrCreate(
+                        [
+                            'upazila_id' => $upazila->id,
+                            'name_en' => $unionName,
+                        ],
+                        [
+                            'name_bn' => null, // এখানে পরে বাংলা নাম দিলে আপডেট করতে পারবেন
+                        ]
+                    );
+                }
+            } else {
+                $this->command->warn("⚠ Upazila পাওয়া যায়নি: {$upazilaData['name']}");
             }
         }
+
+        $this->command->info("✅ Union ডেটা সফলভাবে seed করা হয়েছে!");
     }
 }

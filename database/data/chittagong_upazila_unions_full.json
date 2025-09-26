@@ -1,0 +1,274 @@
+{
+  "district": "Chittagong (Chattogram)",
+  "upazilas": [
+    {
+      "name": "Sandwip",
+      "unions": [
+        "Amanullah",
+        "Azimpur",
+        "Bauria",
+        "Gachhua",
+        "Haramia",
+        "Harispur",
+        "Kalapania",
+        "Magdhara",
+        "Maitbhanga",
+        "Musapur",
+        "Rahmatpur",
+        "Santoshpur",
+        "Sarikait",
+        "Urirchar"
+      ]
+    },
+    {
+      "name": "Lohagara",
+      "unions": [
+        "Adhunagar",
+        "Amirabad",
+        "Barahatia",
+        "Charamba",
+        "Chunati",
+        "Kalauzan",
+        "Lohagara",
+        "Padua",
+        "Putibila"
+      ]
+    },
+    {
+      "name": "Satkania",
+      "unions": [
+        "Amilais",
+        "Eochia",
+        "Bazalia",
+        "Charati",
+        "Dhemsa",
+        "Dharmapur",
+        "Kaliais",
+        "Kanchana",
+        "Keochia",
+        "Khagaria",
+        "Madrasa",
+        "Nalua",
+        "Puranghar",
+        "Chhadaha",
+        "Satkania",
+        "Sonakania",
+        "Paschim Dhemsa"
+      ]
+    },
+    {
+      "name": "Patiya",
+      "unions": [
+        "Asia",
+        "Baralia",
+        "Bara Uthan",
+        "Bhatikhain",
+        "Chanhara",
+        "Char Lakshya",
+        "Char Patharghata",
+        "Dhalghat",
+        "Habilas Dwip",
+        "Haidgaon",
+        "Junglekhain",
+        "Juldha",
+        "Kachuai",
+        "Kasiais",
+        "Kelishahar",
+        "Kharana",
+        "Kolagaon",
+        "Kusumpura",
+        "Sikalbaha",
+        "Sobhandandi",
+        "South Bhurshi",
+        "Jiri"
+      ]
+    },
+    {
+      "name": "Chandanaish",
+      "unions": [
+        "Bailtali",
+        "Barkal",
+        "Barama",
+        "Dhopachhari",
+        "Dohazari",
+        "Hashimpur",
+        "Joara",
+        "Kanchanabad",
+        "Satbaria"
+      ]
+    },
+    {
+      "name": "Boalkhali",
+      "unions": [
+        "Ahla Karaldanga",
+        "Amuchia",
+        "Charandwip",
+        "Purba Gomdandi",
+        "Kadhurkhil",
+        "Popadia",
+        "Saroatali",
+        "Shakpura",
+        "Sreepur Kharandwip",
+        "Paschim Gomdandi"
+      ]
+    },
+    {
+      "name": "Banshkhali",
+      "unions": [
+        "Baharchhara",
+        "Bailchhari",
+        "Chambal",
+        "Chhanua",
+        "Gandamara",
+        "Kalipur",
+        "Katharia",
+        "Khankhanabad",
+        "Puichhari",
+        "Pukuria",
+        "Sadhanpur",
+        "Saral",
+        "Sekherkhil",
+        "Silkup"
+      ]
+    },
+    {
+      "name": "Sitakunda",
+      "unions": [
+        "Banshbaria",
+        "Barabkunda",
+        "Baraiardhala",
+        "Bhatiari",
+        "Kumira",
+        "Muradpur",
+        "Salimpur",
+        "Sonaichhari",
+        "Syedpur"
+      ]
+    },
+    {
+      "name": "Raozan",
+      "unions": [
+        "Bagoan",
+        "Binajuri",
+        "Chikdair",
+        "Dabua",
+        "Purba Guzara",
+        "Gahira",
+        "Haludia",
+        "Kadalpur",
+        "Noajispur",
+        "Noa Para",
+        "Pahartali",
+        "Raozan",
+        "Urkirchar",
+        "Paschim Guzara"
+      ]
+    },
+    {
+      "name": "Rangunia",
+      "unions": [
+        "Betagi",
+        "Chandraghona",
+        "Hosnabad",
+        "Kodala",
+        "Mariamnagar",
+        "Padua",
+        "Parua",
+        "Pomara",
+        "Rajanagar",
+        "Rangunia",
+        "Sarapbhata",
+        "Silak",
+        "Islampur",
+        "Dakshin Rajanagar",
+        "Lalanagar"
+      ]
+    },
+    {
+      "name": "Mirsharai",
+      "unions": [
+        "Dhum",
+        "Durgapur",
+        "Haitkandi",
+        "Hinguli",
+        "Ichhakhali",
+        "Karerhat",
+        "Katachhara",
+        "Khaiyachhara",
+        "Mayani",
+        "Mirsharai",
+        "Mithanala",
+        "Maghadia",
+        "Osmanpur",
+        "Saherkhali",
+        "Wahedpur",
+        "Zorwarganj"
+      ]
+    },
+    {
+      "name": "Hathazari",
+      "unions": [
+        "Burir Char",
+        "Chhipatali",
+        "Chikandanti",
+        "Dakshin Madrasha",
+        "Dhalai",
+        "Fatehpur",
+        "Forhadabad",
+        "Garduara",
+        "Guman Mardan",
+        "Hathazari",
+        "Mekhal",
+        "Mirzapur",
+        "Nangalmora",
+        "Shikarpur",
+        "Uttar Madarsa"
+      ]
+    },
+    {
+      "name": "Fatikchari",
+      "unions": [
+        "Abdullapur",
+        "Bagan Bazar",
+        "Baktapur",
+        "Bhujpur",
+        "Dantmara",
+        "Dharmapur",
+        "Dhurung",
+        "Daulatpur",
+        "Harwalchhari",
+        "Jafatnagar",
+        "Kanchan Nagar",
+        "Lelang",
+        "Nanupur",
+        "Narayanhat",
+        "Paindang",
+        "Rangamatia",
+        "Roushangiri",
+        "Suabil",
+        "Samitirhat",
+        "Sundarpur"
+      ]
+    },
+    {
+      "name": "Anwara",
+      "unions": [
+        "Anowara",
+        "Bairag",
+        "Barakhain",
+        "Barasat",
+        "Burumchara",
+        "Battali",
+        "Chatari",
+        "Haildhar",
+        "Paraikora",
+        "Roypur",
+        "Juindandi"
+      ]
+    },
+    {
+      "name": "Karnaphuli",
+      "unions": []
+    }
+  ]
+}
