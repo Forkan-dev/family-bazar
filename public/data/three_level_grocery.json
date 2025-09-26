@@ -1,4 +1,3 @@
-
 {
   "en": "Grocery",
   "bn": "মুদি",
@@ -32,7 +31,8 @@
         {"en": "Lactose-Free", "bn": "ল্যাকটোজ-মুক্ত"},
         {"en": "Soy & Plant-Based Milk", "bn": "সয়া ও উদ্ভিদ-ভিত্তিক দুধ"},
         {"en": "Ghee", "bn": "ঘি"},
-        {"en": "Condensed Milk", "bn": "কনডেন্সড মিল্ক"}
+        {"en": "Condensed Milk", "bn": "কনডেন্সড মিল্ক"},
+        {"en": "Powder Milk", "bn": "গুঁড়ো দুধ"}
       ]
     },
     {
@@ -46,7 +46,7 @@
         {"en": "Shrimp & Prawns", "bn": "চিংড়ি"},
         {"en": "Sausages", "bn": "সসেজ"},
         {"en": "Bacon & Ham", "bn": "বেকন ও হ্যাম"},
-        {"en": "Frozen Fish", "bn": "হিমায়িত মাছ"},
+
         {"en": "Processed Meat", "bn": "প্রক্রিয়াজাত মাংস"},
         {"en": "Marine Fish", "bn": "সামুদ্রিক মাছ"}
       ]
@@ -64,7 +64,85 @@
         {"en": "Cooking Oil", "bn": "রান্নার তেল"},
         {"en": "Grains", "bn": "শস্য"},
         {"en": "Pasta & Noodles", "bn": "পাস্তা ও নুডলস"},
-        {"en": "Canned Food", "bn": "টিনজাত খাবার"}
+        {"en": "Canned Food", "bn": "টিনজাত খাবার"},
+        {"en": "Sauces", "bn": "সস"}
+      ]
+    },
+    {
+        "en": "Bakery, Snacks & Confectionery",
+        "bn": "বেকারি, স্ন্যাকস ও মিষ্টান্ন",
+        "children": [
+            {"en": "Biscuits", "bn": "বিস্কুট"},
+            {"en": "Bread", "bn": "পাউরুটি"},
+            {"en": "Snacks", "bn": "স্ন্যাকস"},
+            {"en": "Chocolates", "bn": "চকলেট"},
+            {"en": "Ice Cream", "bn": "আইসক্রিম"}
+        ]
+    },
+    {
+        "en": "Cleaning & Household",
+        "bn": "পরিষ্কার ও গৃহস্থালি",
+        "children": [
+            {"en": "Toilet Cleaner", "bn": "টয়লেট ক্লিনার"},
+            {"en": "Dishwash", "bn": "ডিশওয়াশ"},
+            {"en": "Laundry", "bn": "লন্ড্রি"},
+            {"en": "Pest Control", "bn": "পোকামাকড় নিয়ন্ত্রণ"},
+            {"en": "Kitchen Accessories", "bn": "রান্নাঘরের জিনিসপত্র"}
+        ]
+    },
+    {
+      "en": "Personal Care",
+      "bn": "ব্যক্তিগত যত্ন",
+      "children": [
+        {"en": "Shampoo", "bn": "শ্যাম্পু"},
+        {"en": "Soap", "bn": "সাবান"},
+        {"en": "Toothpaste", "bn": "টুথপেস্ট"},
+        {"en": "Skincare", "bn": "ত্বকের যত্ন"},
+        {"en": "Hair Oil", "bn": "চুলের তেল"},
+        {"en": "Handwash", "bn": "হ্যান্ডওয়াশ"}
+      ]
+    },
+    {
+        "en": "Frozen Food",
+        "bn": "হিমায়িত খাবার",
+        "children": [
+            {"en": "Frozen Items", "bn": "হিমায়িত আইটেম"}
+        ]
+    },
+    {
+      "en": "Baby Care",
+      "bn": "শিশুর যত্ন",
+      "children": [
+        {"en": "Baby Food", "bn": "শিশুর খাবার"},
+        {"en": "Diapers", "bn": "ডায়াপার"},
+        {"en": "Baby Wipes", "bn": "শিশুর ওয়াইপস"},
+        {"en": "Baby Lotion", "bn": "শিশুর লোশন"}
+      ]
+    },
+    {
+      "en": "Health & Wellness",
+      "bn": "স্বাস্থ্য ও সুস্থতা",
+      "children": [
+        {"en": "Vitamins", "bn": "ভিটামিন"},
+        {"en": "Pain Relief", "bn": "ব্যথা উপশম"},
+        {"en": "First Aid", "bn": "প্রথম চিকিৎসা"}
+      ]
+    },
+    {
+      "en": "Stationery",
+      "bn": "স্টেশনারি",
+      "children": [
+        {"en": "Notebooks", "bn": "খাতা"},
+        {"en": "Pens & Pencils", "bn": "কলম ও পেন্সিল"},
+        {"en": "Office Supplies", "bn": "অফিস সরঞ্জাম"}
+      ]
+    },
+    {
+      "en": "Pet Care",
+      "bn": "পোষা প্রাণীর যত্ন",
+      "children": [
+        {"en": "Pet Food", "bn": "পোষা প্রাণীর খাবার"},
+        {"en": "Pet Accessories", "bn": "পোষা প্রাণীর এক্সেসরিজ"}
       ]
     },
     {

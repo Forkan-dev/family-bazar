@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Product\Category;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class CategorySeeder extends Seeder
 {
@@ -13,6 +14,10 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        Category::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         $json = file_get_contents(public_path('data/three_level_grocery.json'));
 
         $data = json_decode($json, true);

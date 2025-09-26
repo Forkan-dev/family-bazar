@@ -2,10 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Product\Unit; // Import the Unit model
-use Faker\Factory as Faker;
+use App\Models\Unit;
 
 class UnitSeeder extends Seeder
 {
@@ -14,16 +12,26 @@ class UnitSeeder extends Seeder
      */
     public function run(): void
     {
-        $faker = Faker::create();
-
         $units = [
             ['name' => 'Kilogram', 'abbreviation' => 'kg'],
             ['name' => 'Gram', 'abbreviation' => 'g'],
             ['name' => 'Liter', 'abbreviation' => 'L'],
             ['name' => 'Milliliter', 'abbreviation' => 'ml'],
-            ['name' => 'Piece', 'abbreviation' => 'pcs'],
+            ['name' => 'Piece', 'abbreviation' => 'pc'],
             ['name' => 'Dozen', 'abbreviation' => 'dz'],
-            ['name' => 'Pack', 'abbreviation' => 'pk'],
+            ['name' => 'Pound', 'abbreviation' => 'lb'],
+            ['name' => 'Ounce', 'abbreviation' => 'oz'],
+            ['name' => 'Gallon', 'abbreviation' => 'gal'],
+            ['name' => 'Quart', 'abbreviation' => 'qt'],
+            ['name' => 'Pint', 'abbreviation' => 'pt'],
+            ['name' => 'Cup', 'abbreviation' => 'cup'],
+            ['name' => 'Tablespoon', 'abbreviation' => 'tbsp'],
+            ['name' => 'Teaspoon', 'abbreviation' => 'tsp'],
+            ['name' => 'Meter', 'abbreviation' => 'm'],
+            ['name' => 'Centimeter', 'abbreviation' => 'cm'],
+            ['name' => 'Millimeter', 'abbreviation' => 'mm'],
+            ['name' => 'Foot', 'abbreviation' => 'ft'],
+            ['name' => 'Inch', 'abbreviation' => 'in'],
         ];
 
         foreach ($units as $unit) {

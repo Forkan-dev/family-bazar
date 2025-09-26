@@ -31,4 +31,7 @@ when i edit here old name not showing . fix this error
 
 
 this is my migration : database\migrations\2025_09_19_195116_create_products_table.php
-
+this is category seeder: database\seeders\CategorySeeder.php 
+this is brand seeder: database\seeders\BrandSeeder.php 
+now give me real 2000 products to category wish subcategory and if need using brand order null . 
+and save json here public\data
