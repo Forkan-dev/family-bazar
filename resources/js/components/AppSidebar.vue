@@ -24,6 +24,7 @@ const isGroupActive = (routes: string[]) => {
 if (isGroupActive(['product.products', 'product.categories', 'product.brands', 'product.locations'])) {
     open.value.push('Product')
 }
+
 </script>
 
 <template>
