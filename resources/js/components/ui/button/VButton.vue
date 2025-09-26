@@ -12,6 +12,7 @@ import { computed } from 'vue'
 <style scoped>
 .cstm-btn {
     padding: 4px 3px;
+    padding-right: 10px;
     margin: 2px 2px;
     font-size: 14px !important;
 }

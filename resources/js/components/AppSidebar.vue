@@ -21,7 +21,7 @@ const isGroupActive = (routes: string[]) => {
     return currentRoute ? routes.some(routeName => currentRoute.startsWith(routeName)) : false;
 }
 
-if (isGroupActive(['products', 'categories', 'tags'])) {
+if (isGroupActive(['product.products', 'product.categories', 'product.brands', 'product.locations'])) {
     open.value.push('Product')
 }
 </script>
@@ -57,38 +57,47 @@ if (isGroupActive(['products', 'categories', 'tags'])) {
                 <v-list-group value="Product" class="mb-1">
                     <template v-slot:activator="{ props }">
                         <v-list-item v-bind="props" prepend-icon="mdi-package-variant" title="Product " rounded="lg"
-                            :active="isGroupActive(['products', 'categories', 'tags'])" />
+                            :active="isGroupActive(['product.products', 'product.categories', 'product.brands', 'product.locations'])" />
                     </template>
 
                     <div class="ps-6 child-nav-align">
-                        <Link :href="route('products.index')" class="text-decoration-none">
-                        <v-list-item prepend-icon="mdi-package" title="Product List" :active="isActive('products')"
+                        <Link :href="route('product.products.index')" class="text-decoration-none">
+                        <v-list-item prepend-icon="mdi-package" title="Product List" :active="isActive('product.products')"
                             rounded="lg" class="mb-1" density="compact" />
                         </Link>
 
-                        <!-- Uncomment when ready to use
-                        <Link :href="route('categories.index')" class="text-decoration-none">
+                        <Link :href="route('product.categories.index')" class="text-decoration-none">
                             <v-list-item
                                 prepend-icon="mdi-shape"
                                 title="Categories"
-                                :active="isActive('categories')"
+                                :active="isActive('product.categories')"
                                 rounded="lg"
                                 class="mb-1"
                                 density="compact"
                             />
                         </Link>
 
-                        <Link :href="route('tags.index')" class="text-decoration-none">
+                        <Link :href="route('product.brands.index')" class="text-decoration-none">
                             <v-list-item
-                                prepend-icon="mdi-tag"
-                                title="Tags"
-                                :active="isActive('tags')"
+                                prepend-icon="mdi-watermark"
+                                title="Brands"
+                                :active="isActive('product.brands')"
                                 rounded="lg"
                                 class="mb-1"
                                 density="compact"
                             />
                         </Link>
-                        -->
+
+                        <Link :href="route('product.locations.index')" class="text-decoration-none">
+                            <v-list-item
+                                prepend-icon="mdi-map-marker"
+                                title="Locations"
+                                :active="isActive('product.locations')"
+                                rounded="lg"
+                                class="mb-1"
+                                density="compact"
+                            />
+                        </Link>
                     </div>
                 </v-list-group>
 

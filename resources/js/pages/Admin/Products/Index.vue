@@ -41,7 +41,7 @@ const deleteProduct = (id: number) => {
                             Products
                             <VButton>
                                 <v-icon left>mdi-plus</v-icon>
-                                <Link :href="route('products.create')" class="mr-2">
+                                <Link :href="route('product.products.create')">
                                     Add Product
                                 </Link>
                             </VButton>

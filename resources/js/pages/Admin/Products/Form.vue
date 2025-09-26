@@ -46,16 +46,16 @@ form.transform(data => ({
 
 const submit = () => {
     if (props.product) {
-        form.put(route('products.update', props.product.id));
+        form.put(route('product.products.update', props.product.id));
     } else {
-        form.post(route('products.store'));
+        form.post(route('product.products.store'));
     }
 };
 
 const fetchSubCategories = async (parentId) => {
     if (parentId) {
         try {
-            const response = await axios.get(route('categories.subcategories', parentId));
+            const response = await axios.get(route('product.categories.subcategories', parentId));
             subCategories.value = response.data;
         } catch (error) {
             console.error('Error fetching subcategories:', error);
@@ -103,7 +103,7 @@ watch(() => form.title_en, (newName) => {
         <v-container>
             <v-row>
                 <v-col cols="12">
-                    <Link :href="route('products.index')" class="mb-4 d-inline-block">
+                    <Link :href="route('product.products.index')" class="mb-4 d-inline-block">
                         <v-icon color="primary">mdi-arrow-left</v-icon>
                     </Link>
                     <v-card>
@@ -323,17 +323,14 @@ watch(() => form.title_en, (newName) => {
                                         type="submit"
                                         :disabled="form.processing"
                                         :loading="form.processing"
-                                        size="large"
-                                        color="primary"
-                                        class="px-8"
                                     >
-                                        <v-icon left class="mr-2">
+                                        <v-icon left>
                                             {{ props.product ? 'mdi-content-save' : 'mdi-plus' }}
                                         </v-icon>
                                         {{ props.product ? 'Update Product' : 'Create Product' }}
                                     </VButton>
 
-                                    <Link :href="route('products.index')">
+                                    <Link :href="route('product.products.index')">
                                         <VButton
                                             variant="outlined"
                                             size="large"
