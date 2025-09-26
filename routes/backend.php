@@ -9,6 +9,10 @@ use App\Http\Controllers\Admin\CategoryController;
 
 // All backend routes will be defined here.
 
+Route::get('/', function () {
+    return Inertia::render('Welcome');
+})->name('home');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('Dashboard');
@@ -22,3 +26,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('locations', UnionController::class);
     });
 });
+
+require __DIR__.'/settings.php';
+require __DIR__.'/auth.php';
