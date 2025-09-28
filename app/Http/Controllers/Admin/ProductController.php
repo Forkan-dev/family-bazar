@@ -50,7 +50,6 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         $validatedData = $request->validated();
-
         $product = Product::create($validatedData);
 
         if ($request->hasFile('images')) {

@@ -27,8 +27,8 @@ const categoryOptions = computed(() => {
 });
 
 const form = useForm({
-    title_en: props.product?.title_en || '',
-    title_bn: props.product?.title_bn || '',
+    name_en: props.product?.name_en || '',
+    name_bn: props.product?.name_bn || '',
     slug: props.product?.slug || '',
     description: props.product?.description || '',
     price: props.product?.price || 0,
@@ -47,6 +47,7 @@ form.transform(data => ({
 }));
 
 const submit = () => {
+    alert('ok');
     if (props.product) {
         form.put(route('product.products.update', props.product.id));
     } else {
@@ -101,12 +102,13 @@ watch(() => form.title_en, (newName) => {
 
 <template>
     <MasterLayout>
+
         <Head :title="form.title_en ? form.title_en : 'Create Product'" />
         <v-container>
             <v-row>
                 <v-col cols="12">
                     <Link :href="route('product.products.index')" class="mb-4 d-inline-block">
-                        <v-icon color="primary">mdi-arrow-left</v-icon>
+                    <v-icon color="primary">mdi-arrow-left</v-icon>
                     </Link>
                     <v-card>
                         <v-card-title class="d-flex align-center">
@@ -129,49 +131,28 @@ watch(() => form.title_en, (newName) => {
                                         </div>
                                         <v-row dense>
                                             <v-col cols="12" sm="6">
-                                                <VInputField
-                                                    v-model="form.title_en"
-                                                    label="Title (English)"
-                                                    :error-messages="form.errors.title_en"
-                                                    required
-                                                    density="compact"
-                                                    variant="outlined"
-                                                />
+                                                <VInputField v-model="form.name_en" label="Title (English)"
+                                                    :error-messages="form.errors.name_en" required density="compact"
+                                                    variant="outlined" />
                                             </v-col>
                                             <v-col cols="12" sm="6">
-                                                <VInputField
-                                                    v-model="form.title_bn"
-                                                    label="Title (Bengali)"
-                                                    :error-messages="form.errors.title_bn"
-                                                    density="compact"
-                                                    variant="outlined"
-                                                />
+                                                <VInputField v-model="form.name_bn" label="Title (Bengali)"
+                                                    :error-messages="form.errors.name_bn" density="compact"
+                                                    variant="outlined" />
                                             </v-col>
                                         </v-row>
                                         <v-row dense>
                                             <v-col cols="12">
-                                                <VInputField
-                                                    v-model="form.slug"
-                                                    label="URL Slug"
-                                                    :error-messages="form.errors.slug"
-                                                    required
-                                                    density="compact"
-                                                    variant="outlined"
-                                                    hint="Auto-generated from English title"
-                                                />
+                                                <VInputField v-model="form.slug" label="URL Slug"
+                                                    :error-messages="form.errors.slug" required density="compact"
+                                                    variant="outlined" hint="Auto-generated from English title" />
                                             </v-col>
                                         </v-row>
                                         <v-row dense>
                                             <v-col cols="12">
-                                                <VInputField
-                                                    v-model="form.description"
-                                                    label="Description"
-                                                    :error-messages="form.errors.description"
-                                                    multiline
-                                                    density="compact"
-                                                    variant="outlined"
-                                                    rows="3"
-                                                />
+                                                <VInputField v-model="form.description" label="Description"
+                                                    :error-messages="form.errors.description" multiline
+                                                    density="compact" variant="outlined" rows="3" />
                                             </v-col>
                                         </v-row>
                                     </div>
@@ -184,67 +165,36 @@ watch(() => form.title_en, (newName) => {
                                         </div>
                                         <v-row dense>
                                             <v-col cols="12" sm="4">
-                                                <VInputField
-                                                    v-model="form.price"
-                                                    label="Price"
-                                                    type="number"
-                                                    step="0.01"
-                                                    :error-messages="form.errors.price"
-                                                    required
-                                                    density="compact"
-                                                    variant="outlined"
-                                                    prepend-inner-icon="mdi-currency-bdt"
-                                                />
+                                                <VInputField v-model="form.price" label="Price" type="number"
+                                                    step="0.01" :error-messages="form.errors.price" required
+                                                    density="compact" variant="outlined"
+                                                    prepend-inner-icon="mdi-currency-bdt" />
                                             </v-col>
+
                                             <v-col cols="12" sm="4">
-                                                <VInputField
-                                                    v-model="form.stock_quantity"
-                                                    label="Stock Quantity"
-                                                    type="number"
-                                                    :error-messages="form.errors.stock_quantity"
-                                                    required
-                                                    density="compact"
-                                                    variant="outlined"
-                                                />
+                                                <VInputField v-model.number="form.quantity" label="Quantity"
+                                                    type="number" :error-messages="form.errors.quantity" required
+                                                    density="compact" variant="outlined" />
                                             </v-col>
+
                                             <v-col cols="12" sm="4">
-                                                <VInputField
-                                                    v-model.number="form.quantity"
-                                                    label="Package Quantity"
-                                                    type="number"
-                                                    :error-messages="form.errors.quantity"
-                                                    required
-                                                    density="compact"
-                                                    variant="outlined"
-                                                />
+                                                <VInputField v-model="form.stock_quantity" label="Stock Quantity"
+                                                    type="number" :error-messages="form.errors.stock_quantity" required
+                                                    density="compact" variant="outlined" />
                                             </v-col>
                                         </v-row>
                                         <v-row dense>
                                             <v-col cols="12" sm="6">
-                                                <v-select
-                                                    v-model="form.unit_id"
-                                                    :items="units"
-                                                    item-title="name"
-                                                    item-value="id"
-                                                    label="Unit"
-                                                    variant="outlined"
-                                                    density="compact"
+                                                <v-select v-model="form.unit_id" :items="units" item-title="name"
+                                                    item-value="id" label="Unit" variant="outlined" density="compact"
                                                     :error-messages="form.errors.unit_id"
-                                                    prepend-inner-icon="mdi-weight"
-                                                />
+                                                    prepend-inner-icon="mdi-weight" />
                                             </v-col>
                                             <v-col cols="12" sm="6">
-                                                <v-select
-                                                    v-model="form.brand_id"
-                                                    :items="brands"
-                                                    item-title="en_name"
-                                                    item-value="id"
-                                                    label="Brand"
-                                                    variant="outlined"
-                                                    density="compact"
+                                                <v-select v-model="form.brand_id" :items="brands" item-title="en_name"
+                                                    item-value="id" label="Brand" variant="outlined" density="compact"
                                                     :error-messages="form.errors.brand_id"
-                                                    prepend-inner-icon="mdi-tag"
-                                                />
+                                                    prepend-inner-icon="mdi-tag" />
                                             </v-col>
                                         </v-row>
                                     </div>
@@ -257,35 +207,19 @@ watch(() => form.title_en, (newName) => {
                                         </div>
                                         <v-row dense>
                                             <v-col cols="12">
-                                                <VFileInput
-                                                    v-model="form.images"
-                                                    title="Upload Product Images"
-                                                    variant="outlined"
-                                                    density="compact"
-                                                    :error-messages="form.errors.images"
-                                                    accept="image/*"
-                                                    prepend-icon=""
-                                                    prepend-inner-icon="mdi-camera"
-                                                    multiple
-                                                />
+                                                <VFileInput v-model="form.images" title="Upload Product Images"
+                                                    variant="outlined" density="compact"
+                                                    :error-messages="form.errors.images" accept="image/*"
+                                                    prepend-icon="" prepend-inner-icon="mdi-camera" multiple />
                                             </v-col>
                                         </v-row>
                                         <v-row dense v-if="product?.documents?.length > 0">
                                             <v-col cols="12">
                                                 <div class="text-caption mb-2">Current Images</div>
                                             </v-col>
-                                            <v-col
-                                                v-for="image in product.documents"
-                                                :key="image.id"
-                                                cols="6"
-                                                sm="4"
-                                                md="3"
-                                            >
-                                                <v-img
-                                                    :src="image.file_path"
-                                                    height="100"
-                                                    class="rounded"
-                                                />
+                                            <v-col v-for="image in product.documents" :key="image.id" cols="6" sm="4"
+                                                md="3">
+                                                <v-img :src="image.file_path" height="100" class="rounded" />
                                             </v-col>
                                         </v-row>
                                     </div>
@@ -303,46 +237,24 @@ watch(() => form.title_en, (newName) => {
                                         </div>
                                         <v-row dense>
                                             <v-col cols="12">
-                                                <v-select
-                                                    v-model="parent_category_id"
-                                                    :items="categoryOptions"
-                                                    item-title="displayName"
-                                                    item-value="id"
-                                                    label="Category"
-                                                    variant="outlined"
-                                                    density="compact"
+                                                <v-select v-model="parent_category_id" :items="categoryOptions"
+                                                    item-title="displayName" item-value="id" label="Category"
+                                                    variant="outlined" density="compact"
                                                     :error-messages="form.errors.category_id"
-                                                    prepend-inner-icon="mdi-folder"
-                                                />
+                                                    prepend-inner-icon="mdi-folder" />
                                             </v-col>
                                             <v-col cols="12" v-if="subCategories.length > 0">
-                                                <v-select
-                                                    v-model="form.category_id"
-                                                    :items="subCategories"
-                                                    item-title="title_en"
-                                                    item-value="id"
-                                                    label="Sub Category"
-                                                    variant="outlined"
-                                                    density="compact"
+                                                <v-select v-model="form.category_id" :items="subCategories"
+                                                    item-title="title_en" item-value="id" label="Sub Category"
+                                                    variant="outlined" density="compact"
                                                     :error-messages="form.errors.category_id"
-                                                    prepend-inner-icon="mdi-folder-outline"
-                                                />
+                                                    prepend-inner-icon="mdi-folder-outline" />
                                             </v-col>
                                             <v-col cols="12">
-                                                <v-select
-                                                    v-model="form.tags"
-                                                    :items="tags"
-                                                    item-title="name"
-                                                    item-value="id"
-                                                    label="Tags"
-                                                    multiple
-                                                    chips
-                                                    variant="outlined"
-                                                    density="compact"
-                                                    :error-messages="form.errors.tags"
-                                                    prepend-inner-icon="mdi-tag-multiple"
-                                                    closable-chips
-                                                />
+                                                <v-select v-model="form.tags" :items="tags" item-title="name"
+                                                    item-value="id" label="Tags" multiple chips variant="outlined"
+                                                    density="compact" :error-messages="form.errors.tags"
+                                                    prepend-inner-icon="mdi-tag-multiple" closable-chips />
                                             </v-col>
                                         </v-row>
                                     </div>
@@ -356,11 +268,7 @@ watch(() => form.title_en, (newName) => {
                         <v-card-actions class="pa-4">
                             <v-form @submit.prevent="submit">
                                 <div class="d-flex gap-3">
-                                    <VButton
-                                        type="submit"
-                                        :disabled="form.processing"
-                                        :loading="form.processing"
-                                    >
+                                    <VButton type="submit" :disabled="form.processing" :loading="form.processing">
                                         <v-icon left>
                                             {{ props.product ? 'mdi-content-save' : 'mdi-plus' }}
                                         </v-icon>
@@ -368,14 +276,10 @@ watch(() => form.title_en, (newName) => {
                                     </VButton>
 
                                     <Link :href="route('product.products.index')">
-                                        <VButton
-                                            variant="outlined"
-                                            size="large"
-                                            class="px-6"
-                                        >
-                                            <v-icon left class="mr-2">mdi-close</v-icon>
-                                            Cancel
-                                        </VButton>
+                                    <VButton variant="outlined" size="large" class="px-6">
+                                        <v-icon left class="mr-2">mdi-close</v-icon>
+                                        Cancel
+                                    </VButton>
                                     </Link>
                                 </div>
                             </v-form>
