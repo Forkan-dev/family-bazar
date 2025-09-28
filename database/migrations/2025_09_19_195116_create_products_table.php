@@ -20,8 +20,8 @@ return new class extends Migration
             $table->decimal('price', 8, 2);
             $table->decimal('quantity', 8, 2); // Numeric quantity (e.g., 3)
             $table->foreignId('unit_id')->constrained()->onDelete('cascade');
+            $table->foreignId('brand_id')->nullable()->constrained()->onDelete('set null');
             $table->text('description')->nullable();
-            $table->string('image_url')->nullable();
             $table->decimal('stock_quantity', 8, 2)->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
