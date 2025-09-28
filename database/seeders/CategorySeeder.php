@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Product\Category;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class CategorySeeder extends Seeder
 {
@@ -12,43 +14,30 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        $grocery = Category::create([
-            'title_en' => 'Grocery',
-            'title_bn' => 'মুদি',
-            'slug' => 'grocery',
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        Category::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        $json = file_get_contents(public_path('data/three_level_grocery.json'));
+
+        $data = json_decode($json, true);
+
+        $this->createCategory($data);
+    }
+
+    private function createCategory(array $categoryData, int $parentId = null): void
+    {
+        $category = Category::create([
+            'title_en' => $categoryData['en'],
+            'title_bn' => $categoryData['bn'],
+            'slug' => Str::slug($categoryData['en']),
+            'parent_id' => $parentId,
         ]);
 
-        $grocery->children()->createMany([
-            [
-                'title_en' => 'Spice (Moshla)',
-                'title_bn' => 'মসলা',
-                'slug' => 'spice-moshla',
-            ],
-            [
-                'title_en' => 'Noodles',
-                'title_bn' => 'নুডলস',
-                'slug' => 'noodles',
-            ],
-            [
-                'title_en' => 'Pasta',
-                'title_bn' => 'পাস্তা',
-                'slug' => 'pasta',
-            ],
-            [
-                'title_en' => 'Dairy',
-                'title_bn' => 'দুগ্ধ',
-                'slug' => 'dairy',
-            ],
-            [
-                'title_en' => 'Vegetable',
-                'title_bn' => 'সবজি',
-                'slug' => 'vegetable',
-            ],
-            [
-                'title_en' => 'Bakery',
-                'title_bn' => 'বেকারি',
-                'slug' => 'bakery',
-            ],
-        ]);
+        if (isset($categoryData['children'])) {
+            foreach ($categoryData['children'] as $childData) {
+                $this->createCategory($childData, $category->id);
+            }
+        }
     }
 }

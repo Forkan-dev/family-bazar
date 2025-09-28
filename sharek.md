@@ -20,3 +20,22 @@ this is edit file : resources\js\pages\Admin\Location\Edit.vue
 this is migration file : database\migrations\2026_09_23_000003_create_unions_table.php
 this is controller : app\Http\Controllers\Admin\UnionController.php 
 when i edit here old name not showing . fix this error 
+
+
+
+ > this is my migration  : database\migrations\2025_09_19_195105_create_categories_table.php
+ php this is my seeder file :database\seeders\CategorySeeder.php                             │
+│   now  First create Category Gorcery and create Grocery which parent_id =1  wish 100 Category then 100 Category wish create  250 subcategory english and bangla name  for production   json file crate here   database\data and add to seeder
+
+
+
+
+this is my migration : database\migrations\2025_09_19_195116_create_products_table.php
+this is category seeder: database\seeders\CategorySeeder.php 
+this is brand seeder: database\seeders\BrandSeeder.php 
+now give me real 2000 products to category wish subcategory and if need using brand order null . 
+and save json here public\data
+
+
+resources\js\pages\Admin\Category follow same desing and implement                                      │
+│   resources\js\pages\Admin\Brand same style all same desing in Brand

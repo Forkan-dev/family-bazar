@@ -56,7 +56,7 @@ class BrandController extends Controller
 
         Brand::create($data);
 
-        return redirect()->route('brands.index')->with('success', 'Brand created successfully.');
+        return redirect()->route('product.brands.index')->with('success', 'Brand created successfully.');
     }
 
     /**
@@ -105,7 +105,7 @@ class BrandController extends Controller
 
         $brand->update($data);
 
-        return redirect()->route('brands.index')->with('success', 'Brand updated successfully!');
+        return redirect()->route('product.brands.index')->with('success', 'Brand updated successfully!');
     }
 
     /**
@@ -116,13 +116,13 @@ class BrandController extends Controller
         if ($brand->image && file_exists(public_path($brand->image))) {
             unlink(public_path($brand->image));
         }
-        
+
         $brand->delete();
 
         if (request()->wantsJson()) {
             return response()->json(['success' => true]);
         }
 
-        return redirect()->route('brands.index');
+        return redirect()->route('product.brands.index');
     }
 }

@@ -24,6 +24,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('categories', CategoryController::class);
         Route::resource('brands', BrandController::class);
         Route::resource('locations', UnionController::class);
+        Route::resource('categories', CategoryController::class); // Moved from admin.php
+        Route::resource('locations', UnionController::class); // Moved from admin.php
     });
 });
 

@@ -10,15 +10,23 @@ use Illuminate\Support\Facades\File;
 
 class UnionSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
-   {
+    {
         // JSON ফাইল থেকে ডেটা পড়া
-        $jsonPath = database_path('data/chittagong_upazila_unions_full.json');
-        $json = File::get($jsonPath);
+        $path = public_path('data/chittagong_upazila_unions_full.json');
+
+        if (!File::exists($path)) {
+            $this->command->error("❌ JSON ফাইল পাওয়া যায়নি: {$path}");
+            return;
+        }
+
+        $json = File::get($path);
         $data = json_decode($json, true);
+
+        if (!$data || !isset($data['upazilas'])) {
+            $this->command->error("❌ JSON ফাইলের গঠন সঠিক নয়!");
+            return;
+        }
 
         // upazilas লুপ চালানো
         foreach ($data['upazilas'] as $upazilaData) {
@@ -32,7 +40,7 @@ class UnionSeeder extends Seeder
                             'name_en' => $unionName,
                         ],
                         [
-                            'name_bn' => null, // এখানে পরে বাংলা নাম দিলে আপডেট করতে পারবেন
+                            'name_bn' => null, // চাইলে পরে বাংলা নাম আপডেট করতে পারবেন
                         ]
                     );
                 }

@@ -63,7 +63,7 @@ class CategoryController extends Controller
 
         Category::create($data);
 
-        return redirect()->route('categories.index')->with('success', 'Category created successfully.');
+        return redirect()->route('product.categories.index')->with('success', 'Category created successfully.');
     }
 
 
@@ -139,7 +139,7 @@ class CategoryController extends Controller
 
         $category->update($data);
 
-        return redirect()->route('categories.index')->with('success', 'Category updated successfully!');
+        return redirect()->route('product.categories.index')->with('success', 'Category updated successfully!');
     }
 
 
@@ -162,6 +162,6 @@ class CategoryController extends Controller
             return response()->json(['success' => true]);
         }
 
-        return redirect()->route('categories.index');
+        return redirect()->route('product.categories.index');
     }
 }

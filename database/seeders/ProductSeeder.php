@@ -2,44 +2,44 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Product\Category;
+use App\Models\Product\Product;
+use App\Models\Product\Unit;
 use Illuminate\Database\Seeder;
-use App\Models\Product\Product; // Import the Product model
-use App\Models\Product\Category; // Import the Category model
-use App\Models\Product\Unit; // Import the Unit model
-use Faker\Factory as Faker;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 class ProductSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        $faker = Faker::create();
-        $categories = Category::all();
-        $units = Unit::all();
+        $json = File::get(public_path('data/products.json'));
+        $products = json_decode($json, true);
 
-        if ($categories->isEmpty() || $units->isEmpty()) {
-            // Handle case where no categories or units exist to link products to
-            return;
-        }
+        foreach ($products as $productData) {
+            $category = Category::where('title_en', $productData['category'])->first();
+            if (!$category) {
+                $this->command->warn("Skipping product '{$productData['name_en']}'. Category '{$productData['category']}' not found.");
+                continue;
+            }
 
-        for ($i = 0; $i < 20; $i++) { // Create 20 products
-            $name_en = $faker->words(3, true);
+            $unit = Unit::where('abbreviation', $productData['unit'])->first();
+            if (!$unit) {
+                $this->command->warn("Skipping product '{$productData['name_en']}'. Unit '{$productData['unit']}' not found.");
+                continue;
+            }
+
             Product::create([
-                'name_en' => $name_en,
-                'name_bn' => 'বাংলা ' . $name_en, // Example Bengali title
-                'slug' => Str::slug($name_en),
-                'category_id' => $faker->randomElement($categories->pluck('id')->toArray()),
-                'price' => $faker->randomFloat(2, 10, 500),
-                'quantity' => $faker->randomFloat(2, 0.5, 10),
-                'unit_id' => $faker->randomElement($units->pluck('id')->toArray()),
-                'description' => $faker->paragraph,
-                'image_url' => $faker->imageUrl(),
-                'stock_quantity' => $faker->numberBetween(0, 100),
-                'is_active' => $faker->boolean,
+                'name_en' => $productData['name_en'],
+                'name_bn' => $productData['name_bn'] ?? null,
+                'slug' => Str::slug($productData['name_en']),
+                'category_id' => $category->id,
+                'price' => $productData['price'],
+                'quantity' => $productData['quantity'],
+                'unit_id' => $unit->id,
+                'description' => $productData['description_en'] ?? null,
+                'stock_quantity' => 100, // Default stock
+                'is_active' => true,
             ]);
         }
     }

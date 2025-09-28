@@ -66,7 +66,7 @@ const deleteProduct = (id: number) => {
                                     </v-chip>
                                 </template>
                                 <template v-slot:item.actions="{ item }">
-                                    <Link :href="route('products.edit', item.id)">
+                                    <Link :href="route('product.products.edit', item.id)">
                                     <v-icon small class="me-2">mdi-pencil</v-icon>
                                     </Link>
                                     <v-icon small @click="deleteProduct(item.id)">mdi-delete</v-icon>
