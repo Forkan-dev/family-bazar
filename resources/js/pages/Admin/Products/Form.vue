@@ -117,233 +117,245 @@ watch(() => form.title_en, (newName) => {
                         </v-card-title>
                         <v-divider></v-divider>
                         <v-card-text class="mt-5">
+                            <v-row>
+                                <!-- LEFT COLUMN (8/12) - Main Form Content -->
+                                <v-col cols="12" md="8">
+
+                                    <!-- Basic Information Section -->
+                                    <div class="form-section">
+                                        <div class="form-section-title">
+                                            <v-icon>mdi-information</v-icon>
+                                            Basic Information
+                                        </div>
+                                        <v-row dense>
+                                            <v-col cols="12" sm="6">
+                                                <VInputField
+                                                    v-model="form.title_en"
+                                                    label="Title (English)"
+                                                    :error-messages="form.errors.title_en"
+                                                    required
+                                                    density="compact"
+                                                    variant="outlined"
+                                                />
+                                            </v-col>
+                                            <v-col cols="12" sm="6">
+                                                <VInputField
+                                                    v-model="form.title_bn"
+                                                    label="Title (Bengali)"
+                                                    :error-messages="form.errors.title_bn"
+                                                    density="compact"
+                                                    variant="outlined"
+                                                />
+                                            </v-col>
+                                        </v-row>
+                                        <v-row dense>
+                                            <v-col cols="12">
+                                                <VInputField
+                                                    v-model="form.slug"
+                                                    label="URL Slug"
+                                                    :error-messages="form.errors.slug"
+                                                    required
+                                                    density="compact"
+                                                    variant="outlined"
+                                                    hint="Auto-generated from English title"
+                                                />
+                                            </v-col>
+                                        </v-row>
+                                        <v-row dense>
+                                            <v-col cols="12">
+                                                <VInputField
+                                                    v-model="form.description"
+                                                    label="Description"
+                                                    :error-messages="form.errors.description"
+                                                    multiline
+                                                    density="compact"
+                                                    variant="outlined"
+                                                    rows="3"
+                                                />
+                                            </v-col>
+                                        </v-row>
+                                    </div>
+
+                                    <!-- Pricing & Inventory Section -->
+                                    <div class="form-section">
+                                        <div class="form-section-title">
+                                            <v-icon>mdi-currency-usd</v-icon>
+                                            Pricing & Inventory
+                                        </div>
+                                        <v-row dense>
+                                            <v-col cols="12" sm="4">
+                                                <VInputField
+                                                    v-model="form.price"
+                                                    label="Price"
+                                                    type="number"
+                                                    step="0.01"
+                                                    :error-messages="form.errors.price"
+                                                    required
+                                                    density="compact"
+                                                    variant="outlined"
+                                                    prepend-inner-icon="mdi-currency-bdt"
+                                                />
+                                            </v-col>
+                                            <v-col cols="12" sm="4">
+                                                <VInputField
+                                                    v-model="form.stock_quantity"
+                                                    label="Stock Quantity"
+                                                    type="number"
+                                                    :error-messages="form.errors.stock_quantity"
+                                                    required
+                                                    density="compact"
+                                                    variant="outlined"
+                                                />
+                                            </v-col>
+                                            <v-col cols="12" sm="4">
+                                                <VInputField
+                                                    v-model.number="form.quantity"
+                                                    label="Package Quantity"
+                                                    type="number"
+                                                    :error-messages="form.errors.quantity"
+                                                    required
+                                                    density="compact"
+                                                    variant="outlined"
+                                                />
+                                            </v-col>
+                                        </v-row>
+                                        <v-row dense>
+                                            <v-col cols="12" sm="6">
+                                                <v-select
+                                                    v-model="form.unit_id"
+                                                    :items="units"
+                                                    item-title="name"
+                                                    item-value="id"
+                                                    label="Unit"
+                                                    variant="outlined"
+                                                    density="compact"
+                                                    :error-messages="form.errors.unit_id"
+                                                    prepend-inner-icon="mdi-weight"
+                                                />
+                                            </v-col>
+                                            <v-col cols="12" sm="6">
+                                                <v-select
+                                                    v-model="form.brand_id"
+                                                    :items="brands"
+                                                    item-title="en_name"
+                                                    item-value="id"
+                                                    label="Brand"
+                                                    variant="outlined"
+                                                    density="compact"
+                                                    :error-messages="form.errors.brand_id"
+                                                    prepend-inner-icon="mdi-tag"
+                                                />
+                                            </v-col>
+                                        </v-row>
+                                    </div>
+
+                                    <!-- Media Section -->
+                                    <div class="form-section">
+                                        <div class="form-section-title">
+                                            <v-icon>mdi-image</v-icon>
+                                            Product Images
+                                        </div>
+                                        <v-row dense>
+                                            <v-col cols="12">
+                                                <VFileInput
+                                                    v-model="form.images"
+                                                    title="Upload Product Images"
+                                                    variant="outlined"
+                                                    density="compact"
+                                                    :error-messages="form.errors.images"
+                                                    accept="image/*"
+                                                    prepend-icon=""
+                                                    prepend-inner-icon="mdi-camera"
+                                                    multiple
+                                                />
+                                            </v-col>
+                                        </v-row>
+                                        <v-row dense v-if="product?.documents?.length > 0">
+                                            <v-col cols="12">
+                                                <div class="text-caption mb-2">Current Images</div>
+                                            </v-col>
+                                            <v-col
+                                                v-for="image in product.documents"
+                                                :key="image.id"
+                                                cols="6"
+                                                sm="4"
+                                                md="3"
+                                            >
+                                                <v-img
+                                                    :src="image.file_path"
+                                                    height="100"
+                                                    class="rounded"
+                                                />
+                                            </v-col>
+                                        </v-row>
+                                    </div>
+
+                                </v-col>
+
+                                <!-- RIGHT COLUMN (4/12) - Sidebar Content -->
+                                <v-col cols="12" md="4">
+
+                                    <!-- Categorization Section -->
+                                    <div class="form-section">
+                                        <div class="form-section-title">
+                                            <v-icon>mdi-tag</v-icon>
+                                            Categories & Tags
+                                        </div>
+                                        <v-row dense>
+                                            <v-col cols="12">
+                                                <v-select
+                                                    v-model="parent_category_id"
+                                                    :items="categoryOptions"
+                                                    item-title="displayName"
+                                                    item-value="id"
+                                                    label="Category"
+                                                    variant="outlined"
+                                                    density="compact"
+                                                    :error-messages="form.errors.category_id"
+                                                    prepend-inner-icon="mdi-folder"
+                                                />
+                                            </v-col>
+                                            <v-col cols="12" v-if="subCategories.length > 0">
+                                                <v-select
+                                                    v-model="form.category_id"
+                                                    :items="subCategories"
+                                                    item-title="title_en"
+                                                    item-value="id"
+                                                    label="Sub Category"
+                                                    variant="outlined"
+                                                    density="compact"
+                                                    :error-messages="form.errors.category_id"
+                                                    prepend-inner-icon="mdi-folder-outline"
+                                                />
+                                            </v-col>
+                                            <v-col cols="12">
+                                                <v-select
+                                                    v-model="form.tags"
+                                                    :items="tags"
+                                                    item-title="name"
+                                                    item-value="id"
+                                                    label="Tags"
+                                                    multiple
+                                                    chips
+                                                    variant="outlined"
+                                                    density="compact"
+                                                    :error-messages="form.errors.tags"
+                                                    prepend-inner-icon="mdi-tag-multiple"
+                                                    closable-chips
+                                                />
+                                            </v-col>
+                                        </v-row>
+                                    </div>
+
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+
+                        <!-- Form Actions - Card Footer -->
+                        <v-divider></v-divider>
+                        <v-card-actions class="pa-4">
                             <v-form @submit.prevent="submit">
-
-                                <!-- Basic Information Section -->
-                                <div class="form-section">
-                                    <div class="form-section-title">
-                                        <v-icon>mdi-information</v-icon>
-                                        Basic Information
-                                    </div>
-                                    <v-row dense>
-                                        <v-col cols="12" md="6">
-                                            <VInputField
-                                                v-model="form.title_en"
-                                                label="Title (English)"
-                                                :error-messages="form.errors.title_en"
-                                                required
-                                                density="compact"
-                                                variant="outlined"
-                                            />
-                                        </v-col>
-                                        <v-col cols="12" md="6">
-                                            <VInputField
-                                                v-model="form.title_bn"
-                                                label="Title (Bengali)"
-                                                :error-messages="form.errors.title_bn"
-                                                density="compact"
-                                                variant="outlined"
-                                            />
-                                        </v-col>
-                                    </v-row>
-                                    <v-row dense>
-                                        <v-col cols="12">
-                                            <VInputField
-                                                v-model="form.slug"
-                                                label="URL Slug"
-                                                :error-messages="form.errors.slug"
-                                                required
-                                                density="compact"
-                                                variant="outlined"
-                                                hint="Auto-generated from English title"
-                                            />
-                                        </v-col>
-                                    </v-row>
-                                    <v-row dense>
-                                        <v-col cols="12">
-                                            <VInputField
-                                                v-model="form.description"
-                                                label="Description"
-                                                :error-messages="form.errors.description"
-                                                multiline
-                                                density="compact"
-                                                variant="outlined"
-                                                rows="3"
-                                            />
-                                        </v-col>
-                                    </v-row>
-                                </div>
-
-                                <!-- Pricing & Inventory Section -->
-                                <div class="form-section">
-                                    <div class="form-section-title">
-                                        <v-icon>mdi-currency-usd</v-icon>
-                                        Pricing & Inventory
-                                    </div>
-                                    <v-row dense>
-                                        <v-col cols="12" md="4">
-                                            <VInputField
-                                                v-model="form.price"
-                                                label="Price"
-                                                type="number"
-                                                step="0.01"
-                                                :error-messages="form.errors.price"
-                                                required
-                                                density="compact"
-                                                variant="outlined"
-                                                prepend-inner-icon="mdi-currency-bdt"
-                                            />
-                                        </v-col>
-                                        <v-col cols="12" md="4">
-                                            <VInputField
-                                                v-model="form.stock_quantity"
-                                                label="Stock Quantity"
-                                                type="number"
-                                                :error-messages="form.errors.stock_quantity"
-                                                required
-                                                density="compact"
-                                                variant="outlined"
-                                            />
-                                        </v-col>
-                                        <v-col cols="12" md="4">
-                                            <VInputField
-                                                v-model.number="form.quantity"
-                                                label="Package Quantity"
-                                                type="number"
-                                                :error-messages="form.errors.quantity"
-                                                required
-                                                density="compact"
-                                                variant="outlined"
-                                            />
-                                        </v-col>
-                                    </v-row>
-                                    <v-row dense>
-                                        <v-col cols="12" md="6">
-                                            <v-select
-                                                v-model="form.unit_id"
-                                                :items="units"
-                                                item-title="name"
-                                                item-value="id"
-                                                label="Unit"
-                                                variant="outlined"
-                                                density="compact"
-                                                :error-messages="form.errors.unit_id"
-                                                prepend-inner-icon="mdi-weight"
-                                            />
-                                        </v-col>
-                                        <v-col cols="12" md="6">
-                                            <v-select
-                                                v-model="form.brand_id"
-                                                :items="brands"
-                                                item-title="en_name"
-                                                item-value="id"
-                                                label="Brand"
-                                                variant="outlined"
-                                                density="compact"
-                                                :error-messages="form.errors.brand_id"
-                                                prepend-inner-icon="mdi-tag"
-                                            />
-                                        </v-col>
-                                    </v-row>
-                                </div>
-
-                                <!-- Media Section -->
-                                <div class="form-section">
-                                    <div class="form-section-title">
-                                        <v-icon>mdi-image</v-icon>
-                                        Product Images
-                                    </div>
-                                    <v-row dense>
-                                        <v-col cols="12">
-                                            <VFileInput
-                                                v-model="form.images"
-                                                title="Upload Product Images"
-                                                variant="outlined"
-                                                density="compact"
-                                                :error-messages="form.errors.images"
-                                                accept="image/*"
-                                                prepend-icon=""
-                                                prepend-inner-icon="mdi-camera"
-                                                multiple
-                                            />
-                                        </v-col>
-                                    </v-row>
-                                    <v-row dense v-if="product?.documents?.length > 0">
-                                        <v-col cols="12">
-                                            <div class="text-caption mb-2">Current Images</div>
-                                        </v-col>
-                                        <v-col
-                                            v-for="image in product.documents"
-                                            :key="image.id"
-                                            cols="6"
-                                            sm="4"
-                                            md="3"
-                                        >
-                                            <v-img
-                                                :src="image.file_path"
-                                                height="100"
-                                                class="rounded"
-                                            />
-                                        </v-col>
-                                    </v-row>
-                                </div>
-
-                                <!-- Categorization Section -->
-                                <div class="form-section">
-                                    <div class="form-section-title">
-                                        <v-icon>mdi-tag</v-icon>
-                                        Categories & Tags
-                                    </div>
-                                    <v-row dense>
-                                        <v-col cols="12" md="6">
-                                            <v-select
-                                                v-model="parent_category_id"
-                                                :items="categoryOptions"
-                                                item-title="displayName"
-                                                item-value="id"
-                                                label="Parent Category"
-                                                variant="outlined"
-                                                density="compact"
-                                                :error-messages="form.errors.category_id"
-                                                prepend-inner-icon="mdi-folder"
-                                            />
-                                        </v-col>
-                                        <v-col cols="12" md="6" v-if="subCategories.length > 0">
-                                            <v-select
-                                                v-model="form.category_id"
-                                                :items="subCategories"
-                                                item-title="title_en"
-                                                item-value="id"
-                                                label="Sub Category"
-                                                variant="outlined"
-                                                density="compact"
-                                                :error-messages="form.errors.category_id"
-                                                prepend-inner-icon="mdi-folder-outline"
-                                            />
-                                        </v-col>
-                                    </v-row>
-                                    <v-row dense>
-                                        <v-col cols="12">
-                                            <v-select
-                                                v-model="form.tags"
-                                                :items="tags"
-                                                item-title="name"
-                                                item-value="id"
-                                                label="Tags"
-                                                multiple
-                                                chips
-                                                variant="outlined"
-                                                density="compact"
-                                                :error-messages="form.errors.tags"
-                                                prepend-inner-icon="mdi-tag-multiple"
-                                                closable-chips
-                                            />
-                                        </v-col>
-                                    </v-row>
-                                </div>
-
-                                <!-- Form Actions -->
-                                <div class="d-flex gap-3 mt-6">
+                                <div class="d-flex gap-3">
                                     <VButton
                                         type="submit"
                                         :disabled="form.processing"
@@ -367,7 +379,7 @@ watch(() => form.title_en, (newName) => {
                                     </Link>
                                 </div>
                             </v-form>
-                        </v-card-text>
+                        </v-card-actions>
                     </v-card>
                 </v-col>
             </v-row>
