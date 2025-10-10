@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import MasterLayout from '@/layouts/MasterLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
-import { ref, watch, computed, onMounted } from 'vue';
+import { ref, watch, computed, onMounted, reactive } from 'vue';
 import VInputField from '@/components/VInputField.vue';
 import { Link } from '@inertiajs/vue3';
 import { VButton } from '@/components/ui/button';
@@ -15,6 +15,8 @@ const props = defineProps({
     units: Array,
     brands: Array,
 });
+
+const documents = reactive(props.product?.documents || []);
 
 const parent_category_id = ref(null);
 const subCategories = ref([]);
@@ -41,20 +43,28 @@ const form = useForm({
     tags: props.product?.tags || [],
 });
 
-form.transform(data => ({
-    ...data,
-    tags: data.tags.map(tag => {
-        if (typeof tag === 'object' && tag !== null && tag.id) {
-            return tag.id;
-        }
-        return tag;
-    }),
-    images: data.images.length > 0 ? data.images : undefined,
-}));
+form.transform(data => {
+    const transformedData = {
+        ...data,
+        tags: data.tags.map(tag => {
+            if (typeof tag === 'object' && tag !== null && tag.id) {
+                return tag.id;
+            }
+            return tag;
+        }),
+        images: data.images.length > 0 ? data.images : undefined,
+    };
+
+    if (props.product) {
+        transformedData._method = 'PUT';
+    }
+
+    return transformedData;
+});
 
 const submit = () => {
     if (props.product) {
-        form.put(route('product.products.update', props.product.id));
+        form.post(route('product.products.update', props.product.id));
     } else {
         form.post(route('product.products.store'));
     }
@@ -97,8 +107,21 @@ onMounted(() => {
     }
 });
 
+const removeImage = async (id: number, index: number) => {
+    if (!confirm('Are you sure you want to delete this image?')) {
+        return;
+    }
+
+    try {
+        await axios.delete(route('documents.destroy', id));
+        documents.splice(index, 1);
+    } catch (error) {
+        console.error('Error deleting image:', error);
+    }
+};
+
 // Watch for changes in name to auto-generate slug
-watch(() => form.title_en, (newName) => {
+watch(() => form.name_en, (newName) => {
     if (!props.product) { // Only auto-generate for new products
         form.slug = newName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
     }
@@ -108,7 +131,7 @@ watch(() => form.title_en, (newName) => {
 <template>
     <MasterLayout>
 
-        <Head :title="form.title_en ? form.title_en : 'Create Product'" />
+        <Head :title="form.name_en ? form.name_en : 'Create Product'" />
         <v-container>
             <v-row>
                 <v-col cols="12">
@@ -213,19 +236,28 @@ watch(() => form.title_en, (newName) => {
                                         <v-row dense>
                                             <v-col cols="12">
                                                 <VFileInput v-model="form.images" title="Upload Product Images"
-                                                                                  
                                                     variant="outlined" density="compact"
                                                     :error-messages="form.errors.images" accept="image/*"
                                                     prepend-icon="" prepend-inner-icon="mdi-camera" multiple />
                                             </v-col>
                                         </v-row>
-                                        <v-row dense v-if="product?.documents?.length > 0">
+                                        <v-row dense v-if="documents.length > 0">
                                             <v-col cols="12">
                                                 <div class="text-caption mb-2">Current Images</div>
                                             </v-col>
-                                            <v-col v-for="image in product.documents" :key="image.id" cols="6" sm="4"
+                                            <v-col v-for="(image, index) in documents" :key="image.id" cols="6" sm="4"
                                                 md="3">
-                                                <v-img :src="image.url" height="100" class="rounded" />
+                                                <v-card class="position-relative">
+                                                    <v-img :src="image.url" height="100" class="rounded" />
+                                                    <v-btn
+                                                        icon="mdi-close"
+                                                        size="x-small"
+                                                        color="red"
+                                                        class="position-absolute"
+                                                        style="top: 4px; right: 4px;"
+                                                        @click="removeImage(image.id, index)"
+                                                    ></v-btn>
+                                                </v-card>
                                             </v-col>
                                         </v-row>
                                     </div>

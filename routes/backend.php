@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\UnionController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\DocumentController;
 
 // All backend routes will be defined here.
 
@@ -14,6 +15,8 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::delete('documents/{document}', [DocumentController::class, 'destroy'])->name('documents.destroy');
+
     Route::get('dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');

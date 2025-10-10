@@ -19,5 +19,5 @@ const model = computed({
 </script>
 
 <template>
-    <v-file-upload :density="props.density" v-model="model" class="mb-3"></v-file-upload>
+    <v-file-upload :clearable="true"  :density="props.density" v-model="model" class="mb-3"></v-file-upload>
 </template>
