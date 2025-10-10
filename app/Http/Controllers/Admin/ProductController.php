@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Product\Brand;
-use App\Models\Product\Category;
-use App\Models\Product\Product;
+use Inertia\Inertia;
 use App\Models\Product\Tag;
 use App\Models\Product\Unit;
+use Illuminate\Http\Request;
+use App\Models\Product\Brand;
+use App\Models\Product\Product;
+use App\Models\Product\Category;
+use App\Http\Controllers\Controller;
+use App\Actions\Product\CreateProduct;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Admin\Product\StoreProductRequest;
 use App\Http\Requests\Admin\Product\UpdateProductRequest;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Inertia\Inertia;
 
 class ProductController extends Controller
 {
@@ -47,24 +48,9 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProductRequest $request)
+    public function store(StoreProductRequest $request, CreateProduct $createProduct)
     {
-        $validatedData = $request->validated();
-        $product = Product::create($validatedData);
-
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $path = $image->store('products', 'public');
-                $product->documents()->create([
-                    'file_path' => $path,
-                    'file_name' => $image->getClientOriginalName(),
-                    'mime_type' => $image->getClientMimeType(),
-                    'file_size' => $image->getSize(),
-                ]);
-            }
-        }
-
-        $product->tags()->sync($request->input('tags', []));
+        $createProduct->handle($request);
 
         return redirect()->route('product.products.index')->with('success', 'Product created successfully.');
     }
@@ -107,8 +93,6 @@ class ProductController extends Controller
         $product->update($validatedData);
 
         if ($request->hasFile('images')) {
-            // The user can upload new images, but we are not deleting old ones.
-            // Deleting images should be a separate action on the frontend.
             foreach ($request->file('images') as $image) {
                 $path = $image->store('products', 'public');
                 $product->documents()->create([
