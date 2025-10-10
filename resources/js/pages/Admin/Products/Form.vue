@@ -53,7 +53,6 @@ form.transform(data => ({
 }));
 
 const submit = () => {
-    alert('ok');
     if (props.product) {
         form.put(route('product.products.update', props.product.id));
     } else {
@@ -214,6 +213,7 @@ watch(() => form.title_en, (newName) => {
                                         <v-row dense>
                                             <v-col cols="12">
                                                 <VFileInput v-model="form.images" title="Upload Product Images"
+                                                                                  
                                                     variant="outlined" density="compact"
                                                     :error-messages="form.errors.images" accept="image/*"
                                                     prepend-icon="" prepend-inner-icon="mdi-camera" multiple />
