@@ -24,7 +24,7 @@ class UpdateProductRequest extends FormRequest
         return [
             'name_en' => ['required', 'string', 'max:255'],
             'name_bn' => ['nullable', 'string', 'max:255'],
-            'slug' => ['required', 'string', 'unique:products,slug'],
+            'slug' => ['required', 'string', 'unique:products,slug,' . $this->product->id],
             'description' => ['nullable', 'string'],
             'price' => ['required', 'numeric'],
             'quantity' => ['required', 'numeric'],

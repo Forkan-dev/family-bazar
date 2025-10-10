@@ -11,6 +11,7 @@ use App\Models\Product\Product;
 use App\Models\Product\Category;
 use App\Http\Controllers\Controller;
 use App\Actions\Product\CreateProduct;
+use App\Actions\Product\UpdateProduct;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Admin\Product\StoreProductRequest;
 use App\Http\Requests\Admin\Product\UpdateProductRequest;
@@ -86,25 +87,9 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product, UpdateProduct $updateProduct)
     {
-        $validatedData = $request->validated();
-
-        $product->update($validatedData);
-
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $path = $image->store('products', 'public');
-                $product->documents()->create([
-                    'file_path' => $path,
-                    'file_name' => $image->getClientOriginalName(),
-                    'mime_type' => $image->getClientMimeType(),
-                    'file_size' => $image->getSize(),
-                ]);
-            }
-        }
-
-        $product->tags()->sync($request->input('tags', []));
+        $updateProduct->handle($request, $product);
 
         return redirect()->route('product.products.index')->with('success', 'Product updated successfully.');
     }

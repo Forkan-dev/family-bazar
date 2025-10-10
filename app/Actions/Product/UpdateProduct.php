@@ -3,15 +3,15 @@
 namespace App\Actions\Product;
 
 use App\Models\Product\Product;
-use App\Http\Requests\Admin\Product\StoreProductRequest;
+use App\Http\Requests\Admin\Product\UpdateProductRequest;
 use App\Models\Product\Tag;
 
-class CreateProduct
+class UpdateProduct
 {
-    public function handle(StoreProductRequest $request): Product
+    public function handle(UpdateProductRequest $request, Product $product): Product
     {
         $validatedData = $request->validated();
-        $product = Product::create($validatedData);
+        $product->update($validatedData);
 
         $this->storeImages($request, $product);
         $this->syncTags($request, $product);
@@ -19,7 +19,7 @@ class CreateProduct
         return $product;
     }
 
-    private function storeImages(StoreProductRequest $request, Product $product): void
+    private function storeImages(UpdateProductRequest $request, Product $product): void
     {
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
@@ -34,7 +34,7 @@ class CreateProduct
         }
     }
 
-    private function syncTags(StoreProductRequest $request, Product $product): void
+    private function syncTags(UpdateProductRequest $request, Product $product): void
     {
         $tags = collect($request->input('tags', []))->map(function ($tag) {
             if (is_numeric($tag)) {

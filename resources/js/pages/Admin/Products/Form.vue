@@ -38,11 +38,17 @@ const form = useForm({
     unit_id: props.product?.unit_id || null,
     brand_id: props.product?.brand_id || null,
     quantity: props.product?.quantity || 0,
-    tags: props.product?.tags?.map((t: any) => t.id) || [],
+    tags: props.product?.tags || [],
 });
 
 form.transform(data => ({
     ...data,
+    tags: data.tags.map(tag => {
+        if (typeof tag === 'object' && tag !== null && tag.id) {
+            return tag.id;
+        }
+        return tag;
+    }),
     images: data.images.length > 0 ? data.images : undefined,
 }));
 
@@ -219,7 +225,7 @@ watch(() => form.title_en, (newName) => {
                                             </v-col>
                                             <v-col v-for="image in product.documents" :key="image.id" cols="6" sm="4"
                                                 md="3">
-                                                <v-img :src="image.file_path" height="100" class="rounded" />
+                                                <v-img :src="image.url" height="100" class="rounded" />
                                             </v-col>
                                         </v-row>
                                     </div>
@@ -251,7 +257,7 @@ watch(() => form.title_en, (newName) => {
                                                     prepend-inner-icon="mdi-folder-outline" />
                                             </v-col>
                                             <v-col cols="12">
-                                                <v-select v-model="form.tags" :items="tags" item-title="name"
+                                                <v-combobox v-model="form.tags" :items="tags" item-title="name"
                                                     item-value="id" label="Tags" multiple chips variant="outlined"
                                                     density="compact" :error-messages="form.errors.tags"
                                                     prepend-inner-icon="mdi-tag-multiple" closable-chips />
