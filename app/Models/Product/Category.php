@@ -21,6 +21,9 @@ class Category extends Model
         'parent_id',
     ];
 
+    protected $appends = ['displayName'];
+
+
     public function documents()
     {
         return $this->morphMany(Document::class, 'documentable');
@@ -39,5 +42,10 @@ class Category extends Model
     public function children()
     {
         return $this->hasMany(Category::class, 'parent_id');
+    }
+
+    public function getDisplayNameAttribute()
+    {
+        return $this->title_en . ' (' . $this->title_bn . ')';
     }
 }

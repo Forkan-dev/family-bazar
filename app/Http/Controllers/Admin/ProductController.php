@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\Product\Brand;
 use App\Models\Product\Product;
 use App\Models\Product\Category;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Actions\Product\CreateProduct;
 use App\Actions\Product\UpdateProduct;
@@ -51,9 +52,16 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request, CreateProduct $createProduct)
     {
-        $createProduct->handle($request);
+        try {
+            DB::beginTransaction();
+            $createProduct->handle($request);
+            DB::commit();
+            return redirect()->route('product.products.index')->with('success', 'Product created successfully.');
 
-        return redirect()->route('product.products.index')->with('success', 'Product created successfully.');
+        }catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors(['error' => 'An error occurred while creating the product.']);
+        }
     }
 
     /**
@@ -89,9 +97,16 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, Product $product, UpdateProduct $updateProduct)
     {
-        $updateProduct->handle($request, $product);
+        try {
+            DB::beginTransaction();
+            $updateProduct->handle($request, $product);
+            DB::commit();
+            return redirect()->route('product.products.index')->with('success', 'Product updated successfully.');
 
-        return redirect()->route('product.products.index')->with('success', 'Product updated successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors(['error' => 'An error occurred while updating the product.']);
+        }
     }
 
     /**

@@ -15,4 +15,11 @@ class Unit extends Model
         'name',
         'abbreviation',
     ];
+
+    protected $appends = ['displayName'];
+
+    public function getDisplayNameAttribute()
+    {
+        return $this->name . ' (' . $this->abbreviation . ')';
+    }
 }

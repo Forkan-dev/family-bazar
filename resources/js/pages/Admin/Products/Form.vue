@@ -21,13 +21,6 @@ const documents = reactive(props.product?.documents || []);
 const parent_category_id = ref(null);
 const subCategories = ref([]);
 
-const categoryOptions = computed(() => {
-    return props.categories.map((category) => ({
-        ...category,
-        displayName: `${category.title_en} (${category.title_bn})`,
-    }));
-});
-
 const form = useForm({
     name_en: props.product?.name_en || '',
     name_bn: props.product?.name_bn || '',
@@ -192,11 +185,26 @@ watch(() => form.name_en, (newName) => {
                                             Pricing & Inventory
                                         </div>
                                         <v-row dense>
-                                            <v-col cols="12" sm="4">
+                                            <v-col cols="12" sm="6">
                                                 <VInputField v-model="form.price" label="Price" type="number"
                                                     step="0.01" :error-messages="form.errors.price" required
                                                     density="compact" variant="outlined"
                                                     prepend-inner-icon="mdi-currency-bdt" />
+                                            </v-col>
+
+                                            <v-col cols="12" sm="6">
+                                                <VInputField v-model="form.stock_quantity" label="Stock Quantity"
+                                                    type="number" :error-messages="form.errors.stock_quantity" required
+                                                    density="compact" variant="outlined" />
+                                            </v-col>
+                                        </v-row>
+                                        <v-row dense>
+                                            <v-col cols="12" sm="4">
+                                                <v-select v-model="form.unit_id" :items="units"
+                                                    item-title="displayName" item-value="id" label="Unit"
+                                                    variant="outlined" density="compact"
+                                                    :error-messages="form.errors.unit_id"
+                                                    prepend-inner-icon="mdi-weight" />
                                             </v-col>
 
                                             <v-col cols="12" sm="4">
@@ -206,19 +214,6 @@ watch(() => form.name_en, (newName) => {
                                             </v-col>
 
                                             <v-col cols="12" sm="4">
-                                                <VInputField v-model="form.stock_quantity" label="Stock Quantity"
-                                                    type="number" :error-messages="form.errors.stock_quantity" required
-                                                    density="compact" variant="outlined" />
-                                            </v-col>
-                                        </v-row>
-                                        <v-row dense>
-                                            <v-col cols="12" sm="6">
-                                                <v-select v-model="form.unit_id" :items="units" item-title="name"
-                                                    item-value="id" label="Unit" variant="outlined" density="compact"
-                                                    :error-messages="form.errors.unit_id"
-                                                    prepend-inner-icon="mdi-weight" />
-                                            </v-col>
-                                            <v-col cols="12" sm="6">
                                                 <v-select v-model="form.brand_id" :items="brands" item-title="en_name"
                                                     item-value="id" label="Brand" variant="outlined" density="compact"
                                                     :error-messages="form.errors.brand_id"
@@ -249,14 +244,9 @@ watch(() => form.name_en, (newName) => {
                                                 md="3">
                                                 <v-card class="position-relative">
                                                     <v-img :src="image.url" height="100" class="rounded" />
-                                                    <v-btn
-                                                        icon="mdi-close"
-                                                        size="x-small"
-                                                        color="red"
-                                                        class="position-absolute"
-                                                        style="top: 4px; right: 4px;"
-                                                        @click="removeImage(image.id, index)"
-                                                    ></v-btn>
+                                                    <v-btn icon="mdi-close" size="x-small" color="red"
+                                                        class="position-absolute" style="top: 4px; right: 4px;"
+                                                        @click="removeImage(image.id, index)"></v-btn>
                                                 </v-card>
                                             </v-col>
                                         </v-row>
@@ -275,7 +265,7 @@ watch(() => form.name_en, (newName) => {
                                         </div>
                                         <v-row dense>
                                             <v-col cols="12">
-                                                <v-select v-model="parent_category_id" :items="categoryOptions"
+                                                <v-select v-model="parent_category_id" :items="categories"
                                                     item-title="displayName" item-value="id" label="Category"
                                                     variant="outlined" density="compact"
                                                     :error-messages="form.errors.category_id"
@@ -283,7 +273,7 @@ watch(() => form.name_en, (newName) => {
                                             </v-col>
                                             <v-col cols="12" v-if="subCategories.length > 0">
                                                 <v-select v-model="form.category_id" :items="subCategories"
-                                                    item-title="title_en" item-value="id" label="Sub Category"
+                                                    item-title="displayName" item-value="id" label="Sub Category"
                                                     variant="outlined" density="compact"
                                                     :error-messages="form.errors.category_id"
                                                     prepend-inner-icon="mdi-folder-outline" />
