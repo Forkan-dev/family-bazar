@@ -1,0 +1,76 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+
+class RolesController extends Controller
+{
+    public function index()
+    {
+        $roles = Role::with('permissions')->get();
+        return Inertia::render('Admin/Roles/Index', [
+            'roles' => $roles,
+        ]);
+    }
+
+    public function create()
+    {
+        $permissions = Permission::all();
+        return Inertia::render('Admin/Roles/Form', [
+            'permissions' => $permissions,
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|unique:roles,name',
+            'guard_name' => 'nullable|string',
+            'selectedPermissions' => 'array',
+        ]);
+
+        $role = Role::create(['name' => $request->name, 'guard_name' => $request->guard_name]);
+        $role->syncPermissions($request->selectedPermissions);
+
+        return redirect()->route('admin.roles.index')
+            ->with('success', 'Role created successfully.');
+    }
+
+    public function edit(Role $role)
+    {
+        $permissions = Permission::all();
+        $role->load('permissions');
+        return Inertia::render('Admin/Roles/Form', [
+            'role' => $role,
+            'permissions' => $permissions,
+        ]);
+    }
+
+    public function update(Request $request, Role $role)
+    {
+        $request->validate([
+            'name' => 'required|unique:roles,name,' . $role->id,
+            'guard_name' => 'nullable|string',
+            'selectedPermissions' => 'array',
+        ]);
+
+        $role->update(['name' => $request->name, 'guard_name' => $request->guard_name]);
+        $role->syncPermissions($request->selectedPermissions);
+
+        return redirect()->route('admin.roles.index')
+            ->with('success', 'Role updated successfully.');
+    }
+
+    public function destroy(Role $role)
+    {
+        $role->delete();
+
+        return redirect()->route('admin.roles.index')
+            ->with('success', 'Role deleted successfully.');
+    }
+}

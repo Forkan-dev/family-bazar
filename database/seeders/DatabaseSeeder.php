@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
             DistrictSeeder::class,
             UpazilaSeeder::class,
             UnionSeeder::class,
+            RolesAndPermissionsSeeder::class,
         ]);
     }
 }

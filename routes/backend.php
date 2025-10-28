@@ -3,10 +3,12 @@
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\UnionController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DocumentController;
+use App\Http\Controllers\Admin\PermissionsController;
 
 // All backend routes will be defined here.
 
@@ -30,6 +32,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('categories', CategoryController::class); // Moved from admin.php
         Route::resource('locations', UnionController::class); // Moved from admin.php
     });
+
+    Route::resource('permissions', PermissionsController::class)->names('admin.permissions');
+    Route::resource('roles', RolesController::class)->names('admin.roles');
 });
 
 require __DIR__.'/settings.php';

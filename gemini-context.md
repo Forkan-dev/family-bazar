@@ -18,17 +18,24 @@ The Minimum Viable Product (MVP) focuses on this core feature: bringing the loca
         - `Admin`: Controllers for the admin panel.
             - `ProductController`: Handles product management.
                 - **Brand Integration:** The `create` and `edit` methods now fetch and pass a list of `Brand` models to the product form.
+            - `PermissionsController`: Handles permission management.
+            - `RolesController`: Handles role management.
         - `Auth`: Authentication controllers.
         - `Settings`: User settings controllers.
     - `app/Models`: Eloquent models for database interaction.
         - `Product`: Models related to products, categories, and tags.
             - **Integration with Brand:** The `Product` model now includes a `brand_id` column and a `belongsTo` relationship with the `Brand` model, allowing products to be associated with a specific brand.
+        - `Category`: The `Category` model now has a `displayName` attribute that concatenates `title_en` and `title_bn`.
+        - `Unit`: The `Unit` model now has a `displayName` attribute that concatenates `name` and `abbreviation`.
     - `routes`: Defines the application's routes.
         - `web.php`: Contains the main landing page route.
         - `backend.php`: Contains all backend-related routes, such as the dashboard and product management. These routes are protected by the `auth` and `verified` middleware.
+            - **Permissions & Roles:** Added resource routes for `/permissions` and `/roles` for CRUD operations.
         - `auth.php`: Authentication routes.
         - `settings.php`: User settings routes.
     - `database/migrations`: Database schema migrations.
+    - `database/seeders`: Database seeders.
+        - `RolesAndPermissionsSeeder`: New seeder to create default roles (super_admin, admin, shop_owner) and granular permissions (e.g., product.create, order.view).
 
 ### Frontend
 
@@ -39,6 +46,8 @@ The Minimum Viable Product (MVP) focuses on this core feature: bringing the loca
         - `Admin`: Admin panel pages.
             - `Products/Form.vue`: Product creation and editing form.
                 - **Brand Integration:** Includes a `v-select` component for selecting a `Brand`, and the form data now includes `brand_id`.
+            - `Permissions`: Contains `Index.vue` and `Form.vue` for managing permissions.
+            - `Roles`: Contains `Index.vue` and `Form.vue` for managing roles.
         - `auth`: Authentication pages.
         - `settings`: User settings pages.
     - `resources/js/components`: Reusable Vue components.
