@@ -59,7 +59,7 @@ const submit = () => {
                         <v-divider></v-divider>
                         <v-card-text>
                             <v-form @submit.prevent="submit">
-                                <v-row>
+                                <v-row class="mt-4" >
                                     <v-col cols="12" md="6">
                                         <VInputField
                                             v-model="form.title_en"
@@ -83,7 +83,7 @@ const submit = () => {
                                             variant="outlined"
                                         />
                                     </v-col>
-                                    <v-col cols="12">
+                                    <v-col cols="6">
                                         <VInputField
                                             v-model="form.slug"
                                             label="URL Slug"
@@ -93,20 +93,7 @@ const submit = () => {
                                             variant="outlined"
                                         />
                                     </v-col>
-                                    <v-col cols="12">
-                                        <VInputField
-                                            v-model="form.description"
-                                            label="Description"
-                                            :error-messages="
-                                                form.errors.description
-                                            "
-                                            multiline
-                                            density="compact"
-                                            variant="outlined"
-                                            rows="3"
-                                        />
-                                    </v-col>
-                                    <v-col cols="12" md="6">
+                                     <v-col cols="6" >
                                         <v-select
                                             v-model="form.parent_id"
                                             :items="props.categories"
@@ -125,7 +112,21 @@ const submit = () => {
                                             clearable
                                         />
                                     </v-col>
-                                    <v-col cols="12" md="8">
+                                    <v-col cols="12">
+                                        <VInputField
+                                            v-model="form.description"
+                                            label="Description"
+                                            :error-messages="
+                                                form.errors.description
+                                            "
+                                            multiline
+                                            density="compact"
+                                            variant="outlined"
+                                            rows="3"
+                                        />
+                                    </v-col>
+
+                                    <v-col cols="12" >
                                         <v-file-input
                                             v-model="form.image"
                                             title="Upload Category Image"
