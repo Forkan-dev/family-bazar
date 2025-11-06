@@ -1,41 +1,31 @@
-create divi
-database\migrations\2025_09_23_171855_create_upazilas_table.php create a seeder and and                          │
-│   database\seeders\DistrictSeeder.php here take distric name and create distric name wish all upazila with         │
-│   bangla name
+Here is the migration file for banners:
+database/migrations/2021_04_17_000010_create_banners_table.php
 
+Example controller to follow:
+app/Http/Controllers/Admin/CategoryController.php
 
-this is my json .chittagong_upazila_unions_full.json this is my seeder : database\seeders\UnionSeeder.php
-this is my migration :database\migrations\2026_09_23_000003_create_unions_table.php
+Example frontend folder to follow:
+resources/js/pages/Admin/Category
 
+Routes file to use for backend:
+routes/backend.php
+Requirements:
+1. Create Banner model in app/Models.
+2. Create BannerController in app/Http/Controllers/Admin following structure of CategoryController (index, create, store, edit, update, destroy).
+3. Add backend routes in routes/backend.php using Route::resource('banners', BannerController::class);
+4. Create Vue/React pages in resources/js/pages/Admin/Banner:
+     - Index page (list table with edit & delete button)
+     - Create page (form with fields)
+     - Edit page (form with existing data)
+5. Use Axios for API calls and integrate success/error toast messages.
+6. Validate fields in store() and update().
+7. Return proper JSON responses like Category module does.
+8. Maintain same UI layout table style, buttons, form input style, alert messages, etc.
+Now generate complete code step-by-step:
+- Model
+- Controller (all methods complete)
+- Routes
+- Vue/React pages (Index.vue or Index.jsx, Create.vue or Create.jsx, Edit.vue or Edit.jsx)
+- Example Axios API integration
 
-
-this is migraton file :database\migrations\2025_09_23_162857_create_brands_table.php
-this is vue page file : resources\js\pages\Admin\Brand\index.vue 
-this is brand image file : public\images\brand 
-i save in database image like this images/brand/pran.jpg 
-here image not showing fix this 
-
-
-this is edit file : resources\js\pages\Admin\Location\Edit.vue 
-this is migration file : database\migrations\2026_09_23_000003_create_unions_table.php
-this is controller : app\Http\Controllers\Admin\UnionController.php 
-when i edit here old name not showing . fix this error 
-
-
-
- > this is my migration  : database\migrations\2025_09_19_195105_create_categories_table.php
- php this is my seeder file :database\seeders\CategorySeeder.php                             │
-│   now  First create Category Gorcery and create Grocery which parent_id =1  wish 100 Category then 100 Category wish create  250 subcategory english and bangla name  for production   json file crate here   database\data and add to seeder
-
-
-
-
-this is my migration : database\migrations\2025_09_19_195116_create_products_table.php
-this is category seeder: database\seeders\CategorySeeder.php 
-this is brand seeder: database\seeders\BrandSeeder.php 
-now give me real 2000 products to category wish subcategory and if need using brand order null . 
-and save json here public\data
-
-
-resources\js\pages\Admin\Category follow same desing and implement                                      │
-│   resources\js\pages\Admin\Brand same style all same desing in Brand
+Follow the same coding style and flow as the Category module.
