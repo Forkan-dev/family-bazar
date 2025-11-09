@@ -3,19 +3,44 @@ import { VButton } from '@/components/ui/button';
 import MasterLayout from '@/layouts/MasterLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 const props = defineProps({
     banners: Array, // Inertia from controller
 });
 
 const headers = [
-    { title: 'Title', key: 'title' },
-    { title: 'Description', key: 'description' },
+    { title: 'Title English', key: 'title_en' },
+    { title: 'Title Bengali', key: 'title_bn' },
+    { title: 'Sub Title English', key: 'sub_title_en' },
+    { title: 'Sub Title Bengali', key: 'sub_title_bn' },
     { title: 'Image', key: 'image' },
-    { title: 'Type', key: 'type' },
+    { title: 'Type', key: 'type.name' },
     { title: 'Actions', key: 'actions', sortable: false },
 ];
+
+const processedBanners = computed(() => {
+    return props.banners?.map(banner => {
+        const parseJson = (jsonString) => {
+            try {
+                return typeof jsonString === 'string' ? JSON.parse(jsonString) : jsonString;
+            } catch {
+                return {};
+            }
+        };
+
+        const title = parseJson(banner.title);
+        const subTitle = parseJson(banner.sub_title);
+        
+        return {
+            ...banner,
+            title_en: title?.en || '',
+            title_bn: title?.bn || '',
+            sub_title_en: subTitle?.en || '',
+            sub_title_bn: subTitle?.bn || '',
+        };
+    }) || [];
+});
 
 const search = ref('');
 
@@ -65,22 +90,15 @@ const deleteBanner = (id: number) => {
 
                             <v-data-table
                                 :headers="headers"
-                                :items="banners"
+                                :items="processedBanners"
                                 :search="search"
                                 class="elevation-1 mt-4"
                                 density="compact"
                             >
-                                <template v-slot:item.type="{ item }">
-                                    <span v-if="item.type">
-                                        {{ item.type.name }}
-                                    </span>
-                                    <span v-else>N/A</span>
-                                </template>
-
-                                <template v-slot:item.image="{ item }">
+                                <template #item.image="{ item }">
                                     <v-img
                                         v-if="item.image"
-                                        :src="`/${item.image}`"
+                                        :src="item.image"
                                         alt="Banner Image"
                                         max-width="80"
                                         max-height="50"
@@ -90,7 +108,7 @@ const deleteBanner = (id: number) => {
                                 </template>
 
                                 <!-- Actions Column -->
-                                <template v-slot:item.actions="{ item }">
+                                <template #item.actions="{ item }">
                                     <Link
                                         :href="
                                             route('admin.banners.edit', item.id)

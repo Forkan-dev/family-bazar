@@ -10,7 +10,8 @@ return new class extends Migration
     {
         Schema::create('types', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name_en');
+            $table->string('name_bn')->nullable();
             $table->string('language')->default('en');
             $table->string('slug');
             $table->string('icon')->nullable();

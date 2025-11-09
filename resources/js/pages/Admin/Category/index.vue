@@ -5,7 +5,7 @@ import { Head, Link, router } from '@inertiajs/vue3';
 
 import { ref } from 'vue';
 
-const props = defineProps({
+defineProps({
     categories: Array, // Inertia থেকে আসবে
 });
 
@@ -72,7 +72,7 @@ const deleteCategory = (id: number) => {
                                 density="compact"
                             >
                                 <!-- SubCategory Column -->
-                                <template v-slot:item.subCategory="{ item }">
+                                <template #subCategory="{ item }">
                                     <span v-if="item.parent">
                                         {{ item.parent.title_en }} ({{
                                             item.parent.title_bn
@@ -83,7 +83,7 @@ const deleteCategory = (id: number) => {
                                     <span v-else> </span>
                                 </template>
 
-                                <template v-slot:item.image="{ item }">
+                                <template #image="{ item }">
                                     <v-img
                                         v-if="item.image"
                                         :src="`/${item.image}`"
@@ -96,7 +96,7 @@ const deleteCategory = (id: number) => {
                                 </template>
 
                                 <!-- Actions Column -->
-                                <template v-slot:item.actions="{ item }">
+                                <template #actions="{ item }">
                                     <Link
                                         :href="
                                             route('product.categories.edit', item.id)

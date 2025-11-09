@@ -22,10 +22,17 @@ class StoreBannerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'sub_title' => 'nullable|string',
-            'status'=>'in:active,inactive',
+            'title_en' => 'required|string|max:255',
+            'title_bn' => 'nullable|string|max:255',
+
+            'sub_title_en' => 'nullable|string|max:255',
+            'sub_title_bn' => 'nullable|string|max:255',
+
+            'description_en' => 'nullable|string',
+            'description_bn' => 'nullable|string',
+
+            'position' => 'nullable|integer',
+            'status' => 'nullable|in:active,inactive',
             'button_text_1' => 'nullable|string',
             'button_url_1' => 'nullable|string',
             'button_text_2' => 'nullable|string',
@@ -34,4 +41,6 @@ class StoreBannerRequest extends FormRequest
             'type_id' => 'required|integer|exists:types,id',
         ];
     }
+
+
 }

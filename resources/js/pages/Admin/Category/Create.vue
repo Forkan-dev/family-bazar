@@ -6,7 +6,7 @@ import MasterLayout from '@/layouts/MasterLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { watch } from 'vue';
 
-const props = defineProps<{
+defineProps<{
     categories: Array<{ id: number; title_en: string; title_bn: string }>;
 }>();
 

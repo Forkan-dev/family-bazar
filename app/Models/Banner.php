@@ -14,7 +14,6 @@ class Banner extends Model
         'type_id',
         'title',
         'description',
-        'image',
         'status',
         'language',
         'sub_title',
@@ -26,7 +25,9 @@ class Banner extends Model
     ];
 
     protected $casts = [
-        'image' => 'array',
+        'title' => 'array',
+        'sub_title' => 'array',
+        'description' => 'array',
     ];
 
     /**
@@ -37,5 +38,10 @@ class Banner extends Model
     public function type(): BelongsTo
     {
         return $this->belongsTo(Type::class);
+    }
+
+    public function documents()
+    {
+        return $this->morphMany(Document::class, 'documentable');
     }
 }

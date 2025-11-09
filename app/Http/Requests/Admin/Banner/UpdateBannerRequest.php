@@ -22,16 +22,51 @@ class UpdateBannerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'sub_title' => 'nullable|string',
-            'status'=>'in:active,inactive',
+            'title_en' => 'required|string|max:255',
+            'title_bn' => 'nullable|string|max:255',
+
+            'sub_title_en' => 'nullable|string|max:255',
+            'sub_title_bn' => 'nullable|string|max:255',
+
+            'description_en' => 'nullable|string',
+            'description_bn' => 'nullable|string',
+
+            'position' => 'nullable|integer',
+            'status' => 'nullable|in:active,inactive',
             'button_text_1' => 'nullable|string',
             'button_url_1' => 'nullable|string',
             'button_text_2' => 'nullable|string',
             'button_url_2' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'type_id' => 'required|integer|exists:types,id',
+        ];
+    }
+
+
+    public function getProcessedData(): array
+    {
+        $data = $this->validated();
+
+        return [
+            'title' => json_encode([
+                'en' => $data['title_en'],
+                'bn' => $data['title_bn']
+            ]),
+            'sub_title' => json_encode([
+                'en' => $data['sub_title_en'] ?? '',
+                'bn' => $data['sub_title_bn'] ?? ''
+            ]),
+            'description' => json_encode([
+                'en' => $data['description_en'] ?? '',
+                'bn' => $data['description_bn'] ?? ''
+            ]),
+            'position' => $data['position'],
+            'status' => $data['status'],
+            'button_text_1' => $data['button_text_1'],
+            'button_url_1' => $data['button_url_1'],
+            'button_text_2' => $data['button_text_2'],
+            'button_url_2' => $data['button_url_2'],
+            'type_id' => $data['type_id'],
         ];
     }
 }

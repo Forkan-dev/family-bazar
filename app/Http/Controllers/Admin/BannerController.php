@@ -17,7 +17,10 @@ class BannerController extends Controller
 {
     public function index()
     {
-        $banners = Banner::with('type')->get();
+        $banners = Banner::with('type', 'documents')->get()->map(function ($banner) {
+            $banner->image = $banner->documents->first() ? $banner->documents->first()->url : null;
+            return $banner;
+        });
 
         return Inertia::render('Admin/Banner/Index', [
             'banners' => $banners,
@@ -52,6 +55,8 @@ class BannerController extends Controller
 
     public function edit(Banner $banner)
     {
+        $banner->load('documents');
+        $banner->image = $banner->documents->first() ? $banner->documents->first()->url : null;
         $types = Type::all();
         return Inertia::render('Admin/Banner/Edit', [
             'banner' => $banner,
@@ -79,8 +84,15 @@ class BannerController extends Controller
 
     public function destroy(Banner $banner)
     {
-        if ($banner->image && file_exists(public_path($banner->image))) {
-            unlink(public_path($banner->image));
+        $banner->load('documents'); // Load the associated documents
+
+        foreach ($banner->documents as $document) {
+            // Delete the physical file from storage
+            if (Storage::disk('public')->exists($document->file_path)) {
+                Storage::disk('public')->delete($document->file_path);
+            }
+            // Delete the document record from the database
+            $document->delete();
         }
 
         $banner->delete();

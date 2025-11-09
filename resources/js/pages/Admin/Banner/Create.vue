@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { VButton } from '@/components/ui/button';
 import VInputField from '@/components/VInputField.vue';
 import MasterLayout from '@/layouts/MasterLayout.vue';
@@ -9,12 +10,14 @@ const props = defineProps<{
 }>();
 
 const form = useForm({
-    title: '',
-    sub_title:'',
-    description: '',
-    possiton: '',
-    status : '',
-    url: '',
+    title_en: '',
+    title_bn: '',
+    sub_title_en: '',
+    sub_title_bn: '',
+    description_en: '',
+    description_bn: '',
+    position: '',
+    status: '',
     image: null as File | null,
     type_id: null,
     button_text_1: '',
@@ -26,6 +29,8 @@ const form = useForm({
 const submit = () => {
     form.post(route('admin.banners.store'));
 };
+
+const tab = ref('en');
 </script>
 
 <template>
@@ -51,50 +56,87 @@ const submit = () => {
                         <v-divider></v-divider>
                         <v-card-text>
                             <v-form @submit.prevent="submit">
+                                <v-tabs v-model="tab" class="mb-4">
+                                    <v-tab value="en">English</v-tab>
+                                    <v-tab value="bn">Bengali</v-tab>
+                                </v-tabs>
+
+                                <v-window v-model="tab">
+                                    <v-window-item value="en">
+                                        <v-row class="mt-2">
+                                            <v-col cols="6">
+                                                <VInputField
+                                                    v-model="form.title_en"
+                                                    label="Title (English)"
+                                                    :error-messages="form.errors.title_en"
+                                                    required
+                                                    density="compact"
+                                                    variant="outlined"
+                                                />
+                                            </v-col>
+                                            <v-col cols="6">
+                                                <VInputField
+                                                    v-model="form.sub_title_en"
+                                                    label="Sub Title (English)"
+                                                    :error-messages="form.errors.sub_title_en"
+                                                    density="compact"
+                                                    variant="outlined"
+                                                />
+                                            </v-col>
+                                            <v-col cols="12">
+                                                <VInputField
+                                                    v-model="form.description_en"
+                                                    label="Description (English)"
+                                                    :error-messages="form.errors.description_en"
+                                                    multiline
+                                                    density="compact"
+                                                    variant="outlined"
+                                                    rows="3"
+                                                />
+                                            </v-col>
+                                        </v-row>
+                                    </v-window-item>
+                                    <v-window-item value="bn">
+                                        <v-row class="mt-2">
+                                            <v-col cols="6">
+                                                <VInputField
+                                                    v-model="form.title_bn"
+                                                    label="Title (Bengali)"
+                                                    :error-messages="form.errors.title_bn"
+                                                    density="compact"
+                                                    variant="outlined"
+                                                />
+                                            </v-col>
+                                            <v-col cols="6">
+                                                <VInputField
+                                                    v-model="form.sub_title_bn"
+                                                    label="Sub Title (Bengali)"
+                                                    :error-messages="form.errors.sub_title_bn"
+                                                    density="compact"
+                                                    variant="outlined"
+                                                />
+                                            </v-col>
+                                            <v-col cols="12">
+                                                <VInputField
+                                                    v-model="form.description_bn"
+                                                    label="Description (Bengali)"
+                                                    :error-messages="form.errors.description_bn"
+                                                    multiline
+                                                    density="compact"
+                                                    variant="outlined"
+                                                    rows="3"
+                                                />
+                                            </v-col>
+                                        </v-row>
+                                    </v-window-item>
+                                </v-window>
+
                                 <v-row class="mt-2">
-                                    <v-col cols="6">
-                                        <VInputField
-                                            v-model="form.title"
-                                            label="Title"
-                                            :error-messages="form.errors.title"
-                                            required
-                                            density="compact"
-                                            variant="outlined"
-                                        />
-                                    </v-col>
-
-                                     <v-col cols="6">
-                                        <VInputField
-                                            v-model="form.sub_title"
-                                            label="Sub Title"
-                                            :error-messages="form.errors.sub_title"
-                                            required
-                                            density="compact"
-                                            variant="outlined"
-                                        />
-                                    </v-col>
-
-                                    <v-col cols="12">
-                                        <VInputField
-                                            v-model="form.description"
-                                            label="Description"
-                                            :error-messages="
-                                                form.errors.description
-                                            "
-                                            multiline
-                                            density="compact"
-                                            variant="outlined"
-                                            rows="3"
-                                        />
-                                    </v-col>
-
-
-
                                     <v-col cols="4">
                                         <v-select
                                             v-model="form.type_id"
                                             :items="props.types"
-                                            item-title="name"
+                                            item-title="name_en"
                                             item-value="id"
                                             label="Type"
                                             variant="outlined"
@@ -107,20 +149,16 @@ const submit = () => {
                                         />
                                     </v-col>
 
-
-
-
                                     <v-col cols="4">
                                         <VInputField
-                                            v-model="form.possiton"
+                                            v-model="form.position"
                                             label="Position"
-                                            :error-messages="form.errors.possiton"
-                                            required
+                                            :error-messages="form.errors.position"
                                             density="compact"
                                             variant="outlined"
                                             @input="
-                                            form.possiton =
-                                                form.possiton.replace(
+                                            form.position =
+                                                form.position.replace(
                                                     /[^0-9]/g,
                                                     '',
                                                 )
@@ -185,13 +223,13 @@ const submit = () => {
 
                                     <v-col cols="12">
                                         <v-file-input
-                                            v-model="form.image"
-                                            title="Upload Banner Image"
+                                            label="Upload Banner Image"
                                             variant="outlined"
                                             density="compact"
                                             :error-messages="form.errors.image"
                                             accept="image/*"
                                             prepend-inner-icon="mdi-camera"
+                                            @input="form.image = $event.target.files[0]"
                                         />
                                     </v-col>
 

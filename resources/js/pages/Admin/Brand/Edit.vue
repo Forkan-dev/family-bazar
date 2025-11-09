@@ -1,7 +1,6 @@
 
 <script setup lang="ts">
 import MasterLayout from '@/layouts/MasterLayout.vue';
-import { computed, watch } from 'vue';
 import { Head, useForm, Link } from '@inertiajs/vue3';
 import VInputField from '@/components/VInputField.vue';
 import { VButton } from '@/components/ui/button';
