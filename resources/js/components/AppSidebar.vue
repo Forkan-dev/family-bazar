@@ -69,11 +69,20 @@ if (isGroupActive(['product.products', 'product.categories', 'product.brands', '
                     :active="route().current('dashboard')" rounded="lg" class="mb-1" />
                 </Link>
 
-                <Link :href="route('admin.banners.index')" class="text-decoration-none" v-if="hasPermission('banner.view')">
-                <v-list-item prepend-icon="mdi-watermark" title="Banners" :active="isActive('admin.banners.index')"
-                    rounded="lg" class="mb-1" density="compact" />
-                </Link>
+                <!-- Content Section -->
+                <v-list-group value="Content" class="mb-1" v-if="hasPermission('banner.view')">
+                    <template v-slot:activator="{ props }">
+                        <v-list-item v-bind="props" prepend-icon="mdi-folder-multiple-outline" title="Content" rounded="lg"
+                            :active="isGroupActive(['admin.banners.index'])" />
+                    </template>
 
+                    <div class="ps-6 child-nav-align">
+                        <Link :href="route('admin.banners.index')" class="text-decoration-none" v-if="hasPermission('banner.view')">
+                        <v-list-item prepend-icon="mdi-watermark" title="Banners" :active="isActive('admin.banners.index')"
+                            rounded="lg" class="mb-1" density="compact" />
+                        </Link>
+                    </div>
+                </v-list-group>
 
                 <!-- Products Section -->
                 <v-list-group value="Product" class="mb-1" v-if="hasPermission('product.view')">
@@ -105,12 +114,44 @@ if (isGroupActive(['product.products', 'product.categories', 'product.brands', '
                     </div>
                 </v-list-group>
 
+                <!-- Users Section -->
+                <v-list-group value="Users" class="mb-1" v-if="hasPermission('user.view')">
+                    <template v-slot:activator="{ props }">
+                        <v-list-item v-bind="props" prepend-icon="mdi-account-group-outline" title="Users" rounded="lg"
+                            :active="isGroupActive(['users', 'account'])" />
+                    </template>
+
+                    <div class="ps-6 child-nav-align">
+                        <v-list-item prepend-icon="mdi-account-group-outline" title="Users" value="users" rounded="lg"
+                            class="mb-1" v-if="hasPermission('user.view')" />
+                        <v-list-item prepend-icon="mdi-account" title="My Account" value="account" rounded="lg" class="mb-1" />
+                    </div>
+                </v-list-group>
+
+                <!-- Admin Section -->
+                <v-list-group value="Admin" class="mb-1" v-if="hasPermission('role.view') || hasPermission('permission.view')">
+                    <template v-slot:activator="{ props }">
+                        <v-list-item v-bind="props" prepend-icon="mdi-shield-crown-outline" title="Admin" rounded="lg"
+                            :active="isGroupActive(['admin.roles.index', 'admin.permissions.index'])" />
+                    </template>
+
+                    <div class="ps-6 child-nav-align">
+                        <Link :href="route('admin.roles.index')" class="text-decoration-none" v-if="hasPermission('role.view')">
+                        <v-list-item prepend-icon="mdi-shield-account" title="Roles" :active="isActive('admin.roles.index')"
+                            rounded="lg" class="mb-1" density="compact" />
+                        </Link>
+                        <Link :href="route('admin.permissions.index')" class="text-decoration-none" v-if="hasPermission('permission.view')">
+                        <v-list-item prepend-icon="mdi-shield-key" title="Permissions" :active="isActive('admin.permissions.index')"
+                            rounded="lg" class="mb-1" density="compact" />
+                        </Link>
+                        <Link :href="route('admin.roles.assign.create')" class="text-decoration-none" v-if="hasPermission('role.update')">
+                        <v-list-item prepend-icon="mdi-account-key" title="Assign Role" :active="isActive('admin.roles.assign')"
+                            rounded="lg" class="mb-1" density="compact" />
+                        </Link>
+                    </div>
+                </v-list-group>
+
                 <!-- Other Menu Items -->
-                <v-list-item prepend-icon="mdi-account" title="My Account" value="account" rounded="lg" class="mb-1" />
-
-                <v-list-item prepend-icon="mdi-account-group-outline" title="Users" value="users" rounded="lg"
-                    class="mb-1" v-if="hasPermission('user.view')" />
-
                 <v-list-item prepend-icon="mdi-chart-line" title="Analytics" value="analytics" rounded="lg"
                     class="mb-1" />
 

@@ -75,6 +75,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('roles/{role}/edit', [RolesController::class, 'edit'])->name('admin.roles.edit')->middleware('permission:role.update');
     Route::put('roles/{role}', [RolesController::class, 'update'])->name('admin.roles.update')->middleware('permission:role.update');
     Route::delete('roles/{role}', [RolesController::class, 'destroy'])->name('admin.roles.destroy')->middleware('permission:role.delete');
+    Route::get('roles/assign/create', [RolesController::class, 'assignRoleForm'])->name('admin.roles.assign.create')->middleware('permission:role.update');
+    Route::post('roles/assign', [RolesController::class, 'assignRole'])->name('admin.roles.assign.store')->middleware('permission:role.update');
 
     Route::get('banners', [BannerController::class, 'index'])->name('admin.banners.index')->middleware('permission:banner.view');
     Route::get('banners/create', [BannerController::class, 'create'])->name('admin.banners.create')->middleware('permission:banner.create');
