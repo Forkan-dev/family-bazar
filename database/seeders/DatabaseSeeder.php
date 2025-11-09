@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             UnitSeeder::class,
             ProductSeeder::class,
             TagSeeder::class,
+            TypeSeeder::class,
             BrandSeeder::class,
             DivisionSeeder::class,
             DistrictSeeder::class,

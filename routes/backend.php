@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\UnionController;
+use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DocumentController;
@@ -35,6 +36,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('permissions', PermissionsController::class)->names('admin.permissions');
     Route::resource('roles', RolesController::class)->names('admin.roles');
+    Route::resource('banners', BannerController::class)->names('admin.banners');
 });
 
 require __DIR__.'/settings.php';
