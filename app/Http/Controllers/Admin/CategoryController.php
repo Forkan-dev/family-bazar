@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Product\Category;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
+use App\Models\Product\Category;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Actions\Category\CreateCategory;
+use App\Http\Requests\Admin\Category\StoreCategoryRequest;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
 
 
     public function index()
@@ -23,9 +23,7 @@ class CategoryController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+
     public function create()
     {
         $categories = Category::all();
@@ -37,47 +35,36 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+
+
+    public function store(StoreCategoryRequest $request, CreateCategory $createCategory)
     {
-        $request->validate([
-            'title_en' => 'required|string|max:255',
-            'title_bn' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:categories',
-            'description' => 'nullable|string',
-            'icon' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // ✅ validate file
-            'parent_id' => 'nullable|exists:categories,id',
-        ]);
 
-        $data = $request->all();
+        try {
+            DB::beginTransaction();
+            $createCategory->handle($request);
+            DB::commit();
+            return redirect()
+                ->route('product.categories.index')
+                ->with('success', 'Category created successfully.');
+        } catch (\Exception $e) {
 
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('images/category'), $imageName);
+            DB::rollBack();
+            // dd($e->getMessage());
 
-            // Save relative path to DB
-            $data['image'] = 'images/category/' . $imageName;
+            return redirect()
+                ->back()
+                ->withErrors(['error' => 'An error occurred while creating the category.'])
+                ->withInput();
         }
-
-        Category::create($data);
-
-        return redirect()->route('product.categories.index')->with('success', 'Category created successfully.');
     }
 
-
-    /**
-     * Display the specified resource.
-     */
     public function show(Category $category)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+
 
 
     public function edit(Category $category)
@@ -87,29 +74,14 @@ class CategoryController extends Controller
 
         return Inertia::render('Admin/Category/Edit', [
             'category' => $category,
-            'categories' => $categories, // ✅ এখানে পাঠানো হচ্ছে
+            'categories' => $categories,
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    // public function update(Request $request, Category $category)
-    // {
-    //     $request->validate([
-    //         'title_en' => 'required|string|max:255',
-    //         'title_bn' => 'required|string|max:255',
-    //         'slug' => 'required|string|max:255|unique:categories,slug,' . $category->id,
-    //         'description' => 'nullable|string',
-    //         'icon' => 'nullable|string',
-    //         'image' => 'nullable|string',
-    //         'parent_id' => 'nullable|exists:categories,id',
-    //     ]);
 
-    //     $category->update($request->all());
-
-    //     return redirect()->route('categories.index');
-    // }
 
     public function update(Request $request, Category $category)
     {

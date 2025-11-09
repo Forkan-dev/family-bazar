@@ -1,7 +1,6 @@
 
 <script setup lang="ts">
 import MasterLayout from '@/layouts/MasterLayout.vue';
-import { computed, watch } from 'vue';
 import { Head, useForm, Link } from '@inertiajs/vue3';
 import VInputField from '@/components/VInputField.vue';
 import { VButton } from '@/components/ui/button';
@@ -51,7 +50,7 @@ const submit = () => {
                         <v-divider></v-divider>
                         <v-card-text>
                             <v-form @submit.prevent="submit">
-                                <v-row>
+                                <v-row class="mt-4">
                                     <v-col cols="12" md="6">
                                         <VInputField
                                             v-model="form.en_name"
@@ -81,7 +80,7 @@ const submit = () => {
                                             variant="outlined"
                                         />
                                     </v-col>
-                                    <v-col cols="12" md="6">
+                                    <v-col cols="12">
                                         <VFileInput
                                             v-model="form.image"
                                             title="Upload New Image"

@@ -3,27 +3,51 @@ import { VButton } from '@/components/ui/button';
 import MasterLayout from '@/layouts/MasterLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
-defineProps({
-    categories: Array, // Inertia থেকে আসবে
+const props = defineProps({
+    banners: Array, // Inertia from controller
 });
 
 const headers = [
-    { title: 'Title (ENGLISH)', key: 'title_en' },
-    { title: 'Title (BANGLA)', key: 'title_bn' },
-    { title: 'Slug', key: 'slug' },
-    { title: 'SubCategory', key: 'subCategory' },
+    { title: 'Title English', key: 'title_en' },
+    { title: 'Title Bengali', key: 'title_bn' },
+    { title: 'Sub Title English', key: 'sub_title_en' },
+    { title: 'Sub Title Bengali', key: 'sub_title_bn' },
     { title: 'Image', key: 'image' },
+    { title: 'Type', key: 'type.name_en' },
     { title: 'Actions', key: 'actions', sortable: false },
 ];
 
+const processedBanners = computed(() => {
+    return props.banners?.map(banner => {
+        const parseJson = (jsonString) => {
+            try {
+                return typeof jsonString === 'string' ? JSON.parse(jsonString) : jsonString;
+            } catch {
+                return {};
+            }
+        };
+
+        const title = parseJson(banner.title);
+        const subTitle = parseJson(banner.sub_title);
+
+        return {
+            ...banner,
+            title_en: title?.en || '',
+            title_bn: title?.bn || '',
+            sub_title_en: subTitle?.en || '',
+            sub_title_bn: subTitle?.bn || '',
+        };
+    }) || [];
+});
+
 const search = ref('');
 
-const deleteCategory = (id: number) => {
-    if (confirm('Are you sure you want to delete this category?')) {
-        router.delete(route('product.categories.destroy', id), {
-            onSuccess: () => alert('Category deleted successfully.'),
+const deleteBanner = (id: number) => {
+    if (confirm('Are you sure you want to delete this banner?')) {
+        router.delete(route('admin.banners.destroy', id), {
+            onSuccess: () => alert('Banner deleted successfully.'),
             onError: (errors) => console.error(errors),
         });
     }
@@ -32,7 +56,7 @@ const deleteCategory = (id: number) => {
 
 <template>
     <MasterLayout>
-        <Head title="Categories" />
+        <Head title="Banners" />
 
         <v-container>
             <v-row>
@@ -41,14 +65,14 @@ const deleteCategory = (id: number) => {
                         <v-card-title
                             class="d-flex align-center justify-space-between"
                         >
-                            Categories
+                            Banners
                             <VButton>
                                 <v-icon left>mdi-plus</v-icon>
                                 <Link
-                                    :href="route('product.categories.create')"
+                                    :href="route('admin.banners.create')"
                                     class="mr-2"
                                 >
-                                    Add Category
+                                    Add Banner
                                 </Link>
                             </VButton>
                         </v-card-title>
@@ -66,28 +90,16 @@ const deleteCategory = (id: number) => {
 
                             <v-data-table
                                 :headers="headers"
-                                :items="categories"
+                                :items="processedBanners"
                                 :search="search"
                                 class="elevation-1 mt-4"
                                 density="compact"
                             >
-                                <!-- SubCategory Column -->
-                                <template #subCategory="{ item }">
-                                    <span v-if="item.parent">
-                                        {{ item.parent.title_en }} ({{
-                                            item.parent.title_bn
-                                        }}) → {{ item.title_en }} ({{
-                                            item.title_bn
-                                        }})
-                                    </span>
-                                    <span v-else> </span>
-                                </template>
-
-                                <template #image="{ item }">
+                                <template #item.image="{ item }">
                                     <v-img
                                         v-if="item.image"
-                                        :src="`/${item.image}`"
-                                        alt="Category Image"
+                                        :src="item.image"
+                                        alt="Banner Image"
                                         max-width="80"
                                         max-height="50"
                                         contain
@@ -96,10 +108,10 @@ const deleteCategory = (id: number) => {
                                 </template>
 
                                 <!-- Actions Column -->
-                                <template #actions="{ item }">
+                                <template #item.actions="{ item }">
                                     <Link
                                         :href="
-                                            route('product.categories.edit', item.id)
+                                            route('admin.banners.edit', item.id)
                                         "
                                     >
                                         <v-icon small class="me-2"
@@ -108,7 +120,7 @@ const deleteCategory = (id: number) => {
                                     </Link>
                                     <v-icon
                                         small
-                                        @click="deleteCategory(item.id)"
+                                        @click="deleteBanner(item.id)"
                                         >mdi-delete</v-icon
                                     >
                                 </template>

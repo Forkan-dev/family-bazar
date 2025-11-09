@@ -5,7 +5,7 @@ import { Head, Link, router } from '@inertiajs/vue3';
 
 import { ref } from 'vue';
 
-const props = defineProps({
+defineProps({
     brands: Array,
 });
 
@@ -70,7 +70,7 @@ const deleteBrand = (id: number) => {
                                 class="elevation-1 mt-4"
                                 density="compact"
                             >
-                                <template v-slot:item.image="{ item }">
+                                <template #image="{ item }">
                                     <v-img
                                         v-if="item.image_url"
                                         :src="item.image_url"
@@ -84,7 +84,7 @@ const deleteBrand = (id: number) => {
                                 </template>
 
                                 <!-- Actions Column -->
-                                <template v-slot:item.actions="{ item }">
+                                <template #actions="{ item }">
                                     <Link :href="route('product.brands.edit', item.id)">
                                         <v-icon small class="me-2"
                                             >mdi-pencil</v-icon

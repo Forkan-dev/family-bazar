@@ -54,6 +54,18 @@ if (isGroupActive(['product.products', 'product.categories', 'product.brands', '
                     :active="route().current('dashboard')" rounded="lg" class="mb-1" />
                 </Link>
 
+                <Link :href="route('admin.banners.index')" class="text-decoration-none">
+    <v-list-item
+        prepend-icon="mdi-watermark"
+        title="Banners"
+        :active="isActive('admin.banners.index')"
+        rounded="lg"
+        class="mb-1"
+        density="compact"
+    />
+</Link>
+
+
                 <!-- Products Section -->
                 <v-list-group value="Product" class="mb-1">
                     <template v-slot:activator="{ props }">

@@ -44,7 +44,7 @@ watch(() => form.en_name, (newName) => {
                         <v-divider></v-divider>
                         <v-card-text>
                             <v-form @submit.prevent="submit">
-                                <v-row>
+                                <v-row class="mt-4">
                                     <v-col cols="12" md="6">
                                         <VInputField
                                             v-model="form.en_name"

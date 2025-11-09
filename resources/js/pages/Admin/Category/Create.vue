@@ -6,7 +6,7 @@ import MasterLayout from '@/layouts/MasterLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { watch } from 'vue';
 
-const props = defineProps<{
+defineProps<{
     categories: Array<{ id: number; title_en: string; title_bn: string }>;
 }>();
 
@@ -83,7 +83,7 @@ watch(
                                             variant="outlined"
                                         />
                                     </v-col>
-                                    <v-col cols="12">
+                                    <v-col cols="6">
                                         <VInputField
                                             v-model="form.slug"
                                             label="URL Slug"
@@ -94,19 +94,7 @@ watch(
                                             hint="Auto-generated from English title"
                                         />
                                     </v-col>
-                                    <v-col cols="12">
-                                        <VInputField
-                                            v-model="form.description"
-                                            label="Description"
-                                            :error-messages="
-                                                form.errors.description
-                                            "
-                                            multiline
-                                            density="compact"
-                                            variant="outlined"
-                                            rows="3"
-                                        />
-                                    </v-col>
+
                                     <v-col cols="12" md="6">
                                         <v-select
                                             v-model="form.parent_id"
@@ -128,8 +116,25 @@ watch(
                                     </v-col>
 
 
+
+                                    <v-col cols="12">
+                                        <VInputField
+                                            v-model="form.description"
+                                            label="Description"
+                                            :error-messages="
+                                                form.errors.description
+                                            "
+                                            multiline
+                                            density="compact"
+                                            variant="outlined"
+                                            rows="3"
+                                        />
+                                    </v-col>
+
+
+
                                     <!-- Category Image Upload -->
-                                    <v-col cols="12" md="8">
+                                    <v-col cols="12">
                                         <v-file-input
                                             v-model="form.image"
                                             title="Upload Category Image"
