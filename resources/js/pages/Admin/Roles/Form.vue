@@ -4,6 +4,7 @@ import { Head, useForm } from '@inertiajs/vue3';
 import { Link } from '@inertiajs/vue3';
 import VInputField from '@/components/VInputField.vue';
 import { VButton } from '@/components/ui/button';
+import { computed, ref } from 'vue';
 
 const props = defineProps({
     role: Object, // Assuming a role object will be passed for editing
@@ -23,6 +24,56 @@ const submit = () => {
         form.post(route('admin.roles.store'));
     }
 };
+
+const groupedPermissions = computed(() => {
+    return props.permissions.reduce((acc, permission) => {
+        const group = permission.name.split('.')[0];
+        if (!acc[group]) {
+            acc[group] = [];
+        }
+        acc[group].push(permission);
+        return acc;
+    }, {});
+});
+
+const numColumns = 3;
+const columnPermissions = computed(() => {
+    const groups = Object.keys(groupedPermissions.value);
+    const columns = Array.from({ length: numColumns }, () => ({}));
+    groups.forEach((group, index) => {
+        const columnIndex = index % numColumns;
+        columns[columnIndex][group] = groupedPermissions.value[group];
+    });
+    return columns;
+});
+
+const toggleGroup = (groupPermissions, event) => {
+    const permissionIds = groupPermissions.map(p => p.id);
+    if (event) {
+        form.selectedPermissions = [...new Set([...form.selectedPermissions, ...permissionIds])];
+    } else {
+        form.selectedPermissions = form.selectedPermissions.filter(id => !permissionIds.includes(id));
+    }
+};
+
+const isGroupSelected = (groupPermissions) => {
+    const permissionIds = groupPermissions.map(p => p.id);
+    const selectedCount = permissionIds.filter(id => form.selectedPermissions.includes(id)).length;
+    if (selectedCount === 0) return false;
+    if (selectedCount === permissionIds.length) return true;
+    return 'indeterminate';
+};
+
+const collapsedGroups = ref([]);
+
+const toggleCollapse = (group) => {
+    if (collapsedGroups.value.includes(group)) {
+        collapsedGroups.value = collapsedGroups.value.filter(g => g !== group);
+    } else {
+        collapsedGroups.value.push(group);
+    }
+};
+
 </script>
 
 <template>
@@ -55,23 +106,55 @@ const submit = () => {
                                             :error-messages="form.errors.guard_name" density="compact"
                                             variant="outlined" />
                                     </v-col>
-                                    <v-col cols="12">
-                                        <v-select
-                                            v-model="form.selectedPermissions"
-                                            :items="permissions"
-                                            item-title="name"
-                                            item-value="id"
-                                            label="Permissions"
-                                            multiple
-                                            chips
-                                            variant="outlined"
-                                            density="compact"
-                                            :error-messages="form.errors.selectedPermissions"
-                                            prepend-inner-icon="mdi-security"
-                                            closable-chips
-                                        ></v-select>
+                                </v-row>
+
+                                <v-divider class="my-5"></v-divider>
+                                <h3 class="text-h6 mb-4">Permissions</h3>
+
+                                <v-row>
+                                    <v-col v-for="(column, colIndex) in columnPermissions" :key="colIndex" cols="12" md="4">
+                                        <div v-for="(permissions, group) in column" :key="group" class="mb-4">
+                                            <v-card elevation="1">
+                                                <v-card-title class="d-flex align-center pa-2">
+                                                    <span class="text-subtitle-1 text-capitalize flex-grow-1">{{ group }}</span>
+                                                    <v-checkbox
+                                                        :model-value="isGroupSelected(permissions)"
+                                                        @update:modelValue="toggleGroup(permissions, $event)"
+                                                        density="compact"
+                                                        hide-details
+                                                        class="mr-2"
+                                                        :indeterminate="isGroupSelected(permissions) === 'indeterminate'"
+                                                    ></v-checkbox>
+                                                    <v-btn
+                                                        icon
+                                                        size="small"
+                                                        variant="text"
+                                                        @click="toggleCollapse(group)"
+                                                    >
+                                                        <v-icon>{{ collapsedGroups.includes(group) ? 'mdi-chevron-down' : 'mdi-chevron-up' }}</v-icon>
+                                                    </v-btn>
+                                                </v-card-title>
+                                                <v-expand-transition>
+                                                    <div v-show="!collapsedGroups.includes(group)">
+                                                        <v-divider></v-divider>
+                                                        <v-card-text class="pa-2">
+                                                            <div v-for="permission in permissions" :key="permission.id">
+                                                                <v-checkbox
+                                                                    v-model="form.selectedPermissions"
+                                                                    :label="permission.name.split('.')[1]"
+                                                                    :value="permission.id"
+                                                                    density="compact"
+                                                                    hide-details
+                                                                ></v-checkbox>
+                                                            </div>
+                                                        </v-card-text>
+                                                    </div>
+                                                </v-expand-transition>
+                                            </v-card>
+                                        </div>
                                     </v-col>
                                 </v-row>
+
                                 <v-card-actions class="pa-4">
                                     <div class="d-flex gap-3">
                                         <VButton type="submit" :disabled="form.processing" :loading="form.processing">
