@@ -55,15 +55,9 @@ if (isGroupActive(['product.products', 'product.categories', 'product.brands', '
                 </Link>
 
                 <Link :href="route('admin.banners.index')" class="text-decoration-none">
-    <v-list-item
-        prepend-icon="mdi-watermark"
-        title="Banners"
-        :active="isActive('admin.banners.index')"
-        rounded="lg"
-        class="mb-1"
-        density="compact"
-    />
-</Link>
+                <v-list-item prepend-icon="mdi-watermark" title="Banners" :active="isActive('admin.banners.index')"
+                    rounded="lg" class="mb-1" density="compact" />
+                </Link>
 
 
                 <!-- Products Section -->
@@ -75,41 +69,23 @@ if (isGroupActive(['product.products', 'product.categories', 'product.brands', '
 
                     <div class="ps-6 child-nav-align">
                         <Link :href="route('product.products.index')" class="text-decoration-none">
-                        <v-list-item prepend-icon="mdi-package" title="Product List" :active="isActive('product.products')"
-                            rounded="lg" class="mb-1" density="compact" />
+                        <v-list-item prepend-icon="mdi-package" title="Product List"
+                            :active="isActive('product.products')" rounded="lg" class="mb-1" density="compact" />
                         </Link>
 
                         <Link :href="route('product.categories.index')" class="text-decoration-none">
-                            <v-list-item
-                                prepend-icon="mdi-shape"
-                                title="Categories"
-                                :active="isActive('product.categories')"
-                                rounded="lg"
-                                class="mb-1"
-                                density="compact"
-                            />
+                        <v-list-item prepend-icon="mdi-shape" title="Categories"
+                            :active="isActive('product.categories')" rounded="lg" class="mb-1" density="compact" />
                         </Link>
 
                         <Link :href="route('product.brands.index')" class="text-decoration-none">
-                            <v-list-item
-                                prepend-icon="mdi-watermark"
-                                title="Brands"
-                                :active="isActive('product.brands')"
-                                rounded="lg"
-                                class="mb-1"
-                                density="compact"
-                            />
+                        <v-list-item prepend-icon="mdi-watermark" title="Brands" :active="isActive('product.brands')"
+                            rounded="lg" class="mb-1" density="compact" />
                         </Link>
 
                         <Link :href="route('product.locations.index')" class="text-decoration-none">
-                            <v-list-item
-                                prepend-icon="mdi-map-marker"
-                                title="Locations"
-                                :active="isActive('product.locations')"
-                                rounded="lg"
-                                class="mb-1"
-                                density="compact"
-                            />
+                        <v-list-item prepend-icon="mdi-map-marker" title="Locations"
+                            :active="isActive('product.locations')" rounded="lg" class="mb-1" density="compact" />
                         </Link>
                     </div>
                 </v-list-group>
