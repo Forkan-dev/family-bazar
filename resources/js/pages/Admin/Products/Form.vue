@@ -200,9 +200,8 @@ watch(() => form.name_en, (newName) => {
                                         </v-row>
                                         <v-row dense>
                                             <v-col cols="12" sm="4">
-                                                <v-select v-model="form.unit_id" :items="units"
-                                                    item-title="displayName" item-value="id" label="Unit"
-                                                    variant="outlined" density="compact"
+                                                <v-select v-model="form.unit_id" :items="units" item-title="displayName"
+                                                    item-value="id" label="Unit" variant="outlined" density="compact"
                                                     :error-messages="form.errors.unit_id"
                                                     prepend-inner-icon="mdi-weight" />
                                             </v-col>
