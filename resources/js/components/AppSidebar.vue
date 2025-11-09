@@ -40,6 +40,10 @@ if (isGroupActive(['product.products', 'product.categories', 'product.brands', '
     open.value.push('Product')
 }
 
+if (isGroupActive(['admin.roles', 'admin.permissions', 'admin.roles.assign'])) {
+    open.value.push('Admin')
+}
+
 </script>
 
 <template>
@@ -132,7 +136,7 @@ if (isGroupActive(['product.products', 'product.categories', 'product.brands', '
                 <v-list-group value="Admin" class="mb-1" v-if="hasPermission('role.view') || hasPermission('permission.view')">
                     <template v-slot:activator="{ props }">
                         <v-list-item v-bind="props" prepend-icon="mdi-shield-crown-outline" title="Admin" rounded="lg"
-                            :active="isGroupActive(['admin.roles.index', 'admin.permissions.index'])" />
+                            :active="isGroupActive(['admin.roles', 'admin.permissions','admin.roles.assign'])" />
                     </template>
 
                     <div class="ps-6 child-nav-align">
