@@ -3,13 +3,15 @@
 namespace App\Actions\Banner;
 
 use App\Models\Banner;
-use Illuminate\Support\Facades\DB;
-use App\Http\Requests\Admin\Banner\StoreBannerRequest;
 use App\Traits\ImageUploadTrait;
+use Illuminate\Support\Facades\DB;
+use App\Services\Contracts\ImageServiceInterface;
+use App\Http\Requests\Admin\Banner\StoreBannerRequest;
 
 class CreateBanner
 {
-    use ImageUploadTrait;
+
+    public function __construct(private ImageServiceInterface $imageService) {}
    public function handle(StoreBannerRequest $request): Banner
     {
         $validatedData = $request->validated();
@@ -40,7 +42,13 @@ class CreateBanner
             $banner = Banner::create($processedData);
 
             // ✅ Single image upload call
-            $this->uploadSingleImage($request, 'image', 'banners', $banner->documents());
+            if ($request->hasFile('image')) {
+                $this->imageService->uploadSingle(
+                    $request->file('image'),
+                    'banners',
+                    $banner->documents()
+                );
+            }
 
             return $banner;
         });
