@@ -15,7 +15,7 @@ const headers = [
     { title: 'Sub Title English', key: 'sub_title_en' },
     { title: 'Sub Title Bengali', key: 'sub_title_bn' },
     { title: 'Image', key: 'image' },
-    { title: 'Type', key: 'type.name' },
+    { title: 'Type', key: 'type.name_en' },
     { title: 'Actions', key: 'actions', sortable: false },
 ];
 
@@ -31,7 +31,7 @@ const processedBanners = computed(() => {
 
         const title = parseJson(banner.title);
         const subTitle = parseJson(banner.sub_title);
-        
+
         return {
             ...banner,
             title_en: title?.en || '',
