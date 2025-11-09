@@ -1,10 +1,25 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 
 const drawer = ref(true)
 const rail = ref(false)
 const open = ref([])
+
+const { auth } = usePage().props
+
+const hasPermission = (permission: string) => {
+    if (!auth) {
+        return false;
+    }
+    if (auth.is_super_admin) {
+        return true;
+    }
+    if (!auth.permissions) {
+        return false;
+    }
+    return auth.permissions.includes(permission)
+}
 
 const logout = () => {
     console.log('Logging out...')
@@ -49,41 +64,41 @@ if (isGroupActive(['product.products', 'product.categories', 'product.brands', '
             <!-- Navigation Menu -->
             <v-list class="flex-grow-1 pa-1" density="compact" nav v-model:opened="open">
                 <!-- Dashboard -->
-                <Link :href="route('dashboard')" class="text-decoration-none">
+                <Link :href="route('dashboard')" class="text-decoration-none" v-if="hasPermission('dashboard.view')">
                 <v-list-item prepend-icon="mdi-view-dashboard" title="Dashboard" value="dashboard"
                     :active="route().current('dashboard')" rounded="lg" class="mb-1" />
                 </Link>
 
-                <Link :href="route('admin.banners.index')" class="text-decoration-none">
+                <Link :href="route('admin.banners.index')" class="text-decoration-none" v-if="hasPermission('banner.view')">
                 <v-list-item prepend-icon="mdi-watermark" title="Banners" :active="isActive('admin.banners.index')"
                     rounded="lg" class="mb-1" density="compact" />
                 </Link>
 
 
                 <!-- Products Section -->
-                <v-list-group value="Product" class="mb-1">
+                <v-list-group value="Product" class="mb-1" v-if="hasPermission('product.view')">
                     <template v-slot:activator="{ props }">
                         <v-list-item v-bind="props" prepend-icon="mdi-package-variant" title="Product " rounded="lg"
                             :active="isGroupActive(['product.products', 'product.categories', 'product.brands', 'product.locations'])" />
                     </template>
 
                     <div class="ps-6 child-nav-align">
-                        <Link :href="route('product.products.index')" class="text-decoration-none">
+                        <Link :href="route('product.products.index')" class="text-decoration-none" v-if="hasPermission('product.view')">
                         <v-list-item prepend-icon="mdi-package" title="Product List"
                             :active="isActive('product.products')" rounded="lg" class="mb-1" density="compact" />
                         </Link>
 
-                        <Link :href="route('product.categories.index')" class="text-decoration-none">
+                        <Link :href="route('product.categories.index')" class="text-decoration-none" v-if="hasPermission('category.view')">
                         <v-list-item prepend-icon="mdi-shape" title="Categories"
                             :active="isActive('product.categories')" rounded="lg" class="mb-1" density="compact" />
                         </Link>
 
-                        <Link :href="route('product.brands.index')" class="text-decoration-none">
+                        <Link :href="route('product.brands.index')" class="text-decoration-none" v-if="hasPermission('brand.view')">
                         <v-list-item prepend-icon="mdi-watermark" title="Brands" :active="isActive('product.brands')"
                             rounded="lg" class="mb-1" density="compact" />
                         </Link>
 
-                        <Link :href="route('product.locations.index')" class="text-decoration-none">
+                        <Link :href="route('product.locations.index')" class="text-decoration-none" v-if="hasPermission('location.view')">
                         <v-list-item prepend-icon="mdi-map-marker" title="Locations"
                             :active="isActive('product.locations')" rounded="lg" class="mb-1" density="compact" />
                         </Link>
@@ -94,7 +109,7 @@ if (isGroupActive(['product.products', 'product.categories', 'product.brands', '
                 <v-list-item prepend-icon="mdi-account" title="My Account" value="account" rounded="lg" class="mb-1" />
 
                 <v-list-item prepend-icon="mdi-account-group-outline" title="Users" value="users" rounded="lg"
-                    class="mb-1" />
+                    class="mb-1" v-if="hasPermission('user.view')" />
 
                 <v-list-item prepend-icon="mdi-chart-line" title="Analytics" value="analytics" rounded="lg"
                     class="mb-1" />
