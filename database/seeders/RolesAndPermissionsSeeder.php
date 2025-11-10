@@ -39,7 +39,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'permission.view',
             'permission.update',
             'permission.delete',
-            'view dashboard',
+            'dashboard.view',
         ];
 
         foreach ($permissions as $permission) {

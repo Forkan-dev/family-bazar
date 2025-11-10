@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use App\Models\User;
 
 class RolesController extends Controller
 {
@@ -41,6 +42,16 @@ class RolesController extends Controller
             ->with('success', 'Role created successfully.');
     }
 
+    public function show(Role $role)
+    {
+        $permissions = Permission::all();
+        $role->load('permissions');
+        return Inertia::render('Admin/Roles/Form', [
+            'role' => $role,
+            'permissions' => $permissions,
+        ]);
+    }
+
     public function edit(Role $role)
     {
         $permissions = Permission::all();
@@ -72,5 +83,30 @@ class RolesController extends Controller
 
         return redirect()->route('admin.roles.index')
             ->with('success', 'Role deleted successfully.');
+    }
+
+    public function assignRoleForm()
+    {
+        $users = User::with('roles')->get();
+        $roles = Role::all();
+
+        return Inertia::render('Admin/Roles/AssignRole', [
+            'users' => $users,
+            'roles' => $roles,
+        ]);
+    }
+
+    public function assignRole(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'roles' => 'required|array',
+        ]);
+
+        $user = User::findOrFail($request->user_id);
+        $user->syncRoles($request->roles);
+
+        return redirect()->route('admin.roles.index')
+            ->with('success', 'Roles assigned successfully.');
     }
 }

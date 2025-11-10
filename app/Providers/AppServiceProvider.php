@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Services\ImageService;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use App\Services\Contracts\ImageServiceInterface;
 
@@ -21,6 +22,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+ Gate::before(function ($user, $ability) {
+        return $user->hasRole('super_admin') ? true : null;
+    });
     }
 }
