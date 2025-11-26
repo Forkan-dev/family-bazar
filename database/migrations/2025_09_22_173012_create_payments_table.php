@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('payments', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('order_id')->constrained()->onDelete('cascade');
-            $table->decimal('amount', 10, 2);
-            $table->enum('payment_method', ['cash', 'mobile banking', 'card']);
-            $table->enum('status', ['pending', 'completed', 'failed'])->default('pending');
-            $table->string('transaction_id')->nullable();
-            $table->timestamp('created_at')->useCurrent();
-        });
+        // Schema::create('payments', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->foreignId('order_id')->constrained()->onDelete('cascade');
+        //     $table->decimal('amount', 10, 2);
+        //     $table->enum('payment_method', ['cash', 'mobile banking', 'card']);
+        //     $table->enum('status', ['pending', 'completed', 'failed'])->default('pending');
+        //     $table->string('transaction_id')->nullable();
+        //     $table->timestamp('created_at')->useCurrent();
+        // });
     }
 
     /**
