@@ -107,14 +107,17 @@ const getFileUrl = (file: File) => {
 
         <!-- Selected Images Preview -->
         <div v-if="selectedFiles.length > 0" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-            <div v-for="(file, index) in selectedFiles" :key="`file-${index}`" class="relative group">
-                <img :src="getFileUrl(file)" :alt="file.name" class="w-full h-24 object-cover rounded-lg border" />
-                <button type="button" @click.stop="removeFile(index)"
-                    class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <X class="h-3 w-3" />
-                </button>
-                <div class="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-xs p-1 rounded-b-lg truncate">
-                    {{ file.name }}
+            <div v-for="(file, index) in selectedFiles" :key="`file-${index}`" class="relative group overflow-hidden">
+                <div class="relative w-full h-24 rounded-lg border overflow-hidden bg-gray-100">
+                    <img :src="getFileUrl(file)" :alt="file.name" class="w-full h-full object-cover" />
+                    <button type="button" @click.stop="removeFile(index)"
+                        class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                        <X class="h-3 w-3" />
+                    </button>
+                    <div
+                        class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent text-white text-xs p-2">
+                        <p class="truncate">{{ file.name }}</p>
+                    </div>
                 </div>
             </div>
         </div>

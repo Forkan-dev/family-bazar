@@ -2,31 +2,34 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Inertia\Inertia;
-use Illuminate\Http\Request;
-use App\Models\Product\Category;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
 use App\Actions\Category\CreateCategory;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Category\StoreCategoryRequest;
+use App\Models\Product\Category;
+use App\Services\CategoryService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class CategoryController extends Controller
 {
+    public function __construct(
+        private CategoryService $categoryService
+    ) {}
 
-
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::with('parent')->get();
+        $categories = $this->categoryService->getPaginatedCategories($request);
 
         return Inertia::render('Admin/Category/index', [
             'categories' => $categories,
         ]);
     }
 
-
     public function create()
     {
         $categories = Category::all();
+
         return Inertia::render('Admin/Category/Create', [
             'categories' => $categories,
         ]);
@@ -35,8 +38,6 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-
-
     public function store(StoreCategoryRequest $request, CreateCategory $createCategory)
     {
 
@@ -44,6 +45,7 @@ class CategoryController extends Controller
             DB::beginTransaction();
             $createCategory->handle($request);
             DB::commit();
+
             return redirect()
                 ->route('product.categories.index')
                 ->with('success', 'Category created successfully.');
@@ -64,9 +66,6 @@ class CategoryController extends Controller
         //
     }
 
-
-
-
     public function edit(Category $category)
     {
         // সকল categories fetch করা, except current category (optional)
@@ -81,14 +80,12 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-
-
     public function update(Request $request, Category $category)
     {
         $request->validate([
             'title_en' => 'required|string|max:255',
             'title_bn' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:categories,slug,' . $category->id,
+            'slug' => 'required|string|max:255|unique:categories,slug,'.$category->id,
             'description' => 'nullable|string',
             'icon' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // validate image
@@ -99,21 +96,20 @@ class CategoryController extends Controller
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
-            $filename = time() . '_' . $file->getClientOriginalName();
+            $filename = time().'_'.$file->getClientOriginalName();
             $file->move(public_path('images/category'), $filename);
 
             if ($category->image && file_exists(public_path($category->image))) {
                 unlink(public_path($category->image));
             }
 
-            $data['image'] = 'images/category/' . $filename;
+            $data['image'] = 'images/category/'.$filename;
         }
 
         $category->update($data);
 
         return redirect()->route('product.categories.index')->with('success', 'Category updated successfully!');
     }
-
 
     /**
      * Remove the specified resource from storage.
