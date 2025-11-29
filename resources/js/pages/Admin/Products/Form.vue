@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { FormContainer } from '@/components/ui/form-container'
 import { FormSelect } from '@/components/ui/form-select'
-import FileDropzone from '@/components/ui/FileDropzone.vue'
+import MultiFileDropzone from '@/components/ui/MultiFileDropzone.vue'
 import MultiSelectInput from '@/components/ui/MultiSelectInput.vue'
 import VInputField from '@/components/VInputField.vue'
 import MasterLayout from '@/layouts/MasterLayout.vue'
@@ -37,31 +37,42 @@ const form = useForm({
     description: props.product?.description || '',
     price: props.product?.price || 0,
     stock_quantity: props.product?.stock_quantity || 0,
-    images: null as File | null,
+    images: [] as File[],
     category_id: props.product?.category_id || null,
     unit_id: props.product?.unit_id || null,
     brand_id: props.product?.brand_id || null,
     quantity: props.product?.quantity || 0,
-    tags: props.product?.tags || [],
+    tags: props.product?.tags?.map((tag: any) => tag.id) || [],
 });
 
 form.transform((data: any) => {
-    const transformedData: any = {
-        ...data,
-        tags: data.tags.map((tag: any) => {
-            if (typeof tag === 'object' && tag !== null && tag.id) {
-                return tag.id;
-            }
-            return tag;
-        }),
-        images: data.images ? data.images : undefined,
-    };
+    const formData = new FormData();
 
-    if (props.product) {
-        transformedData._method = 'PUT';
+    // Add text fields
+    Object.keys(data).forEach(key => {
+        if (key === 'images') return; // Handle images separately
+        if (key === 'tags') {
+            // Handle tags array
+            data.tags.forEach((tag: any) => {
+                formData.append('tags[]', typeof tag === 'object' ? tag.id : tag);
+            });
+        } else {
+            formData.append(key, data[key] || '');
+        }
+    });
+
+    // Add images
+    if (data.images && data.images.length > 0) {
+        data.images.forEach((file: File) => {
+            formData.append('images[]', file);
+        });
     }
 
-    return transformedData;
+    if (props.product) {
+        formData.append('_method', 'PUT');
+    }
+
+    return formData;
 });
 
 const submit = () => {
@@ -227,11 +238,11 @@ const tagOptions = computed(() =>
                             <VInputField v-model="form.quantity" label="Package Quantity" type="number" placeholder="1"
                                 :error-messages="form.errors.quantity" required />
 
-                            <FileDropzone v-model="form.images" label="Product Images" accept="image/*"
-                                :error-messages="form.errors.images" />
+                            <MultiFileDropzone v-model="form.images" label="Product Images" accept="image/*"
+                                :max-files="5" :error-messages="form.errors.images" />
 
-                            <!-- Current Images -->
-                            <div v-if="documents.length > 0" class="md:col-span-3">
+                            <!-- Current Images (for edit mode) -->
+                            <div v-if="documents.length > 0">
                                 <label class="text-sm font-medium mb-2 block">Current Images</label>
                                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                                     <div v-for="(image, index) in documents" :key="image.id" class="relative group">
@@ -239,21 +250,6 @@ const tagOptions = computed(() =>
                                             class="w-full h-24 object-cover rounded-lg border" />
                                         <Button variant="destructive" size="sm"
                                             class="absolute -top-2 -right-2 h-6 w-6 p-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                                            @click="removeImage(image.id, index)">
-                                            <X class="h-3 w-3" />
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Current Images -->
-                            <div v-if="documents.length > 0">
-                                <label class="text-sm font-medium mb-2 block">Current Images</label>
-                                <div class="grid grid-cols-3 gap-3">
-                                    <div v-for="(image, index) in documents" :key="image.id" class="relative group">
-                                        <img :src="image.url" :alt="`Product image ${index + 1}`"
-                                            class="w-full h-20 object-cover rounded border" />
-                                        <Button variant="destructive" size="sm"
-                                            class="absolute -top-1 -right-1 h-5 w-5 p-0 rounded-full opacity-0 group-hover:opacity-100"
                                             @click="removeImage(image.id, index)">
                                             <X class="h-3 w-3" />
                                         </Button>
@@ -274,6 +270,7 @@ const tagOptions = computed(() =>
                             </div>
                         </form>
                     </div>
+
                 </div>
             </div>
 
