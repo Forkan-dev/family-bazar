@@ -23,7 +23,7 @@ return new class extends Migration
             $table->foreignId('brand_id')->nullable()->constrained()->onDelete('set null');
             $table->text('description')->nullable();
             $table->decimal('stock_quantity', 8, 2)->nullable();
-            $table->boolean('is_active')->default(true);
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

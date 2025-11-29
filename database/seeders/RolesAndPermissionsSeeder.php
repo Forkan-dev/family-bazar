@@ -60,7 +60,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'product.delete',
             'order.view',
             'order.update',
-            'view dashboard',
+            'dashboard.view',
         ]);
 
         $shopOwnerRole->givePermissionTo([
@@ -69,7 +69,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'product.update',
             'order.view',
             'order.update',
-            'view dashboard',
+            'dashboard.view',
         ]);
 
         // Assign roles to users (optional)
