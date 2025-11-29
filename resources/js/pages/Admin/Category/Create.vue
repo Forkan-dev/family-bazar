@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { VButton } from '@/components/ui/button';
-import VFileInput from '@/components/ui/VFileInput.vue';
-import VInputField from '@/components/VInputField.vue';
-import MasterLayout from '@/layouts/MasterLayout.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
-import { watch } from 'vue';
+import { FormContainer } from '@/components/ui/form-container'
+import { FormSelect } from '@/components/ui/form-select'
+import FileDropzone from '@/components/ui/FileDropzone.vue'
+import VInputField from '@/components/VInputField.vue'
+import MasterLayout from '@/layouts/MasterLayout.vue'
+import { Head, useForm } from '@inertiajs/vue3'
+import { computed, watch } from 'vue'
 
-defineProps<{
+const props = defineProps<{
     categories: Array<{ id: number; title_en: string; title_bn: string }>;
 }>();
 
@@ -17,8 +18,16 @@ const form = useForm({
     description: '',
     icon: '',
     image: null as File | null,
-    parent_id: null,
+    parent_id: null as number | null,
 });
+
+const categoryOptions = computed(() => [
+    { value: null, label: 'No Parent (Root Category)' },
+    ...props.categories.map(category => ({
+        value: category.id,
+        label: `${category.title_en} (${category.title_bn})`
+    }))
+])
 
 const submit = () => {
     form.post(route('product.categories.store'));
@@ -38,142 +47,38 @@ watch(
 
 <template>
     <MasterLayout>
+
         <Head title="Add Category" />
-        <v-container>
-            <v-row>
-                <v-col cols="12">
-                    <v-card>
-                        <v-card-title
-                            class="d-flex align-center justify-space-between"
-                        >
-                            Create Category
-                            <Link :href="route('product.categories.index')">
-                                <VButton variant="outlined">
-                                    <v-icon left class="mr-2"
-                                        >mdi-arrow-left</v-icon
-                                    >
-                                    Back to Categories
-                                </VButton>
-                            </Link>
-                        </v-card-title>
-                        <v-divider></v-divider>
-                        <v-card-text>
-                            <v-form @submit.prevent="submit">
-                                <v-row>
-                                    <v-col cols="12" md="6">
-                                        <VInputField
-                                            v-model="form.title_en"
-                                            label="Title (English)"
-                                            :error-messages="
-                                                form.errors.title_en
-                                            "
-                                            required
-                                            density="compact"
-                                            variant="outlined"
-                                        />
-                                    </v-col>
-                                    <v-col cols="12" md="6">
-                                        <VInputField
-                                            v-model="form.title_bn"
-                                            label="Title (Bengali)"
-                                            :error-messages="
-                                                form.errors.title_bn
-                                            "
-                                            density="compact"
-                                            variant="outlined"
-                                        />
-                                    </v-col>
-                                    <v-col cols="6">
-                                        <VInputField
-                                            v-model="form.slug"
-                                            label="URL Slug"
-                                            :error-messages="form.errors.slug"
-                                            required
-                                            density="compact"
-                                            variant="outlined"
-                                            hint="Auto-generated from English title"
-                                        />
-                                    </v-col>
-
-                                    <v-col cols="12" md="6">
-                                        <v-select
-                                            v-model="form.parent_id"
-                                            :items="categories"
-                                            :item-title="
-                                                (category) =>
-                                                    `${category.title_en} (${category.title_bn})`
-                                            "
-                                            item-value="id"
-                                            label="Parent Category"
-                                            variant="outlined"
-                                            density="compact"
-                                            :error-messages="
-                                                form.errors.parent_id
-                                            "
-                                            prepend-inner-icon="mdi-folder-tree"
-                                            clearable
-                                        />
-                                    </v-col>
 
 
 
-                                    <v-col cols="12">
-                                        <VInputField
-                                            v-model="form.description"
-                                            label="Description"
-                                            :error-messages="
-                                                form.errors.description
-                                            "
-                                            multiline
-                                            density="compact"
-                                            variant="outlined"
-                                            rows="3"
-                                        />
-                                    </v-col>
+        <FormContainer title="Create Category" :back-url="route('product.categories.index')"
+            back-text="Back to Categories" :loading="form.processing" submit-text="Create Category" show-cancel
+            :grid-cols="2" max-width="3xl" @submit="submit" @cancel="$inertia.visit(route('product.categories.index'))">
+            <VInputField v-model="form.title_en" label="Category Title (English)"
+                placeholder="Enter category title in English" :error-messages="form.errors.title_en" required
+                description="Main category name in English" />
 
+            <VInputField v-model="form.title_bn" label="Category Title (Bengali)"
+                placeholder="ক্যাটেগরির নাম বাংলায় লিখুন" :error-messages="form.errors.title_bn"
+                description="Category name in Bengali (optional)" />
 
+            <VInputField v-model="form.slug" label="URL Slug" placeholder="category-url-slug"
+                :error-messages="form.errors.slug" required
+                description="Auto-generated from English title, used in URLs" />
 
-                                    <!-- Category Image Upload -->
-                                    <v-col cols="12">
-                                        <v-file-input
-                                            v-model="form.image"
-                                            title="Upload Category Image"
-                                            variant="outlined"
-                                            density="compact"
-                                            :error-messages="form.errors.image"
-                                            accept="image/*"
-                                            prepend-inner-icon="mdi-camera"
-                                        />
-                                    </v-col>
-                                </v-row>
+            <FormSelect v-model="form.parent_id" label="Parent Category" placeholder="Select parent category"
+                :options="categoryOptions" :error-messages="form.errors.parent_id"
+                description="Choose a parent category or leave empty for root category" />
 
-                                <div class="d-flex mt-8 gap-3">
-                                    <VButton
-                                        type="submit"
-                                        :disabled="form.processing"
-                                        :loading="form.processing"
-                                        size="large"
-                                    >
-                                        <v-icon left>mdi-plus</v-icon>
-                                        Create Category
-                                    </VButton>
+            <VInputField v-model="form.description" label="Description" placeholder="Describe this category..."
+                :error-messages="form.errors.description" multiline description="Optional description for this category"
+                class="md:col-span-2" />
 
-                                    <Link
-                                        :href="
-                                            route('product.categories.index')
-                                        "
-                                    >
-                                        <VButton variant="tonal" size="large">
-                                            <v-icon left>mdi-close</v-icon>
-                                            Cancel
-                                        </VButton>
-                                    </Link>
-                                </div>
-                            </v-form>
-                        </v-card-text>
-                    </v-card>
-                </v-col>
-            </v-row>
-        </v-container>
+            <div class="md:col-span-2">
+                <FileDropzone v-model="form.image" label="Category Image" :error-messages="form.errors.image"
+                    accept="image/*" />
+            </div>
+        </FormContainer>
     </MasterLayout>
 </template>

@@ -1,11 +1,29 @@
 <script setup lang="ts">
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+import { Separator } from '@/components/ui/separator'
+import { Link, usePage } from '@inertiajs/vue3'
+import {
+  BarChart3,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Cog,
+  FolderOpen,
+  Home,
+  LogOut,
+  MapPin,
+  Package,
+  Shield,
+  ShieldCheck,
+  Tag,
+  Users,
+  Zap,
+} from 'lucide-vue-next'
 import { ref } from 'vue'
-import { Link, usePage } from '@inertiajs/vue3';
 
-const drawer = ref(true)
-const rail = ref(false)
-const open = ref([])
-
+const isCollapsed = ref(false)
 const { auth } = usePage().props
 
 const hasPermission = (permission: string) => {
@@ -36,172 +54,336 @@ const isGroupActive = (routes: string[]) => {
     return currentRoute ? routes.some(routeName => currentRoute.startsWith(routeName)) : false;
 }
 
-if (isGroupActive(['product.products', 'product.categories', 'product.brands', 'product.locations'])) {
-    open.value.push('Product')
-}
-
-if (isGroupActive(['admin.roles', 'admin.permissions', 'admin.roles.assign'])) {
-    open.value.push('Admin')
-}
-
 </script>
 
 <template>
-    <v-navigation-drawer v-model="drawer" :rail="rail" permanent app @click="rail = false" class="elevation-1"
-        color="surface" :width="260" :rail-width="64">
-        <!-- Header with User Profile -->
-        <div class="d-flex flex-column h-100">
-            <div class="pa-3 border-b">
-                <div class="d-flex align-center">
-                    <v-avatar size="36" class="me-3">
-                        <v-img src="https://randomuser.me/api/portraits/men/85.jpg"></v-img>
-                    </v-avatar>
-                    <div v-if="!rail" class="flex-grow-1">
-                        <div class="text-subtitle-2 font-weight-medium">John Leider</div>
-                        <div class="text-caption text-medium-emphasis">Administrator</div>
+    <div
+        :class="[
+            'fixed left-0 top-0 z-40 h-screen border-r bg-sidebar transition-all duration-300',
+            isCollapsed ? 'w-16' : 'w-64'
+        ]"
+    >
+        <div class="flex h-full flex-col">
+            <!-- Header with User Profile -->
+            <div class="flex items-center justify-between border-b border-sidebar-border p-4">
+                <div v-if="!isCollapsed" class="flex items-center space-x-3">
+                    <Avatar class="h-9 w-9">
+                        <AvatarImage
+                            src="https://randomuser.me/api/portraits/men/85.jpg"
+                            alt="User avatar"
+                        />
+                        <AvatarFallback>JL</AvatarFallback>
+                    </Avatar>
+                    <div>
+                        <p class="text-sm font-medium text-sidebar-foreground">John Leider</p>
+                        <p class="text-xs text-sidebar-foreground/60">Administrator</p>
                     </div>
-                    <v-btn :icon="rail ? 'mdi-chevron-right' : 'mdi-chevron-left'" variant="text" size="small"
-                        class="ms-auto" @click.stop="rail = !rail" />
                 </div>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    @click="isCollapsed = !isCollapsed"
+                    class="ml-auto h-8 w-8 p-0"
+                >
+                    <ChevronLeft v-if="!isCollapsed" class="h-4 w-4" />
+                    <ChevronRight v-else class="h-4 w-4" />
+                </Button>
             </div>
 
             <!-- Navigation Menu -->
-            <v-list class="flex-grow-1 pa-1" density="compact" nav v-model:opened="open">
+            <nav class="flex-1 space-y-1 p-3">
                 <!-- Dashboard -->
-                <Link :href="route('dashboard')" class="text-decoration-none" v-if="hasPermission('dashboard.view')">
-                <v-list-item prepend-icon="mdi-view-dashboard" title="Dashboard" value="dashboard"
-                    :active="route().current('dashboard')" rounded="lg" class="mb-1" />
+                <Link
+                    v-if="hasPermission('dashboard.view')"
+                    :href="route('dashboard')"
+                    class="block"
+                >
+                    <Button
+                        variant="ghost"
+                        :class="[
+                            'w-full justify-start',
+                            route().current('dashboard') && 'bg-sidebar-accent text-sidebar-accent-foreground'
+                        ]"
+                        size="sm"
+                    >
+                        <Home class="h-4 w-4" />
+                        <span v-if="!isCollapsed" class="ml-2">Dashboard</span>
+                    </Button>
                 </Link>
 
                 <!-- Content Section -->
-                <v-list-group value="Content" class="mb-1" v-if="hasPermission('banner.view')">
-                    <template v-slot:activator="{ props }">
-                        <v-list-item v-bind="props" prepend-icon="mdi-folder-multiple-outline" title="Content" rounded="lg"
-                            :active="isGroupActive(['admin.banners.index'])" />
-                    </template>
-
-                    <div class="ps-6 child-nav-align">
-                        <Link :href="route('admin.banners.index')" class="text-decoration-none" v-if="hasPermission('banner.view')">
-                        <v-list-item prepend-icon="mdi-watermark" title="Banners" :active="isActive('admin.banners.index')"
-                            rounded="lg" class="mb-1" density="compact" />
+                <Collapsible v-if="hasPermission('banner.view')">
+                    <CollapsibleTrigger as-child>
+                        <Button
+                            variant="ghost"
+                            class="w-full justify-start"
+                            size="sm"
+                            :class="[
+                                isGroupActive(['admin.banners.index']) && 'bg-sidebar-accent text-sidebar-accent-foreground'
+                            ]"
+                        >
+                            <FolderOpen class="h-4 w-4" />
+                            <span v-if="!isCollapsed" class="ml-2">Content</span>
+                            <ChevronDown v-if="!isCollapsed" class="ml-auto h-4 w-4" />
+                        </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent class="space-y-1 pl-6">
+                        <Link
+                            v-if="hasPermission('banner.view')"
+                            :href="route('admin.banners.index')"
+                            class="block"
+                        >
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                :class="[
+                                    'w-full justify-start text-sm',
+                                    isActive('admin.banners.index') && 'bg-sidebar-accent text-sidebar-accent-foreground'
+                                ]"
+                            >
+                                <Zap class="h-4 w-4" />
+                                <span v-if="!isCollapsed" class="ml-2">Banners</span>
+                            </Button>
                         </Link>
-                    </div>
-                </v-list-group>
+                    </CollapsibleContent>
+                </Collapsible>
 
                 <!-- Products Section -->
-                <v-list-group value="Product" class="mb-1" v-if="hasPermission('product.view')">
-                    <template v-slot:activator="{ props }">
-                        <v-list-item v-bind="props" prepend-icon="mdi-package-variant" title="Product " rounded="lg"
-                            :active="isGroupActive(['product.products', 'product.categories', 'product.brands', 'product.locations'])" />
-                    </template>
-
-                    <div class="ps-6 child-nav-align">
-                        <Link :href="route('product.products.index')" class="text-decoration-none" v-if="hasPermission('product.view')">
-                        <v-list-item prepend-icon="mdi-package" title="Product List"
-                            :active="isActive('product.products')" rounded="lg" class="mb-1" density="compact" />
+                <Collapsible v-if="hasPermission('product.view')">
+                    <CollapsibleTrigger as-child>
+                        <Button
+                            variant="ghost"
+                            class="w-full justify-start"
+                            size="sm"
+                            :class="[
+                                isGroupActive(['product.products', 'product.categories', 'product.brands', 'product.locations']) &&
+                                'bg-sidebar-accent text-sidebar-accent-foreground'
+                            ]"
+                        >
+                            <Package class="h-4 w-4" />
+                            <span v-if="!isCollapsed" class="ml-2">Products</span>
+                            <ChevronDown v-if="!isCollapsed" class="ml-auto h-4 w-4" />
+                        </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent class="space-y-1 pl-6">
+                        <Link
+                            v-if="hasPermission('product.view')"
+                            :href="route('product.products.index')"
+                            class="block"
+                        >
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                :class="[
+                                    'w-full justify-start text-sm',
+                                    isActive('product.products') && 'bg-sidebar-accent text-sidebar-accent-foreground'
+                                ]"
+                            >
+                                <Package class="h-4 w-4" />
+                                <span v-if="!isCollapsed" class="ml-2">Product List</span>
+                            </Button>
                         </Link>
 
-                        <Link :href="route('product.categories.index')" class="text-decoration-none" v-if="hasPermission('category.view')">
-                        <v-list-item prepend-icon="mdi-shape" title="Categories"
-                            :active="isActive('product.categories')" rounded="lg" class="mb-1" density="compact" />
+                        <Link
+                            v-if="hasPermission('category.view')"
+                            :href="route('product.categories.index')"
+                            class="block"
+                        >
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                :class="[
+                                    'w-full justify-start text-sm',
+                                    isActive('product.categories') && 'bg-sidebar-accent text-sidebar-accent-foreground'
+                                ]"
+                            >
+                                <Tag class="h-4 w-4" />
+                                <span v-if="!isCollapsed" class="ml-2">Categories</span>
+                            </Button>
                         </Link>
 
-                        <Link :href="route('product.brands.index')" class="text-decoration-none" v-if="hasPermission('brand.view')">
-                        <v-list-item prepend-icon="mdi-watermark" title="Brands" :active="isActive('product.brands')"
-                            rounded="lg" class="mb-1" density="compact" />
+                        <Link
+                            v-if="hasPermission('brand.view')"
+                            :href="route('product.brands.index')"
+                            class="block"
+                        >
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                :class="[
+                                    'w-full justify-start text-sm',
+                                    isActive('product.brands') && 'bg-sidebar-accent text-sidebar-accent-foreground'
+                                ]"
+                            >
+                                <Zap class="h-4 w-4" />
+                                <span v-if="!isCollapsed" class="ml-2">Brands</span>
+                            </Button>
                         </Link>
 
-                        <Link :href="route('product.locations.index')" class="text-decoration-none" v-if="hasPermission('location.view')">
-                        <v-list-item prepend-icon="mdi-map-marker" title="Locations"
-                            :active="isActive('product.locations')" rounded="lg" class="mb-1" density="compact" />
+                        <Link
+                            v-if="hasPermission('location.view')"
+                            :href="route('product.locations.index')"
+                            class="block"
+                        >
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                :class="[
+                                    'w-full justify-start text-sm',
+                                    isActive('product.locations') && 'bg-sidebar-accent text-sidebar-accent-foreground'
+                                ]"
+                            >
+                                <MapPin class="h-4 w-4" />
+                                <span v-if="!isCollapsed" class="ml-2">Locations</span>
+                            </Button>
                         </Link>
-                    </div>
-                </v-list-group>
+                    </CollapsibleContent>
+                </Collapsible>
 
                 <!-- Users Section -->
-                <v-list-group value="Users" class="mb-1" v-if="hasPermission('user.view')">
-                    <template v-slot:activator="{ props }">
-                        <v-list-item v-bind="props" prepend-icon="mdi-account-group-outline" title="Users" rounded="lg"
-                            :active="isGroupActive(['users', 'account'])" />
-                    </template>
-
-                    <div class="ps-6 child-nav-align">
-                        <v-list-item prepend-icon="mdi-account-group-outline" title="Users" value="users" rounded="lg"
-                            class="mb-1" v-if="hasPermission('user.view')" />
-                        <v-list-item prepend-icon="mdi-account" title="My Account" value="account" rounded="lg" class="mb-1" />
-                    </div>
-                </v-list-group>
+                <Collapsible v-if="hasPermission('user.view')">
+                    <CollapsibleTrigger as-child>
+                        <Button
+                            variant="ghost"
+                            class="w-full justify-start"
+                            size="sm"
+                            :class="[
+                                isGroupActive(['users', 'account']) && 'bg-sidebar-accent text-sidebar-accent-foreground'
+                            ]"
+                        >
+                            <Users class="h-4 w-4" />
+                            <span v-if="!isCollapsed" class="ml-2">Users</span>
+                            <ChevronDown v-if="!isCollapsed" class="ml-auto h-4 w-4" />
+                        </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent class="space-y-1 pl-6">
+                        <Button
+                            v-if="hasPermission('user.view')"
+                            variant="ghost"
+                            size="sm"
+                            class="w-full justify-start text-sm"
+                        >
+                            <Users class="h-4 w-4" />
+                            <span v-if="!isCollapsed" class="ml-2">Users</span>
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            class="w-full justify-start text-sm"
+                        >
+                            <Users class="h-4 w-4" />
+                            <span v-if="!isCollapsed" class="ml-2">My Account</span>
+                        </Button>
+                    </CollapsibleContent>
+                </Collapsible>
 
                 <!-- Admin Section -->
-                <v-list-group value="Admin" class="mb-1" v-if="hasPermission('role.view') || hasPermission('permission.view')">
-                    <template v-slot:activator="{ props }">
-                        <v-list-item v-bind="props" prepend-icon="mdi-shield-crown-outline" title="Admin" rounded="lg"
-                            :active="isGroupActive(['admin.roles', 'admin.permissions','admin.roles.assign'])" />
-                    </template>
+                <Collapsible v-if="hasPermission('role.view') || hasPermission('permission.view')">
+                    <CollapsibleTrigger as-child>
+                        <Button
+                            variant="ghost"
+                            class="w-full justify-start"
+                            size="sm"
+                            :class="[
+                                isGroupActive(['admin.roles', 'admin.permissions', 'admin.roles.assign']) &&
+                                'bg-sidebar-accent text-sidebar-accent-foreground'
+                            ]"
+                        >
+                            <Shield class="h-4 w-4" />
+                            <span v-if="!isCollapsed" class="ml-2">Admin</span>
+                            <ChevronDown v-if="!isCollapsed" class="ml-auto h-4 w-4" />
+                        </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent class="space-y-1 pl-6">
+                        <Link
+                            v-if="hasPermission('role.view')"
+                            :href="route('admin.roles.index')"
+                            class="block"
+                        >
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                :class="[
+                                    'w-full justify-start text-sm',
+                                    isActive('admin.roles.index') && 'bg-sidebar-accent text-sidebar-accent-foreground'
+                                ]"
+                            >
+                                <ShieldCheck class="h-4 w-4" />
+                                <span v-if="!isCollapsed" class="ml-2">Roles</span>
+                            </Button>
+                        </Link>
 
-                    <div class="ps-6 child-nav-align">
-                        <Link :href="route('admin.roles.index')" class="text-decoration-none" v-if="hasPermission('role.view')">
-                        <v-list-item prepend-icon="mdi-shield-account" title="Roles" :active="isActive('admin.roles.index')"
-                            rounded="lg" class="mb-1" density="compact" />
+                        <Link
+                            v-if="hasPermission('permission.view')"
+                            :href="route('admin.permissions.index')"
+                            class="block"
+                        >
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                :class="[
+                                    'w-full justify-start text-sm',
+                                    isActive('admin.permissions.index') && 'bg-sidebar-accent text-sidebar-accent-foreground'
+                                ]"
+                            >
+                                <Shield class="h-4 w-4" />
+                                <span v-if="!isCollapsed" class="ml-2">Permissions</span>
+                            </Button>
                         </Link>
-                        <Link :href="route('admin.permissions.index')" class="text-decoration-none" v-if="hasPermission('permission.view')">
-                        <v-list-item prepend-icon="mdi-shield-key" title="Permissions" :active="isActive('admin.permissions.index')"
-                            rounded="lg" class="mb-1" density="compact" />
+
+                        <Link
+                            v-if="hasPermission('role.update')"
+                            :href="route('admin.roles.assign.create')"
+                            class="block"
+                        >
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                :class="[
+                                    'w-full justify-start text-sm',
+                                    isActive('admin.roles.assign') && 'bg-sidebar-accent text-sidebar-accent-foreground'
+                                ]"
+                            >
+                                <ShieldCheck class="h-4 w-4" />
+                                <span v-if="!isCollapsed" class="ml-2">Assign Role</span>
+                            </Button>
                         </Link>
-                        <Link :href="route('admin.roles.assign.create')" class="text-decoration-none" v-if="hasPermission('role.update')">
-                        <v-list-item prepend-icon="mdi-account-key" title="Assign Role" :active="isActive('admin.roles.assign')"
-                            rounded="lg" class="mb-1" density="compact" />
-                        </Link>
-                    </div>
-                </v-list-group>
+                    </CollapsibleContent>
+                </Collapsible>
 
                 <!-- Other Menu Items -->
-                <v-list-item prepend-icon="mdi-chart-line" title="Analytics" value="analytics" rounded="lg"
-                    class="mb-1" />
+                <Button
+                    variant="ghost"
+                    class="w-full justify-start"
+                    size="sm"
+                >
+                    <BarChart3 class="h-4 w-4" />
+                    <span v-if="!isCollapsed" class="ml-2">Analytics</span>
+                </Button>
 
-                <v-list-item prepend-icon="mdi-cog" title="Settings" value="settings" rounded="lg" class="mb-1" />
-            </v-list>
+                <Button
+                    variant="ghost"
+                    class="w-full justify-start"
+                    size="sm"
+                >
+                    <Cog class="h-4 w-4" />
+                    <span v-if="!isCollapsed" class="ml-2">Settings</span>
+                </Button>
+            </nav>
 
             <!-- Footer with Logout -->
-            <div class="pa-1 border-t">
-                <v-list-item prepend-icon="mdi-logout" title="Logout" @click="logout" rounded="lg" color="error"
-                    class="text-error" />
+            <div class="border-t border-sidebar-border p-3">
+                <Button
+                    variant="ghost"
+                    class="w-full justify-start text-destructive hover:text-destructive"
+                    size="sm"
+                    @click="logout"
+                >
+                    <LogOut class="h-4 w-4" />
+                    <span v-if="!isCollapsed" class="ml-2">Logout</span>
+                </Button>
             </div>
         </div>
-    </v-navigation-drawer>
+    </div>
 </template>
 
-<style scoped>
-.child-nav-align {
-    margin-left: -78px;
-
-}
-
-.border-b {
-    border-bottom: 1px solid rgb(var(--v-theme-surface-variant));
-}
-
-.border-t {
-    border-top: 1px solid rgb(var(--v-theme-surface-variant));
-}
-
-/* Custom hover effects */
-.v-list-item:hover {
-    background-color: rgba(var(--v-theme-primary), 0.08) !important;
-}
-
-/* Active state styling */
-.v-list-item--active {
-    background-color: rgba(var(--v-theme-primary), 0.12) !important;
-    color: rgb(var(--v-theme-primary)) !important;
-}
-
-.v-list-item--active .v-icon {
-    color: rgb(var(--v-theme-primary)) !important;
-}
-
-/* Rail mode adjustments */
-.v-navigation-drawer--rail .v-list-item {
-    justify-content: center;
-}
-</style>

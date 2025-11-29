@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { VButton } from '@/components/ui/button';
-import VInputField from '@/components/VInputField.vue';
-import MasterLayout from '@/layouts/MasterLayout.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { FormContainer } from '@/components/ui/form-container'
+import { FormSelect } from '@/components/ui/form-select'
+import FileDropzone from '@/components/ui/FileDropzone.vue'
+import VInputField from '@/components/VInputField.vue'
+import MasterLayout from '@/layouts/MasterLayout.vue'
+import { Head, useForm } from '@inertiajs/vue3'
 
 const props = defineProps<{
     types: Array<{ id: number; name: string }>;
@@ -16,8 +17,8 @@ const form = useForm({
     sub_title_bn: '',
     description_en: '',
     description_bn: '',
-    position: '',
-    status: '',
+    position: 'top',
+    status: 'active',
     image: null as File | null,
     type_id: null,
     button_text_1: '',
@@ -26,239 +27,88 @@ const form = useForm({
     button_url_2: '',
 });
 
+const route = (name: string) => {
+    return (window as any).route(name)
+}
+
 const submit = () => {
     form.post(route('admin.banners.store'));
 };
 
-const tab = ref('en');
+const typeOptions = props.types.map(type => ({
+    value: type.id,
+    label: type.name
+}))
+
+const positionOptions = [
+    { value: 'top', label: 'Top' },
+    { value: 'middle', label: 'Middle' },
+    { value: 'bottom', label: 'Bottom' },
+    { value: 'sidebar', label: 'Sidebar' }
+]
+
+const statusOptions = [
+    { value: 'active', label: 'Active' },
+    { value: 'inactive', label: 'Inactive' }
+]
 </script>
 
 <template>
     <MasterLayout>
-        <Head title="Add Banner" />
-        <v-container>
-            <v-row>
-                <v-col cols="12">
-                    <v-card>
-                        <v-card-title
-                            class="d-flex align-center justify-space-between"
-                        >
-                            Create Banner
-                            <Link :href="route('admin.banners.index')">
-                                <VButton variant="outlined">
-                                    <v-icon left class="mr-2"
-                                        >mdi-arrow-left</v-icon
-                                    >
-                                    Back to Banners
-                                </VButton>
-                            </Link>
-                        </v-card-title>
-                        <v-divider></v-divider>
-                        <v-card-text>
-                            <v-form @submit.prevent="submit">
-                                <v-tabs v-model="tab" class="mb-4">
-                                    <v-tab value="en">English</v-tab>
-                                    <v-tab value="bn">Bengali</v-tab>
-                                </v-tabs>
 
-                                <v-window v-model="tab">
-                                    <v-window-item value="en">
-                                        <v-row class="mt-2">
-                                            <v-col cols="6">
-                                                <VInputField
-                                                    v-model="form.title_en"
-                                                    label="Title (English)"
-                                                    :error-messages="form.errors.title_en"
-                                                    required
-                                                    density="compact"
-                                                    variant="outlined"
-                                                />
-                                            </v-col>
-                                            <v-col cols="6">
-                                                <VInputField
-                                                    v-model="form.sub_title_en"
-                                                    label="Sub Title (English)"
-                                                    :error-messages="form.errors.sub_title_en"
-                                                    density="compact"
-                                                    variant="outlined"
-                                                />
-                                            </v-col>
-                                            <v-col cols="12">
-                                                <VInputField
-                                                    v-model="form.description_en"
-                                                    label="Description (English)"
-                                                    :error-messages="form.errors.description_en"
-                                                    multiline
-                                                    density="compact"
-                                                    variant="outlined"
-                                                    rows="3"
-                                                />
-                                            </v-col>
-                                        </v-row>
-                                    </v-window-item>
-                                    <v-window-item value="bn">
-                                        <v-row class="mt-2">
-                                            <v-col cols="6">
-                                                <VInputField
-                                                    v-model="form.title_bn"
-                                                    label="Title (Bengali)"
-                                                    :error-messages="form.errors.title_bn"
-                                                    density="compact"
-                                                    variant="outlined"
-                                                />
-                                            </v-col>
-                                            <v-col cols="6">
-                                                <VInputField
-                                                    v-model="form.sub_title_bn"
-                                                    label="Sub Title (Bengali)"
-                                                    :error-messages="form.errors.sub_title_bn"
-                                                    density="compact"
-                                                    variant="outlined"
-                                                />
-                                            </v-col>
-                                            <v-col cols="12">
-                                                <VInputField
-                                                    v-model="form.description_bn"
-                                                    label="Description (Bengali)"
-                                                    :error-messages="form.errors.description_bn"
-                                                    multiline
-                                                    density="compact"
-                                                    variant="outlined"
-                                                    rows="3"
-                                                />
-                                            </v-col>
-                                        </v-row>
-                                    </v-window-item>
-                                </v-window>
+        <Head title="Create Banner" />
 
-                                <v-row class="mt-2">
-                                    <v-col cols="4">
-                                        <v-select
-                                            v-model="form.type_id"
-                                            :items="props.types"
-                                            item-title="name_en"
-                                            item-value="id"
-                                            label="Type"
-                                            variant="outlined"
-                                            density="compact"
-                                            :error-messages="
-                                                form.errors.type_id
-                                            "
-                                            prepend-inner-icon="mdi-folder-tree"
-                                            clearable
-                                        />
-                                    </v-col>
+        <FormContainer title="Create Banner" :back-url="route('admin.banners.index')" back-text="Back to Banners"
+            :loading="form.processing" submit-text="Create Banner" show-cancel :grid-cols="2" max-width="4xl"
+            @submit="submit" @cancel="$inertia.visit(route('admin.banners.index'))">
+            <VInputField v-model="form.title_en" label="Title (English)" placeholder="Enter banner title in English"
+                :error-messages="form.errors.title_en" required />
 
-                                    <v-col cols="4">
-                                        <VInputField
-                                            v-model="form.position"
-                                            label="Position"
-                                            :error-messages="form.errors.position"
-                                            density="compact"
-                                            variant="outlined"
-                                            @input="
-                                            form.position =
-                                                form.position.replace(
-                                                    /[^0-9]/g,
-                                                    '',
-                                                )
-                                        "
-                                        />
-                                    </v-col>
-                                    <v-col cols="4">
-                                        <v-select
-                                            v-model="form.status"
-                                            :items="['active', 'inactive']"
-                                            label="Status"
-                                            variant="outlined"
-                                            density="compact"
-                                            :error-messages="form.errors.status"
-                                        />
-                                    </v-col>
+            <VInputField v-model="form.title_bn" label="Title (Bengali)" placeholder="ব্যানার শিরোনাম বাংলায়"
+                :error-messages="form.errors.title_bn" />
 
-                                    <v-col cols="6">
-                                        <VInputField
-                                            v-model="form.button_text_1"
-                                            label="Button Text 1"
-                                            :error-messages="form.errors.button_text_1"
-                                            required
-                                            density="compact"
-                                            variant="outlined"
-                                        />
-                                    </v-col>
-                                    <v-col cols="6">
-                                        <VInputField
-                                            v-model="form.button_url_1"
-                                            label="Button Url 1"
-                                            :error-messages="form.errors.button_url_1"
-                                            required
-                                            density="compact"
-                                            variant="outlined"
-                                        />
-                                    </v-col>
+            <VInputField v-model="form.sub_title_en" label="Sub Title (English)"
+                placeholder="Enter sub title in English" :error-messages="form.errors.sub_title_en" />
 
-                                    <v-col cols="6">
-                                        <VInputField
-                                            v-model="form.button_text_2"
-                                            label="Button Text 2"
-                                            :error-messages="form.errors.button_text_2"
-                                            required
-                                            density="compact"
-                                            variant="outlined"
-                                        />
-                                    </v-col>
-                                    <v-col cols="6">
-                                        <VInputField
-                                            v-model="form.button_url_2"
-                                            label="Button Url 2"
-                                            :error-messages="form.errors.button_url_2"
-                                            required
-                                            density="compact"
-                                            variant="outlined"
-                                        />
-                                    </v-col>
+            <VInputField v-model="form.sub_title_bn" label="Sub Title (Bengali)" placeholder="উপ শিরোনাম বাংলায়"
+                :error-messages="form.errors.sub_title_bn" />
 
+            <div class="md:col-span-2">
+                <VInputField v-model="form.description_en" label="Description (English)"
+                    placeholder="Enter description in English" :error-messages="form.errors.description_en" multiline
+                    rows="3" />
+            </div>
 
-                                    <!-- Banner Image Upload -->
+            <div class="md:col-span-2">
+                <VInputField v-model="form.description_bn" label="Description (Bengali)"
+                    placeholder="বিবরণ বাংলায় লিখুন" :error-messages="form.errors.description_bn" multiline rows="3" />
+            </div>
 
-                                    <v-col cols="12">
-                                        <v-file-input
-                                            label="Upload Banner Image"
-                                            variant="outlined"
-                                            density="compact"
-                                            :error-messages="form.errors.image"
-                                            accept="image/*"
-                                            prepend-inner-icon="mdi-camera"
-                                            @input="form.image = $event.target.files[0]"
-                                        />
-                                    </v-col>
+            <FormSelect v-model="form.type_id" label="Banner Type" placeholder="Select banner type"
+                :options="typeOptions" :error-messages="form.errors.type_id" />
 
+            <FormSelect v-model="form.position" label="Position" placeholder="Select position"
+                :options="positionOptions" :error-messages="form.errors.position" />
 
-                                </v-row>
+            <FormSelect v-model="form.status" label="Status" placeholder="Select status" :options="statusOptions"
+                :error-messages="form.errors.status" />
 
-                                <div class="d-flex mt-8 gap-3">
-                                    <VButton
-                                        type="submit"
-                                        :disabled="form.processing"
-                                        :loading="form.processing"
-                                        size="large"
-                                    >
-                                        <v-icon left>mdi-plus</v-icon>
-                                        Create Banner
-                                    </VButton>
+            <VInputField v-model="form.button_text_1" label="Button Text 1" placeholder="Enter button text"
+                :error-messages="form.errors.button_text_1" />
 
-                                    <Link :href="route('admin.banners.index')">
-                                        <VButton variant="tonal" size="large">
-                                            <v-icon left>mdi-close</v-icon>
-                                            Cancel
-                                        </VButton>
-                                    </Link>
-                                </div>
-                            </v-form>
-                        </v-card-text>
-                    </v-card>
-                </v-col>
-            </v-row>
-        </v-container>
+            <VInputField v-model="form.button_url_1" label="Button URL 1" placeholder="Enter button URL"
+                :error-messages="form.errors.button_url_1" />
+
+            <VInputField v-model="form.button_text_2" label="Button Text 2" placeholder="Enter second button text"
+                :error-messages="form.errors.button_text_2" />
+
+            <VInputField v-model="form.button_url_2" label="Button URL 2" placeholder="Enter second button URL"
+                :error-messages="form.errors.button_url_2" />
+
+            <div class="md:col-span-2">
+                <FileDropzone v-model="form.image" label="Banner Image" accept="image/*"
+                    :error-messages="form.errors.image" />
+            </div>
+        </FormContainer>
     </MasterLayout>
 </template>

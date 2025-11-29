@@ -1,22 +1,31 @@
 <script setup lang="ts">
-import MasterLayout from '@/layouts/MasterLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
-import { ref, watch, computed, onMounted, reactive } from 'vue';
-import VInputField from '@/components/VInputField.vue';
-import { Link } from '@inertiajs/vue3';
-import { VButton } from '@/components/ui/button';
-import VFileInput from '@/components/ui/VFileInput.vue';
-import axios from 'axios';
+import { FormContainer } from '@/components/ui/form-container'
+import { FormSelect } from '@/components/ui/form-select'
+import FileDropzone from '@/components/ui/FileDropzone.vue'
+import MultiSelectInput from '@/components/ui/MultiSelectInput.vue'
+import VInputField from '@/components/VInputField.vue'
+import MasterLayout from '@/layouts/MasterLayout.vue'
+import { Head, useForm } from '@inertiajs/vue3'
+import { ref, watch, onMounted, reactive, computed } from 'vue'
+import axios from 'axios'
+import { Button } from '@/components/ui/button'
+import { ArrowLeft, X } from 'lucide-vue-next'
+import { Link } from '@inertiajs/vue3'
 
-const props = defineProps({
-    product: Object,
-    categories: Array,
-    tags: Array,
-    units: Array,
-    brands: Array,
-});
+const route = (name: string, params?: any) => {
+    return (window as any).route(name, params)
+}
+
+const props = defineProps<{
+    product?: any
+    categories: any[]
+    tags: any[]
+    units: any[]
+    brands: any[]
+}>()
 
 const documents = reactive(props.product?.documents || []);
+const availableTags = ref([...props.tags]);
 
 const parent_category_id = ref(null);
 const subCategories = ref([]);
@@ -28,7 +37,7 @@ const form = useForm({
     description: props.product?.description || '',
     price: props.product?.price || 0,
     stock_quantity: props.product?.stock_quantity || 0,
-    images: [] as File[],
+    images: null as File | null,
     category_id: props.product?.category_id || null,
     unit_id: props.product?.unit_id || null,
     brand_id: props.product?.brand_id || null,
@@ -36,16 +45,16 @@ const form = useForm({
     tags: props.product?.tags || [],
 });
 
-form.transform(data => {
-    const transformedData = {
+form.transform((data: any) => {
+    const transformedData: any = {
         ...data,
-        tags: data.tags.map(tag => {
+        tags: data.tags.map((tag: any) => {
             if (typeof tag === 'object' && tag !== null && tag.id) {
                 return tag.id;
             }
             return tag;
         }),
-        images: data.images.length > 0 ? data.images : undefined,
+        images: data.images ? data.images : undefined,
     };
 
     if (props.product) {
@@ -119,201 +128,190 @@ watch(() => form.name_en, (newName) => {
         form.slug = newName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
     }
 });
+
+// Handle tag creation
+const handleCreateTag = (tagName: string) => {
+    // Create new tag with unique ID
+    const newTagId = `new-${Date.now()}`;
+    const newTag = { id: newTagId, name: tagName };
+
+    // Add new tag to available options
+    availableTags.value.push(newTag);
+
+    // Add to form tags
+    form.tags = [...form.tags, newTagId];
+};// Computed options for selects
+const categoryOptions = computed(() =>
+    props.categories.map(category => ({
+        value: category.id,
+        label: category.displayName || `${category.title_en} (${category.title_bn})`
+    }))
+)
+
+const subCategoryOptions = computed(() =>
+    subCategories.value.map(category => ({
+        value: category.id,
+        label: category.displayName || `${category.title_en} (${category.title_bn})`
+    }))
+)
+
+const unitOptions = computed(() =>
+    props.units.map(unit => ({
+        value: unit.id,
+        label: unit.displayName || unit.name
+    }))
+)
+
+const brandOptions = computed(() =>
+    props.brands.map(brand => ({
+        value: brand.id,
+        label: brand.en_name
+    }))
+)
+
+const tagOptions = computed(() =>
+    availableTags.value.map(tag => ({
+        value: tag.id,
+        label: tag.name
+    }))
+)
 </script>
 
 <template>
     <MasterLayout>
 
-        <Head :title="form.name_en ? form.name_en : 'Create Product'" />
-        <v-container>
-            <v-row>
-                <v-col cols="12">
-                    <Link :href="route('product.products.index')" class="mb-4 d-inline-block">
-                    <v-icon color="primary">mdi-arrow-left</v-icon>
-                    </Link>
-                    <v-card>
-                        <v-card-title class="d-flex align-center">
-                            <v-icon class="mr-3" color="primary">
-                                {{ props.product ? 'mdi-pencil' : 'mdi-plus' }}
-                            </v-icon>
-                            {{ props.product ? 'Edit Product' : 'Create Product' }}
-                        </v-card-title>
-                        <v-divider></v-divider>
-                        <v-card-text class="mt-5">
-                            <v-row>
-                                <!-- LEFT COLUMN (8/12) - Main Form Content -->
-                                <v-col cols="12" md="8">
+        <Head :title="props.product ? `Edit ${form.name_en}` : 'Create Product'" />
 
-                                    <!-- Basic Information Section -->
-                                    <div class="form-section">
-                                        <div class="form-section-title">
-                                            <v-icon>mdi-information</v-icon>
-                                            Basic Information
-                                        </div>
-                                        <v-row dense>
-                                            <v-col cols="12" sm="6">
-                                                <VInputField v-model="form.name_en" label="Title (English)"
-                                                    :error-messages="form.errors.name_en" required density="compact"
-                                                    variant="outlined" />
-                                            </v-col>
-                                            <v-col cols="12" sm="6">
-                                                <VInputField v-model="form.name_bn" label="Title (Bengali)"
-                                                    :error-messages="form.errors.name_bn" density="compact"
-                                                    variant="outlined" />
-                                            </v-col>
-                                        </v-row>
-                                        <v-row dense>
-                                            <v-col cols="12">
-                                                <VInputField v-model="form.slug" label="URL Slug"
-                                                    :error-messages="form.errors.slug" required density="compact"
-                                                    variant="outlined" hint="Auto-generated from English title" />
-                                            </v-col>
-                                        </v-row>
-                                        <v-row dense>
-                                            <v-col cols="12">
-                                                <VInputField v-model="form.description" label="Description"
-                                                    :error-messages="form.errors.description" multiline
-                                                    density="compact" variant="outlined" rows="3" />
-                                            </v-col>
-                                        </v-row>
+        <!-- Header -->
+        <div class="mb-8">
+            <Link :href="route('product.products.index')">
+            <Button variant="ghost" size="sm">
+                <ArrowLeft class="h-4 w-4 mr-2" />
+                Back to Products
+            </Button>
+            </Link>
+        </div>
+
+        <!-- Form Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Main Form -->
+            <div class="lg:col-span-2">
+                <div class="bg-card border rounded-lg">
+                    <div class="p-6 border-b">
+                        <h1 class="text-2xl font-bold">{{ props.product ? 'Edit Product' : 'Create Product' }}</h1>
+                    </div>
+
+                    <div class="p-6">
+                        <form @submit.prevent="submit" class="space-y-6">
+                            <VInputField v-model="form.name_en" label="Product Name" placeholder="Enter product name"
+                                :error-messages="form.errors.name_en" required />
+
+                            <VInputField v-model="form.name_bn" label="Product Name (Bengali)"
+                                placeholder="পণ্যের নাম বাংলায়" :error-messages="form.errors.name_bn" />
+
+                            <VInputField v-model="form.slug" label="URL Slug" placeholder="product-url-slug"
+                                :error-messages="form.errors.slug" required />
+
+                            <VInputField v-model="form.description" label="Description"
+                                placeholder="Enter product description..." :error-messages="form.errors.description"
+                                multiline rows="3" />
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <VInputField v-model="form.price" label="Price (৳)" type="number" step="0.01"
+                                    placeholder="0.00" :error-messages="form.errors.price" required />
+
+                                <VInputField v-model="form.stock_quantity" label="Stock Quantity" type="number"
+                                    placeholder="0" :error-messages="form.errors.stock_quantity" required />
+                            </div>
+
+                            <VInputField v-model="form.quantity" label="Package Quantity" type="number" placeholder="1"
+                                :error-messages="form.errors.quantity" required />
+
+                            <FileDropzone v-model="form.images" label="Product Images" accept="image/*"
+                                :error-messages="form.errors.images" />
+
+                            <!-- Current Images -->
+                            <div v-if="documents.length > 0" class="md:col-span-3">
+                                <label class="text-sm font-medium mb-2 block">Current Images</label>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    <div v-for="(image, index) in documents" :key="image.id" class="relative group">
+                                        <img :src="image.url" :alt="`Product image ${index + 1}`"
+                                            class="w-full h-24 object-cover rounded-lg border" />
+                                        <Button variant="destructive" size="sm"
+                                            class="absolute -top-2 -right-2 h-6 w-6 p-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                            @click="removeImage(image.id, index)">
+                                            <X class="h-3 w-3" />
+                                        </Button>
                                     </div>
-
-                                    <!-- Pricing & Inventory Section -->
-                                    <div class="form-section">
-                                        <div class="form-section-title">
-                                            <v-icon>mdi-currency-usd</v-icon>
-                                            Pricing & Inventory
-                                        </div>
-                                        <v-row dense>
-                                            <v-col cols="12" sm="6">
-                                                <VInputField v-model="form.price" label="Price" type="number"
-                                                    step="0.01" :error-messages="form.errors.price" required
-                                                    density="compact" variant="outlined"
-                                                    prepend-inner-icon="mdi-currency-bdt" />
-                                            </v-col>
-
-                                            <v-col cols="12" sm="6">
-                                                <VInputField v-model="form.stock_quantity" label="Stock Quantity"
-                                                    type="number" :error-messages="form.errors.stock_quantity" required
-                                                    density="compact" variant="outlined" />
-                                            </v-col>
-                                        </v-row>
-                                        <v-row dense>
-                                            <v-col cols="12" sm="4">
-                                                <v-select v-model="form.unit_id" :items="units" item-title="displayName"
-                                                    item-value="id" label="Unit" variant="outlined" density="compact"
-                                                    :error-messages="form.errors.unit_id"
-                                                    prepend-inner-icon="mdi-weight" />
-                                            </v-col>
-
-                                            <v-col cols="12" sm="4">
-                                                <VInputField v-model.number="form.quantity" label="Quantity"
-                                                    type="number" :error-messages="form.errors.quantity" required
-                                                    density="compact" variant="outlined" />
-                                            </v-col>
-
-                                            <v-col cols="12" sm="4">
-                                                <v-select v-model="form.brand_id" :items="brands" item-title="en_name"
-                                                    item-value="id" label="Brand" variant="outlined" density="compact"
-                                                    :error-messages="form.errors.brand_id"
-                                                    prepend-inner-icon="mdi-tag" />
-                                            </v-col>
-                                        </v-row>
-                                    </div>
-
-                                    <!-- Media Section -->
-                                    <div class="form-section">
-                                        <div class="form-section-title">
-                                            <v-icon>mdi-image</v-icon>
-                                            Product Images
-                                        </div>
-                                        <v-row dense>
-                                            <v-col cols="12">
-                                                <VFileInput v-model="form.images" title="Upload Product Images"
-                                                    variant="outlined" density="compact"
-                                                    :error-messages="form.errors.images" accept="image/*"
-                                                    prepend-icon="" prepend-inner-icon="mdi-camera" multiple />
-                                            </v-col>
-                                        </v-row>
-                                        <v-row dense v-if="documents.length > 0">
-                                            <v-col cols="12">
-                                                <div class="text-caption mb-2">Current Images</div>
-                                            </v-col>
-                                            <v-col v-for="(image, index) in documents" :key="image.id" cols="6" sm="4"
-                                                md="3">
-                                                <v-card class="position-relative">
-                                                    <v-img :src="image.url" height="100" class="rounded" />
-                                                    <v-btn icon="mdi-close" size="x-small" color="red"
-                                                        class="position-absolute" style="top: 4px; right: 4px;"
-                                                        @click="removeImage(image.id, index)"></v-btn>
-                                                </v-card>
-                                            </v-col>
-                                        </v-row>
-                                    </div>
-
-                                </v-col>
-
-                                <!-- RIGHT COLUMN (4/12) - Sidebar Content -->
-                                <v-col cols="12" md="4">
-
-                                    <!-- Categorization Section -->
-                                    <div class="form-section">
-                                        <div class="form-section-title">
-                                            <v-icon>mdi-tag</v-icon>
-                                            Categories & Tags
-                                        </div>
-                                        <v-row dense>
-                                            <v-col cols="12">
-                                                <v-select v-model="parent_category_id" :items="categories"
-                                                    item-title="displayName" item-value="id" label="Category"
-                                                    variant="outlined" density="compact"
-                                                    :error-messages="form.errors.category_id"
-                                                    prepend-inner-icon="mdi-folder" />
-                                            </v-col>
-                                            <v-col cols="12" v-if="subCategories.length > 0">
-                                                <v-select v-model="form.category_id" :items="subCategories"
-                                                    item-title="displayName" item-value="id" label="Sub Category"
-                                                    variant="outlined" density="compact"
-                                                    :error-messages="form.errors.category_id"
-                                                    prepend-inner-icon="mdi-folder-outline" />
-                                            </v-col>
-                                            <v-col cols="12">
-                                                <v-combobox v-model="form.tags" :items="tags" item-title="name"
-                                                    item-value="id" label="Tags" multiple chips variant="outlined"
-                                                    density="compact" :error-messages="form.errors.tags"
-                                                    prepend-inner-icon="mdi-tag-multiple" closable-chips />
-                                            </v-col>
-                                        </v-row>
-                                    </div>
-
-                                </v-col>
-                            </v-row>
-                        </v-card-text>
-
-                        <!-- Form Actions - Card Footer -->
-                        <v-divider></v-divider>
-                        <v-card-actions class="pa-4">
-                            <v-form @submit.prevent="submit">
-                                <div class="d-flex gap-3">
-                                    <VButton type="submit" :disabled="form.processing" :loading="form.processing">
-                                        <v-icon left>
-                                            {{ props.product ? 'mdi-content-save' : 'mdi-plus' }}
-                                        </v-icon>
-                                        {{ props.product ? 'Update Product' : 'Create Product' }}
-                                    </VButton>
-
-                                    <Link :href="route('product.products.index')">
-                                    <VButton variant="outlined" size="large" class="px-6">
-                                        <v-icon left class="mr-2">mdi-close</v-icon>
-                                        Cancel
-                                    </VButton>
-                                    </Link>
                                 </div>
-                            </v-form>
-                        </v-card-actions>
-                    </v-card>
-                </v-col>
-            </v-row>
-        </v-container>
+                            </div>
+                            <!-- Current Images -->
+                            <div v-if="documents.length > 0">
+                                <label class="text-sm font-medium mb-2 block">Current Images</label>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <div v-for="(image, index) in documents" :key="image.id" class="relative group">
+                                        <img :src="image.url" :alt="`Product image ${index + 1}`"
+                                            class="w-full h-20 object-cover rounded border" />
+                                        <Button variant="destructive" size="sm"
+                                            class="absolute -top-1 -right-1 h-5 w-5 p-0 rounded-full opacity-0 group-hover:opacity-100"
+                                            @click="removeImage(image.id, index)">
+                                            <X class="h-3 w-3" />
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end space-x-3 pt-6 border-t">
+                                <Link :href="route('product.products.index')">
+                                <Button type="button" variant="outline">
+                                    Cancel
+                                </Button>
+                                </Link>
+                                <Button type="submit" :disabled="form.processing">
+                                    {{ form.processing ? (props.product ? 'Updating...' : 'Creating...') :
+                                        (props.product ? 'Update Product' : 'Create Product') }}
+                                </Button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Categories -->
+                <div class="bg-card border rounded-lg p-4">
+                    <h3 class="font-semibold mb-4">Categories</h3>
+                    <div class="space-y-4">
+                        <FormSelect v-model="parent_category_id" label="Main Category" placeholder="Select category"
+                            :options="categoryOptions" :error-messages="form.errors.category_id" />
+
+                        <FormSelect v-if="subCategories.length > 0" v-model="form.category_id" label="Sub Category"
+                            placeholder="Select sub category" :options="subCategoryOptions"
+                            :error-messages="form.errors.category_id" />
+                    </div>
+                </div>
+
+                <!-- Attributes -->
+                <div class="bg-card border rounded-lg p-4">
+                    <h3 class="font-semibold mb-4">Attributes</h3>
+                    <div class="space-y-4">
+                        <FormSelect v-model="form.unit_id" label="Unit" placeholder="Select unit" :options="unitOptions"
+                            :error-messages="form.errors.unit_id" />
+
+                        <FormSelect v-model="form.brand_id" label="Brand" placeholder="Select brand"
+                            :options="brandOptions" :error-messages="form.errors.brand_id" />
+                    </div>
+                </div>
+
+                <!-- Tags -->
+                <div class="bg-card border rounded-lg p-4">
+                    <h3 class="font-semibold mb-4">Tags</h3>
+                    <MultiSelectInput v-model="form.tags" :options="tagOptions" label="Product Tags"
+                        placeholder="Select or create tags..." :allow-create="true" create-text="Create tag"
+                        :error-messages="form.errors.tags" @create="handleCreateTag" />
+                </div>
+            </div>
+        </div>
     </MasterLayout>
 </template>

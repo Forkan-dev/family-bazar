@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import AppSidebar from '../components/AppSidebar.vue';
-import AppHeader from '../components/AppHeader.vue';
-import AppFooter from '../components/AppFooter.vue';
+import AppHeader from '../components/AppHeader.vue'
+import AppSidebar from '../components/AppSidebar.vue'
+import AppFooter from '../components/AppFooter.vue'
 </script>
 
 <template>
-    <v-app>
+    <div class="min-h-screen bg-background">
         <AppSidebar />
-        <AppHeader />
-        <v-main class="bg-lighten-0">
-            <v-container fluid class="pa-6">
+        <div class="ml-16 lg:ml-64 flex flex-col transition-all duration-300">
+            <AppHeader />
+            <main class="flex-1 p-6">
                 <slot />
-            </v-container>
-        </v-main>
-        <AppFooter />
-    </v-app>
+            </main>
+            <AppFooter />
+        </div>
+    </div>
 </template>
