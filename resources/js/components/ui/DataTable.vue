@@ -74,6 +74,41 @@ const filteredData = computed(() => {
 
 const totalPages = computed(() => Math.ceil(props.total / props.perPage))
 
+const paginationNumbers = computed(() => {
+    const pages = []
+    const maxVisiblePages = 5
+
+    if (totalPages.value <= maxVisiblePages) {
+        // Show all pages if total pages is small
+        for (let i = 1; i <= totalPages.value; i++) {
+            pages.push(i)
+        }
+    } else {
+        // Smart pagination with ellipsis logic
+        const startPage = Math.max(1, props.currentPage - 2)
+        const endPage = Math.min(totalPages.value, props.currentPage + 2)
+
+        // Always show first page
+        if (startPage > 1) {
+            pages.push(1)
+            if (startPage > 2) pages.push('...')
+        }
+
+        // Show pages around current page
+        for (let i = startPage; i <= endPage; i++) {
+            pages.push(i)
+        }
+
+        // Always show last page
+        if (endPage < totalPages.value) {
+            if (endPage < totalPages.value - 1) pages.push('...')
+            pages.push(totalPages.value)
+        }
+    }
+
+    return pages
+})
+
 const handleSearch = (query: string) => {
     searchQuery.value = query
     emit('search', query)
@@ -191,12 +226,22 @@ const shouldShowAction = (action: Action, item: any) => {
                     Showing {{ ((currentPage - 1) * perPage) + 1 }} to {{ Math.min(currentPage * perPage, total) }} of
                     {{ total }} results
                 </div>
-                <div class="flex items-center space-x-2">
+                <div class="flex items-center space-x-1">
                     <Button variant="outline" size="sm" :disabled="currentPage <= 1"
                         @click="handlePageChange(currentPage - 1)">
                         <ChevronLeft class="h-4 w-4" />
                     </Button>
-                    <span class="text-sm">{{ currentPage }} of {{ totalPages }}</span>
+
+                    <template v-for="page in paginationNumbers" :key="page">
+                        <Button v-if="page === '...'" variant="ghost" size="sm" disabled class="px-2">
+                            ...
+                        </Button>
+                        <Button v-else :variant="page === currentPage ? 'default' : 'outline'" size="sm" class="px-3"
+                            @click="handlePageChange(page as number)">
+                            {{ page }}
+                        </Button>
+                    </template>
+
                     <Button variant="outline" size="sm" :disabled="currentPage >= totalPages"
                         @click="handlePageChange(currentPage + 1)">
                         <ChevronRight class="h-4 w-4" />

@@ -2,31 +2,38 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Inertia\Inertia;
-use App\Models\Product\Tag;
-use App\Models\Product\Unit;
-use Illuminate\Http\Request;
-use App\Models\Product\Brand;
-use App\Models\Product\Product;
-use App\Models\Product\Category;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
 use App\Actions\Product\CreateProduct;
 use App\Actions\Product\UpdateProduct;
-use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Product\StoreProductRequest;
 use App\Http\Requests\Admin\Product\UpdateProductRequest;
+use App\Models\Product\Brand;
+use App\Models\Product\Category;
+use App\Models\Product\Product;
+use App\Models\Product\Tag;
+use App\Models\Product\Unit;
+use App\Services\ProductService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class ProductController extends Controller
 {
+    public function __construct(
+        private ProductService $productService
+    ) {}
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request): \Inertia\Response
     {
-        $products = Product::with(['category', 'tags'])->get();
+        $products = $this->productService->getPaginatedProducts($request);
+
         return Inertia::render('Admin/Products/Index', [
             'products' => $products,
+            'filters' => $request->only(['search', 'sort', 'direction']),
         ]);
     }
 
@@ -39,6 +46,7 @@ class ProductController extends Controller
         $tags = Tag::all();
         $units = Unit::all();
         $brands = Brand::all();
+
         return Inertia::render('Admin/Products/Form', [
             'categories' => $categories,
             'tags' => $tags,
@@ -56,10 +64,12 @@ class ProductController extends Controller
             DB::beginTransaction();
             $createProduct->handle($request);
             DB::commit();
+
             return redirect()->route('product.products.index')->with('success', 'Product created successfully.');
 
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
+
             return redirect()->back()->withErrors(['error' => 'An error occurred while creating the product.']);
         }
     }
@@ -101,10 +111,12 @@ class ProductController extends Controller
             DB::beginTransaction();
             $updateProduct->handle($request, $product);
             DB::commit();
+
             return redirect()->route('product.products.index')->with('success', 'Product updated successfully.');
 
         } catch (\Exception $e) {
             DB::rollBack();
+
             return redirect()->back()->withErrors(['error' => 'An error occurred while updating the product.']);
         }
     }
@@ -115,12 +127,14 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         $product->delete();
+
         return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
     }
 
     public function getSubCategories(Request $request, $id)
     {
         $subcategories = Category::where('parent_id', $id)->get();
+
         return response()->json($subcategories);
     }
 }
