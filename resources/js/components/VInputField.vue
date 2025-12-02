@@ -1,45 +1,65 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { FormField } from '@/components/ui/form-field'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { computed } from 'vue'
 
-const props = defineProps({
-    modelValue: [String, Number],
-    label: String,
-    type: { type: String, default: 'text' },
-    errorMessages: [String, Array],
-    multiline: { type: Boolean, default: false },
-    // Pass through any other props to v-text-field or v-textarea
-     
-    otherProps: Object,
-});
+interface Props {
+    modelValue?: string | number
+    label?: string
+    type?: string
+    errorMessages?: string | string[]
+    multiline?: boolean
+    placeholder?: string
+    disabled?: boolean
+    required?: boolean
+    description?: string
+    class?: string
+}
 
-const emit = defineEmits(['update:modelValue']);
+const props = withDefaults(defineProps<Props>(), {
+    type: 'text',
+    multiline: false,
+    disabled: false,
+    required: false,
+})
+
+const emit = defineEmits<{
+    'update:modelValue': [value: string | number]
+}>()
 
 const internalValue = computed({
     get: () => props.modelValue,
-    set: (value) => emit('update:modelValue', value),
-});
+    set: (value) => emit('update:modelValue', value || ''),
+})
 </script>
 
 <template>
-    <v-textarea
-        v-if="multiline"
-        v-model="internalValue"
+    <FormField
         :label="label"
-        :error-messages="errorMessages"
-        variant="outlined"
-        density="compact"
-        class="mb-1"
-        v-bind="otherProps"
-    ></v-textarea>
-    <v-text-field
-        v-else
-        v-model="internalValue"
-        :label="label"
-        :type="type"
-        :error-messages="errorMessages"
-        variant="outlined"
-        density="compact"
-        class="mb-1"
-        v-bind="otherProps"
-    ></v-text-field>
+        :required="required"
+        :error="errorMessages"
+        :description="description"
+        :class="class"
+    >
+        <template #default="{ hasError }">
+            <Textarea
+                v-if="multiline"
+                v-model="internalValue"
+                :placeholder="placeholder"
+                :disabled="disabled"
+                :class="{ 'border-destructive focus-visible:ring-destructive': hasError }"
+                rows="4"
+            />
+
+            <Input
+                v-else
+                v-model="internalValue"
+                :type="type"
+                :placeholder="placeholder"
+                :disabled="disabled"
+                :class="{ 'border-destructive focus-visible:ring-destructive': hasError }"
+            />
+        </template>
+    </FormField>
 </template>

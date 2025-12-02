@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 import { useForm } from '@inertiajs/vue3'
 import MasterLayout from '@/layouts/MasterLayout.vue';
 import { VButton } from '@/components/ui/button';
@@ -45,30 +45,14 @@ watch(() => form.user_id, (newVal) => {
                             <v-form @submit.prevent="submit">
                                 <v-row>
                                     <v-col cols="12" md="6">
-                                        <v-select
-                                            v-model="form.user_id"
-                                            :items="users"
-                                            item-title="name"
-                                            item-value="id"
-                                            label="Select User"
-                                            variant="outlined"
-                                            density="compact"
-                                            :error-messages="form.errors.user_id"
-                                        ></v-select>
+                                        <v-select v-model="form.user_id" :items="users" item-title="name"
+                                            item-value="id" label="Select User" variant="outlined" density="compact"
+                                            :error-messages="form.errors.user_id"></v-select>
                                     </v-col>
                                     <v-col cols="12" md="6">
-                                        <v-select
-                                            v-model="form.roles"
-                                            :items="roles"
-                                            item-title="name"
-                                            item-value="name"
-                                            label="Select Roles"
-                                            multiple
-                                            chips
-                                            variant="outlined"
-                                            density="compact"
-                                            :error-messages="form.errors.roles"
-                                        ></v-select>
+                                        <v-select v-model="form.roles" :items="roles" item-title="name"
+                                            item-value="name" label="Select Roles" multiple chips variant="outlined"
+                                            density="compact" :error-messages="form.errors.roles"></v-select>
                                     </v-col>
                                 </v-row>
                                 <div class="d-flex gap-3 mt-5">
