@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\User;
 use App\Models\Product;
+use App\Models\Order\Order;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class CartItem extends Model
+class CartHistory extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -21,6 +23,10 @@ class CartItem extends Model
         'quantity',
         'price',
         'options',
+        'action',
+        'order_id',
+        'action_date',
+        'expires_at',
     ];
 
     /**
@@ -31,10 +37,12 @@ class CartItem extends Model
     protected $casts = [
         'options' => 'array',
         'price' => 'decimal:2',
+        'action_date' => 'datetime',
+        'expires_at' => 'datetime',
     ];
 
     /**
-     * Get the user that owns the cart item.
+     * Get the user that owns the cart history.
      */
     public function user(): BelongsTo
     {
@@ -42,7 +50,7 @@ class CartItem extends Model
     }
 
     /**
-     * Get the product that owns the cart item.
+     * Get the product that owns the cart history.
      */
     public function product(): BelongsTo
     {
@@ -50,7 +58,15 @@ class CartItem extends Model
     }
 
     /**
-     * Scope a query to only include items for a specific user or guest.
+     * Get the order that owns the cart history.
+     */
+    public function order(): BelongsTo
+    {
+        return $this->belongsTo(Order::class);
+    }
+
+    /**
+     * Scope a query to only include history for a specific user or guest.
      */
     public function scopeForOwner($query, $userId = null, $guestId = null)
     {
@@ -61,5 +77,11 @@ class CartItem extends Model
                 $q->where('guest_id', $guestId);
             }
         });
+    }
+
+
+    public function scopeExpired(Builder $query): Builder
+    {
+        return $query->where('expires_at', '<=', now());
     }
 }
