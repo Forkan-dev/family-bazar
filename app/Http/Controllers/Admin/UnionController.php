@@ -28,7 +28,7 @@ class UnionController extends Controller
     public function create()
     {
         $upazilas = Upazila::all();
-        return Inertia::render('Admin/Location/Create', [
+        return Inertia::render('Admin/Location/Form', [
             'upazilas' => $upazilas,
         ]);
     }
@@ -66,7 +66,7 @@ class UnionController extends Controller
         $union->loadMissing(['upazila']); // Load upazila if not already loaded
 
         $upazilas = Upazila::all();
-        return Inertia::render('Admin/Location/Edit', [
+        return Inertia::render('Admin/Location/Form', [
             'union' => $union->only(['id', 'upazila_id', 'name_en', 'name_bn']),
             'upazilas' => $upazilas,
         ]);

@@ -30,7 +30,7 @@ class BrandController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Admin/Brand/Create');
+        return Inertia::render('Admin/Brand/Form');
     }
 
     /**
@@ -72,7 +72,7 @@ class BrandController extends Controller
      */
     public function edit(Brand $brand)
     {
-        return Inertia::render('Admin/Brand/Edit', [
+        return Inertia::render('Admin/Brand/Form', [
             'brand' => $brand,
         ]);
     }

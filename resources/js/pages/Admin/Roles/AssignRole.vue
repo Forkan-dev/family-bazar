@@ -1,8 +1,17 @@
 <script setup>
-import { useForm } from '@inertiajs/vue3'
-import MasterLayout from '@/layouts/MasterLayout.vue';
-import { VButton } from '@/components/ui/button';
-import { watch } from 'vue';
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { FormSelect } from '@/components/ui/form-select'
+import { Separator } from '@/components/ui/separator'
+import MasterLayout from '@/layouts/MasterLayout.vue'
+import { Head, useForm } from '@inertiajs/vue3'
+import { computed, watch } from 'vue'
+import { UserCheck, Users } from 'lucide-vue-next'
+
+const route = (name: string, params?: any) => {
+    return (window as any).route(name, params)
+}
 
 const props = defineProps({
     users: Array,
@@ -13,6 +22,24 @@ const form = useForm({
     user_id: null,
     roles: [],
 })
+
+const userOptions = computed(() =>
+    props.users.map(user => ({
+        value: user.id,
+        label: user.name
+    }))
+)
+
+const roleOptions = computed(() =>
+    props.roles.map(role => ({
+        value: role.name,
+        label: role.name
+    }))
+)
+
+const selectedUser = computed(() =>
+    props.users.find(u => u.id === form.user_id)
+)
 
 const submit = () => {
     form.post(route('admin.roles.assign.store'))
@@ -32,40 +59,90 @@ watch(() => form.user_id, (newVal) => {
 
 <template>
     <MasterLayout>
-        <v-container>
-            <v-row>
-                <v-col cols="12">
-                    <v-card>
-                        <v-card-title class="d-flex align-center">
-                            <v-icon class="mr-3" color="primary">mdi-account-key</v-icon>
-                            Assign Roles
-                        </v-card-title>
-                        <v-divider></v-divider>
-                        <v-card-text class="mt-5">
-                            <v-form @submit.prevent="submit">
-                                <v-row>
-                                    <v-col cols="12" md="6">
-                                        <v-select v-model="form.user_id" :items="users" item-title="name"
-                                            item-value="id" label="Select User" variant="outlined" density="compact"
-                                            :error-messages="form.errors.user_id"></v-select>
-                                    </v-col>
-                                    <v-col cols="12" md="6">
-                                        <v-select v-model="form.roles" :items="roles" item-title="name"
-                                            item-value="name" label="Select Roles" multiple chips variant="outlined"
-                                            density="compact" :error-messages="form.errors.roles"></v-select>
-                                    </v-col>
-                                </v-row>
-                                <div class="d-flex gap-3 mt-5">
-                                    <VButton type="submit" :disabled="form.processing" :loading="form.processing">
-                                        <v-icon left>mdi-content-save</v-icon>
-                                        Assign Roles
-                                    </VButton>
+
+        <Head title="Assign Roles" />
+
+        <div class="max-w-4xl mx-auto">
+            <Card>
+                <CardHeader>
+                    <CardTitle class="flex items-center">
+                        <UserCheck class="h-5 w-5 mr-2" />
+                        Assign Roles to User
+                    </CardTitle>
+                    <CardDescription>
+                        Select a user and assign appropriate roles to manage their permissions
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <form @submit.prevent="submit" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- User Selection -->
+                            <div class="space-y-2">
+                                <FormSelect v-model="form.user_id" label="Select User" placeholder="Choose a user..."
+                                    :options="userOptions" :error-messages="form.errors.user_id" required />
+                            </div>
+
+                            <!-- Role Selection -->
+                            <div class="space-y-2">
+                                <FormSelect v-model="form.roles" label="Select Roles" placeholder="Choose roles..."
+                                    :options="roleOptions" :error-messages="form.errors.roles" multiple />
+                            </div>
+                        </div>
+
+                        <!-- Current User Info -->
+                        <div v-if="selectedUser" class="space-y-4">
+                            <Separator />
+                            <div class="p-4 bg-muted/50 rounded-lg">
+                                <h4 class="font-medium mb-3 flex items-center">
+                                    <Users class="h-4 w-4 mr-2" />
+                                    Current User Information
+                                </h4>
+                                <div class="space-y-2">
+                                    <p class="text-sm">
+                                        <span class="font-medium">Name:</span> {{ selectedUser.name }}
+                                    </p>
+                                    <p class="text-sm">
+                                        <span class="font-medium">Email:</span> {{ selectedUser.email }}
+                                    </p>
+                                    <div v-if="selectedUser.roles && selectedUser.roles.length > 0" class="space-y-2">
+                                        <span class="text-sm font-medium">Current Roles:</span>
+                                        <div class="flex flex-wrap gap-2">
+                                            <Badge v-for="role in selectedUser.roles" :key="role.id"
+                                                variant="secondary">
+                                                {{ role.name }}
+                                            </Badge>
+                                        </div>
+                                    </div>
+                                    <div v-else class="text-sm text-muted-foreground">
+                                        No roles assigned
+                                    </div>
                                 </div>
-                            </v-form>
-                        </v-card-text>
-                    </v-card>
-                </v-col>
-            </v-row>
-        </v-container>
+                            </div>
+                        </div>
+
+                        <!-- Selected Roles Preview -->
+                        <div v-if="form.roles.length > 0" class="space-y-4">
+                            <Separator />
+                            <div class="p-4 bg-primary/5 border border-primary/20 rounded-lg">
+                                <h4 class="font-medium mb-3">Selected Roles</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    <Badge v-for="roleName in form.roles" :key="roleName"
+                                        class="bg-primary/10 text-primary border-primary/20">
+                                        {{ roleName }}
+                                    </Badge>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="flex justify-end pt-4">
+                            <Button type="submit" :disabled="form.processing || !form.user_id" class="min-w-32">
+                                {{ form.processing ? 'Assigning...' : 'Assign Roles' }}
+                            </Button>
+                        </div>
+                    </form>
+                </CardContent>
+            </Card>
+        </div>
     </MasterLayout>
 </template>
