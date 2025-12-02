@@ -37,6 +37,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get('categories', [CategoryController::class, 'index'])->name('categories.index')->middleware('permission:category.view');
         Route::get('categories/create', [CategoryController::class, 'create'])->name('categories.create')->middleware('permission:category.create');
+        Route::get('categories/search', [CategoryController::class, 'search'])->name('categories.search');
         Route::post('categories', [CategoryController::class, 'store'])->name('categories.store')->middleware('permission:category.create');
         Route::get('categories/{category}', [CategoryController::class, 'show'])->name('categories.show')->middleware('permission:category.view');
         Route::get('categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit')->middleware('permission:category.update');

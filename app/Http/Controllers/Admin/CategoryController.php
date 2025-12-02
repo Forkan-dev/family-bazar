@@ -28,11 +28,7 @@ class CategoryController extends Controller
 
     public function create()
     {
-        $categories = Category::all();
-
-        return Inertia::render('Admin/Category/Create', [
-            'categories' => $categories,
-        ]);
+        return Inertia::render('Admin/Category/Form');
     }
 
     /**
@@ -68,12 +64,8 @@ class CategoryController extends Controller
 
     public function edit(Category $category)
     {
-        // সকল categories fetch করা, except current category (optional)
-        $categories = Category::where('id', '!=', $category->id)->get();
-
-        return Inertia::render('Admin/Category/Edit', [
+        return Inertia::render('Admin/Category/Form', [
             'category' => $category,
-            'categories' => $categories,
         ]);
     }
 
@@ -84,9 +76,10 @@ class CategoryController extends Controller
     {
         $request->validate([
             'title_en' => 'required|string|max:255',
-            'title_bn' => 'required|string|max:255',
+            'title_bn' => 'nullable|string|max:255',
             'slug' => 'required|string|max:255|unique:categories,slug,'.$category->id,
-            'description' => 'nullable|string',
+            'description_en' => 'nullable|string',
+            'description_bn' => 'nullable|string',
             'icon' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // validate image
             'parent_id' => 'nullable|exists:categories,id',
@@ -131,5 +124,40 @@ class CategoryController extends Controller
         }
 
         return redirect()->route('product.categories.index');
+    }
+
+    /**
+     * Search categories for select dropdown
+     */
+    public function search(Request $request)
+    {
+        $query = $request->get('q', '');
+        $exclude = $request->get('exclude'); // Category ID to exclude
+        
+        $categories = Category::query()
+            ->when($query, function ($q) use ($query) {
+                $q->where('title_en', 'like', '%' . $query . '%')
+                  ->orWhere('title_bn', 'like', '%' . $query . '%');
+            })
+            ->when($exclude, function ($q) use ($exclude) {
+                $q->where('id', '!=', $exclude);
+            })
+            ->select('id', 'title_en', 'title_bn')
+            ->limit(20)
+            ->get()
+            ->map(function ($category) {
+                return [
+                    'value' => $category->id,
+                    'label' => $category->title_en . ($category->title_bn ? ' (' . $category->title_bn . ')' : '')
+                ];
+            });
+
+        // Add "No Parent" option at the beginning
+        $categories->prepend([
+            'value' => null,
+            'label' => 'No Parent (Root Category)'
+        ]);
+
+        return response()->json($categories);
     }
 }

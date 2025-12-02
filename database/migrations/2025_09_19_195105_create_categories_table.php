@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('title_en');
             $table->string('title_bn');
             $table->string('slug')->unique();
-            $table->text('description')->nullable();
+            $table->text('description_en')->nullable();
+            $table->text('description_bn')->nullable();
             $table->string('icon')->nullable();
             $table->string('image')->nullable();
             $table->foreignId('parent_id')->nullable()->constrained('categories')->onDelete('cascade');

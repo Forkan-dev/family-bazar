@@ -100,7 +100,7 @@ onMounted(() => {
 const typeOptions = computed(() =>
     props.types.map(type => ({
         value: type.id,
-        label: type.name
+        label: type.name_en
     }))
 )
 
