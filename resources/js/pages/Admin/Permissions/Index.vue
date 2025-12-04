@@ -1,64 +1,95 @@
 <script setup lang="ts">
-import MasterLayout from '@/layouts/MasterLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
-import { ref } from 'vue';
-import { VButton } from '@/components/ui/button';
+import DataTable from '@/components/ui/DataTable.vue'
+import MasterLayout from '@/layouts/MasterLayout.vue'
+import { Head, router } from '@inertiajs/vue3'
+import { Edit, Trash2 } from 'lucide-vue-next'
 
-const props = defineProps({
-    permissions: Array, // Assuming permissions will be passed as a prop
-});
+const route = (name: string, params?: any) => {
+    return (window as any).route(name, params)
+}
 
-const headers = [
-    { title: 'Name', key: 'name' },
-    { title: 'Guard Name', key: 'guard_name' },
-    { title: 'Actions', key: 'actions', sortable: false },
-];
-
-const search = ref('');
-
-const deletePermission = (id: number) => {
-    if (confirm('Are you sure you want to delete this permission?')) {
-        // Inertia.delete(route('permissions.destroy', id));
-        console.log('Delete permission with ID:', id);
+const { permissions } = defineProps<{
+    permissions: {
+        data: any[]
+        current_page: number
+        per_page: number
+        total: number
+        last_page: number
+        from: number
+        to: number
     }
-};
+}>()
+
+const columns = [
+    {
+        key: 'name',
+        label: 'Permission Name',
+        sortable: true,
+        searchable: true,
+        class: 'font-medium',
+    },
+    {
+        key: 'guard_name',
+        label: 'Guard Name',
+    }
+]
+
+const actions = [
+    {
+        label: 'Edit',
+        icon: Edit,
+        variant: 'ghost' as const,
+        action: (item: any) => {
+            router.visit(route('admin.permissions.edit', item.id))
+        }
+    },
+    {
+        label: 'Delete',
+        icon: Trash2,
+        variant: 'destructive' as const,
+        action: (item: any) => {
+            if (confirm('Are you sure you want to delete this permission?')) {
+                router.delete(route('admin.permissions.destroy', item.id))
+            }
+        }
+    }
+]
+
+const handleSearch = (query: string) => {
+    router.get(route('admin.permissions.index'), { search: query }, {
+        preserveState: true,
+        preserveScroll: true
+    })
+}
+
+const handlePagination = (page: number) => {
+    router.get(route('admin.permissions.index'), { page }, {
+        preserveState: true,
+        preserveScroll: true
+    })
+}
+
+const handleSort = (column: string, direction: 'asc' | 'desc') => {
+    router.get(route('admin.permissions.index'), {
+        sort: column,
+        direction
+    }, {
+        preserveState: true,
+        preserveScroll: true
+    })
+}
 </script>
 
 <template>
     <MasterLayout>
+
         <Head title="Permissions" />
 
-        <v-container>
-            <v-row>
-                <v-col cols="12">
-                    <v-card>
-                        <v-card-title class="d-flex align-center justify-space-between">
-                            Permissions
-                            <Link :href="route('admin.permissions.create')">
-                                <VButton>
-                                    <v-icon left>mdi-plus</v-icon>
-                                    Add Permission
-                                </VButton>
-                            </Link>
-                        </v-card-title>
-
-                        <v-card-text>
-                            <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify"
-                                variant="outlined" hide-details single-line density="compact"></v-text-field>
-
-                            <v-data-table :headers="headers" :items="permissions" :search="search" class="elevation-1 mt-4"
-                                density="compact">
-                                <template v-slot:item.actions="{ item }">
-                                    <Link :href="route('admin.permissions.edit', item.id)">
-                                        <v-icon small class="me-2">mdi-pencil</v-icon>
-                                    </Link>
-                                    <v-icon small @click="deletePermission(item.id)">mdi-delete</v-icon>
-                                </template>
-                            </v-data-table>
-                        </v-card-text>
-                    </v-card>
-                </v-col>
-            </v-row>
-        </v-container>
+        <div class="p-8">
+            <DataTable title="Permissions" description="Manage system permissions" :columns="columns"
+                :data="permissions.data" :actions="actions" :create-url="route('admin.permissions.create')"
+                create-text="Add Permission" :current-page="permissions.current_page" :per-page="permissions.per_page"
+                :total="permissions.total" @search="handleSearch" @paginate="handlePagination" @sort="handleSort" />
+        </div>
     </MasterLayout>
 </template>
