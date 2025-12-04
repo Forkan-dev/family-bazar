@@ -1,11 +1,14 @@
-
 <script setup lang="ts">
-import MasterLayout from '@/layouts/MasterLayout.vue';
-import { Head, useForm, Link } from '@inertiajs/vue3';
-import VInputField from '@/components/VInputField.vue';
-import { VButton } from '@/components/ui/button';
-import VFileInput from '@/components/ui/VFileInput.vue';
-import { watch } from 'vue';
+import { FormContainer } from '@/components/ui/form-container'
+import FileDropzone from '@/components/ui/FileDropzone.vue'
+import VInputField from '@/components/VInputField.vue'
+import MasterLayout from '@/layouts/MasterLayout.vue'
+import { Head, useForm } from '@inertiajs/vue3'
+import { watch } from 'vue'
+
+const route = (name: string) => {
+    return (window as any).route(name)
+}
 
 const form = useForm({
     en_name: '',
@@ -27,95 +30,23 @@ watch(() => form.en_name, (newName) => {
 
 <template>
     <MasterLayout>
-        <Head title="Add Brand" />
-        <v-container>
-            <v-row>
-                <v-col cols="12">
-                    <v-card>
-                        <v-card-title class="d-flex align-center justify-space-between">
-                            Create Brand
-                            <Link :href="route('product.brands.index')">
-                                <VButton variant="outlined">
-                                    <v-icon left class="mr-2">mdi-arrow-left</v-icon>
-                                    Back to Brands
-                                </VButton>
-                            </Link>
-                        </v-card-title>
-                        <v-divider></v-divider>
-                        <v-card-text>
-                            <v-form @submit.prevent="submit">
-                                <v-row class="mt-4">
-                                    <v-col cols="12" md="6">
-                                        <VInputField
-                                            v-model="form.en_name"
-                                            label="Name (English)"
-                                            :error-messages="form.errors.en_name"
-                                            required
-                                            density="compact"
-                                            variant="outlined"
-                                        />
-                                    </v-col>
-                                    <v-col cols="12" md="6">
-                                        <VInputField
-                                            v-model="form.bn_name"
-                                            label="Name (Bengali)"
-                                            :error-messages="form.errors.bn_name"
-                                            density="compact"
-                                            variant="outlined"
-                                        />
-                                    </v-col>
-                                    <v-col cols="12">
-                                        <VInputField
-                                            v-model="form.slug"
-                                            label="URL Slug"
-                                            :error-messages="form.errors.slug"
-                                            required
-                                            density="compact"
-                                            variant="outlined"
-                                            hint="Auto-generated from English name"
-                                        />
-                                    </v-col>
-                                    <v-col cols="12">
-                                        <VFileInput
-                                            v-model="form.image"
-                                            title="Upload Brand Image"
-                                            variant="outlined"
-                                            density="compact"
-                                            :error-messages="form.errors.image"
-                                            accept="image/*"
-                                            prepend-icon=""
-                                            prepend-inner-icon="mdi-camera"
-                                        />
-                                    </v-col>
-                                </v-row>
 
-                                <div class="d-flex gap-3 mt-8">
-                                    <VButton
-                                        type="submit"
-                                        :disabled="form.processing"
-                                        :loading="form.processing"
-                                        size="large"
-                                    >
-                                        <v-icon left>mdi-plus</v-icon>
-                                        Create Brand
-                                    </VButton>
+        <Head title="Create Brand" />
 
-                                    <Link :href="route('product.brands.index')">
-                                        <VButton
-                                            variant="tonal"
-                                            size="large"
-                                        >
-                                            <v-icon left>mdi-close</v-icon>
-                                            Cancel
-                                        </VButton>
-                                    </Link>
-                                </div>
-                            </v-form>
-                        </v-card-text>
-                    </v-card>
-                </v-col>
-            </v-row>
-        </v-container>
+        <FormContainer title="Create Brand" :back-url="route('product.brands.index')" back-text="Back"
+            :loading="form.processing" submit-text="Create Brand" show-cancel @submit="submit"
+            @cancel="$inertia.visit(route('product.brands.index'))">
+            <VInputField v-model="form.en_name" label="Brand Name" placeholder="Enter brand name"
+                :error-messages="form.errors.en_name" required />
+
+            <VInputField v-model="form.bn_name" label="Brand Name (Bengali)" placeholder="ব্র্যান্ডের নাম"
+                :error-messages="form.errors.bn_name" />
+
+            <VInputField v-model="form.slug" label="URL Slug" placeholder="brand-url-slug"
+                :error-messages="form.errors.slug" required />
+
+            <FileDropzone v-model="form.image" label="Brand Logo" accept="image/*"
+                :error-messages="form.errors.image" />
+        </FormContainer>
     </MasterLayout>
 </template>
-

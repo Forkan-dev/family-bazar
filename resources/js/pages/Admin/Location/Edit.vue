@@ -2,7 +2,7 @@
 import MasterLayout from '@/layouts/MasterLayout.vue';
 import { computed } from 'vue';
 import { Head, useForm } from '@inertiajs/vue3';
-import { VTextField } from 'vuetify/components';
+
 
 declare function route(name: string, params?: any): string;
 

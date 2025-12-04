@@ -4,35 +4,41 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\Product\Product; // Import the Product model
+use App\Models\User;
+use App\Models\Product;
 
 class CartItem extends Model
 {
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'cart_id',
+        'user_id',
+        'guest_id',
         'product_id',
         'quantity',
         'price',
+        'options',
     ];
 
     /**
-     * Get the cart that owns the cart item.
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
      */
-    public function cart(): BelongsTo
+    protected $casts = [
+        'options' => 'array',
+        'price' => 'decimal:2',
+    ];
+
+    /**
+     * Get the user that owns the cart item.
+     */
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Cart::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
@@ -40,6 +46,20 @@ class CartItem extends Model
      */
     public function product(): BelongsTo
     {
-        return $this->belongsTo(Product::class, 'product_id');
+        return $this->belongsTo(Product::class);
+    }
+
+    /**
+     * Scope a query to only include items for a specific user or guest.
+     */
+    public function scopeForOwner($query, $userId = null, $guestId = null)
+    {
+        return $query->where(function ($q) use ($userId, $guestId) {
+            if ($userId) {
+                $q->where('user_id', $userId);
+            } elseif ($guestId) {
+                $q->where('guest_id', $guestId);
+            }
+        });
     }
 }

@@ -1,59 +1,98 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
-import MasterLayout from '../layouts/MasterLayout.vue';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Head } from '@inertiajs/vue3'
+import { User, Check, Bell } from 'lucide-vue-next'
+import MasterLayout from '../layouts/MasterLayout.vue'
 </script>
 
 <template>
     <MasterLayout>
-
         <Head title="Dashboard" />
-        <v-row align="center" justify="center" dense>
-            <v-col cols="12" md="6">
-                <v-card append-icon="mdi-check" class="mx-auto" prepend-icon="mdi-account"
-                    subtitle="prepend-icon and append-icon" title="Icons">
-                    <v-card-text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                        eiusmod.</v-card-text>
-                </v-card>
-            </v-col>
 
-            <v-col cols="12" md="6">
-                <v-card class="mx-auto" subtitle="prepend and append" title="Icons">
-                    <template v-slot:prepend>
-                        <v-icon color="primary" icon="mdi-account"></v-icon>
-                    </template>
-                    <template v-slot:append>
-                        <v-icon color="success" icon="mdi-check"></v-icon>
-                    </template>
-                    <v-card-text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                        eiusmod.</v-card-text>
-                </v-card>
-            </v-col>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
+            <Card>
+                <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <div class="flex items-center space-x-2">
+                        <User class="h-4 w-4 text-primary" />
+                        <div>
+                            <CardTitle class="text-lg">Icons</CardTitle>
+                            <p class="text-sm text-muted-foreground">prepend-icon and append-icon</p>
+                        </div>
+                    </div>
+                    <Check class="h-4 w-4 text-green-600" />
+                </CardHeader>
+                <CardContent>
+                    <p class="text-sm text-muted-foreground">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.
+                    </p>
+                </CardContent>
+            </Card>
 
-            <v-col cols="12" md="6">
-                <v-card append-avatar="https://cdn.vuetifyjs.com/images/john.jpg" class="mx-auto"
-                    prepend-avatar="https://cdn.vuetifyjs.com/images/logos/v-alt.svg"
-                    subtitle="prepend-avatar and append-avatar" title="Avatars">
-                    <v-card-text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                        eiusmod.</v-card-text>
-                </v-card>
-            </v-col>
+            <Card>
+                <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <div class="flex items-center space-x-2">
+                        <User class="h-4 w-4 text-primary" />
+                        <div>
+                            <CardTitle class="text-lg">Icons</CardTitle>
+                            <p class="text-sm text-muted-foreground">prepend and append</p>
+                        </div>
+                    </div>
+                    <Check class="h-4 w-4 text-green-600" />
+                </CardHeader>
+                <CardContent>
+                    <p class="text-sm text-muted-foreground">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.
+                    </p>
+                </CardContent>
+            </Card>
 
-            <v-col cols="12" md="6">
-                <v-card class="mx-auto" subtitle="prepend and append" title="Avatars">
-                    <template v-slot:prepend>
-                        <v-avatar color="blue-darken-2">
-                            <v-icon icon="mdi-alarm"></v-icon>
-                        </v-avatar>
-                    </template>
-                    <template v-slot:append>
-                        <v-avatar size="24">
-                            <v-img alt="John" src="https://cdn.vuetifyjs.com/images/john.png"></v-img>
-                        </v-avatar>
-                    </template>
-                    <v-card-text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                        eiusmod.</v-card-text>
-                </v-card>
-            </v-col>
-        </v-row>
+            <Card>
+                <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <div class="flex items-center space-x-2">
+                        <Avatar class="h-8 w-8">
+                            <AvatarImage src="https://cdn.vuetifyjs.com/images/logos/v-alt.svg" alt="Logo" />
+                            <AvatarFallback>V</AvatarFallback>
+                        </Avatar>
+                        <div>
+                            <CardTitle class="text-lg">Avatars</CardTitle>
+                            <p class="text-sm text-muted-foreground">prepend-avatar and append-avatar</p>
+                        </div>
+                    </div>
+                    <Avatar class="h-8 w-8">
+                        <AvatarImage src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" />
+                        <AvatarFallback>JD</AvatarFallback>
+                    </Avatar>
+                </CardHeader>
+                <CardContent>
+                    <p class="text-sm text-muted-foreground">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.
+                    </p>
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <div class="flex items-center space-x-2">
+                        <Avatar class="h-8 w-8 bg-blue-600">
+                            <Bell class="h-4 w-4 text-white" />
+                        </Avatar>
+                        <div>
+                            <CardTitle class="text-lg">Avatars</CardTitle>
+                            <p class="text-sm text-muted-foreground">prepend and append</p>
+                        </div>
+                    </div>
+                    <Avatar class="h-6 w-6">
+                        <AvatarImage src="https://cdn.vuetifyjs.com/images/john.png" alt="John" />
+                        <AvatarFallback>J</AvatarFallback>
+                    </Avatar>
+                </CardHeader>
+                <CardContent>
+                    <p class="text-sm text-muted-foreground">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.
+                    </p>
+                </CardContent>
+            </Card>
+        </div>
     </MasterLayout>
 </template>
