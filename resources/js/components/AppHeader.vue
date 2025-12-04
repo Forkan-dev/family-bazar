@@ -3,11 +3,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import ThemeToggle from '@/components/ThemeToggle.vue'
@@ -19,18 +19,14 @@ const logout = () => {
 }
 </script>
 <template>
-    <header class="flex h-16 items-center justify-between border-b bg-background px-4">
+    <header class="sticky top-0 z-40 flex h-16 items-center justify-between border-b bg-background px-4">
         <div class="flex-1" />
 
         <div class="flex items-center space-x-4">
             <!-- Search -->
             <div class="relative max-w-sm">
                 <Search class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                    type="search"
-                    placeholder="Search..."
-                    class="pl-8 w-64"
-                />
+                <Input type="search" placeholder="Search..." class="pl-8 w-64" />
             </div>
 
             <!-- Theme Toggle -->
@@ -40,10 +36,8 @@ const logout = () => {
             <div class="flex items-center space-x-2">
                 <Button variant="ghost" size="sm" class="relative">
                     <Bell class="h-4 w-4" />
-                    <Badge
-                        variant="destructive"
-                        class="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs flex items-center justify-center"
-                    >
+                    <Badge variant="destructive"
+                        class="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs flex items-center justify-center">
                         3
                     </Badge>
                 </Button>
@@ -58,10 +52,7 @@ const logout = () => {
                 <DropdownMenuTrigger as-child>
                     <Button variant="ghost" class="flex items-center space-x-2">
                         <Avatar class="h-8 w-8">
-                            <AvatarImage
-                                src="https://randomuser.me/api/portraits/men/85.jpg"
-                                alt="User avatar"
-                            />
+                            <AvatarImage src="https://randomuser.me/api/portraits/men/85.jpg" alt="User avatar" />
                             <AvatarFallback>JD</AvatarFallback>
                         </Avatar>
                         <ChevronDown class="h-4 w-4" />

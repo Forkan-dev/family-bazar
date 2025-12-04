@@ -1,97 +1,107 @@
 <script setup lang="ts">
-import { VButton } from '@/components/ui/button';
-import MasterLayout from '@/layouts/MasterLayout.vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+import DataTable from '@/components/ui/DataTable.vue'
+import MasterLayout from '@/layouts/MasterLayout.vue'
+import { Head, router } from '@inertiajs/vue3'
+import { Edit, Trash2 } from 'lucide-vue-next'
 
-import { ref } from 'vue';
+const route = (name: string, params?: any) => {
+    return (window as any).route(name, params)
+}
 
-const props = defineProps({
-    unions: Array,
-});
-
-const headers = [
-    { title: 'Union Name', key: 'name_en' },
-    { title: 'Upazila Name', key: 'upazila.name_en' },
-    { title: 'District Name', key: 'upazila.district.name_en' },
-    { title: 'Division Name', key: 'upazila.district.division.name_en' },
-    { title: 'Actions', key: 'actions', sortable: false },
-];
-
-const search = ref('');
-
-const deleteUnion = (id: number) => {
-    if (confirm('Are you sure you want to delete this union?')) {
-        router.delete(route('product.locations.destroy', id), {
-            onSuccess: () => alert('Union deleted successfully.'),
-            onError: (errors) => console.error(errors),
-        });
+const { unions } = defineProps<{
+    unions: {
+        data: any[]
+        current_page: number
+        per_page: number
+        total: number
+        last_page: number
+        from: number
+        to: number
     }
-};
+}>()
+
+const columns = [
+    {
+        key: 'name_en',
+        label: 'Union Name',
+        sortable: true,
+        searchable: true,
+        class: 'font-medium'
+    },
+    {
+        key: 'upazila',
+        label: 'Upazila',
+        render: (item: any) => item.upazila?.name_en || 'N/A'
+    },
+    {
+        key: 'district',
+        label: 'District',
+        render: (item: any) => item.upazila?.district?.name_en || 'N/A'
+    },
+    {
+        key: 'division',
+        label: 'Division',
+        render: (item: any) => item.upazila?.district?.division?.name_en || 'N/A'
+    }
+]
+
+const actions = [
+    {
+        label: 'Edit',
+        icon: Edit,
+        variant: 'ghost' as const,
+        action: (item: any) => {
+            router.visit(route('product.locations.edit', item.id))
+        }
+    },
+    {
+        label: 'Delete',
+        icon: Trash2,
+        variant: 'destructive' as const,
+        action: (item: any) => {
+            if (confirm('Are you sure you want to delete this union?')) {
+                router.delete(route('product.locations.destroy', item.id))
+            }
+        }
+    }
+]
+
+const handleSearch = (query: string) => {
+    router.get(route('product.locations.index'), { search: query }, {
+        preserveState: true,
+        preserveScroll: true
+    })
+}
+
+const handlePagination = (page: number) => {
+    router.get(route('product.locations.index'), { page }, {
+        preserveState: true,
+        preserveScroll: true
+    })
+}
+
+const handleSort = (column: string, direction: 'asc' | 'desc') => {
+    router.get(route('product.locations.index'), {
+        sort: column,
+        direction
+    }, {
+        preserveState: true,
+        preserveScroll: true
+    })
+}
 </script>
 
 <template>
     <MasterLayout>
+
         <Head title="Locations" />
 
-        <v-container>
-            <v-row>
-                <v-col cols="12">
-                    <v-card>
-                        <v-card-title
-                            class="d-flex align-center justify-space-between"
-                        >
-                            Locations
-                            <VButton>
-                                <v-icon left>mdi-plus</v-icon>
-                                <Link
-                                    :href="route('product.locations.create')"
-                                    class="mr-2"
-                                >
-                                    Add Union
-                                </Link>
-                            </VButton>
-                        </v-card-title>
-
-                        <v-card-text>
-                            <v-text-field
-                                v-model="search"
-                                label="Search"
-                                prepend-inner-icon="mdi-magnify"
-                                variant="outlined"
-                                hide-details
-                                single-line
-                                density="compact"
-                            ></v-text-field>
-
-                            <v-data-table
-                                :headers="headers"
-                                :items="unions"
-                                :search="search"
-                                class="elevation-1 mt-4"
-                                density="compact"
-                            >
-                                <!-- Actions Column -->
-                                <template v-slot:item.actions="{ item }">
-                                    <Link
-                                        :href="
-                                            route('product.locations.edit', item.id)
-                                        "
-                                    >
-                                        <v-icon small class="me-2"
-                                            >mdi-pencil</v-icon
-                                        >
-                                    </Link>
-                                    <v-icon
-                                        small
-                                        @click="deleteUnion(item.id)"
-                                        >mdi-delete</v-icon
-                                    >
-                                </template>
-                            </v-data-table>
-                        </v-card-text>
-                    </v-card>
-                </v-col>
-            </v-row>
-        </v-container>
+        <div class="p-8">
+            <DataTable title="Locations" description="Manage unions and their administrative divisions"
+                :columns="columns" :data="unions.data" :actions="actions"
+                :create-url="route('product.locations.create')" create-text="Add Union"
+                :current-page="unions.current_page" :per-page="unions.per_page" :total="unions.total"
+                @search="handleSearch" @paginate="handlePagination" @sort="handleSort" />
+        </div>
     </MasterLayout>
 </template>
