@@ -7,6 +7,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Console\Scheduling\Schedule;
 
 
 
@@ -21,6 +22,10 @@ return Application::configure(basePath: dirname(__DIR__))
         using: function () {
             Route::middleware('web')
                 ->group(base_path('routes/backend.php'));
+
+            Route::middleware('api')
+                ->prefix('api')
+                ->group(base_path('routes/api.php'));
         },
     )
     ->withMiddleware(function (Middleware $middleware) {
@@ -43,6 +48,9 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         // Exception handling configuration
+    })
+    ->withSchedule(function (Schedule $schedule) {
+        $schedule->command('app:clear-old-cart-history')->everyMinute();
     })
     ->create();
 

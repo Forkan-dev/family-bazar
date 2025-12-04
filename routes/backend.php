@@ -2,6 +2,7 @@
 
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\UnionController;
@@ -16,6 +17,12 @@ use App\Http\Controllers\Admin\PermissionsController;
 Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
+
+
+
+
+
+
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('documents/{document}', [DocumentController::class, 'destroy'])->name('documents.destroy');
