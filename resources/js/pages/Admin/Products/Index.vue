@@ -111,7 +111,7 @@ const handleSort = (column: string, direction: 'asc' | 'desc') => {
 
         <Head title="Products" />
 
-        <div class="p-8">
+        <div>
             <DataTable title="Products" description="Manage your product inventory" :columns="columns"
                 :data="products.data" :actions="actions" :create-url="route('product.products.create')"
                 create-text="Add Product" :current-page="products.current_page" :per-page="products.per_page"

@@ -96,7 +96,7 @@ const handleSort = (column: string, direction: 'asc' | 'desc') => {
 
         <Head title="Locations" />
 
-        <div class="p-8">
+        <div>
             <DataTable title="Locations" description="Manage unions and their administrative divisions"
                 :columns="columns" :data="unions.data" :actions="actions"
                 :create-url="route('product.locations.create')" create-text="Add Union"
