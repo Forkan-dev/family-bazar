@@ -93,7 +93,7 @@ const handleSort = (column: string, direction: 'asc' | 'desc') => {
 
         <Head title="Roles" />
 
-        <div class="p-8">
+        <div>
             <DataTable title="Roles" description="Manage user roles and permissions" :columns="columns"
                 :data="roles.data" :actions="actions" :create-url="route('admin.roles.create')" create-text="Add Role"
                 :current-page="roles.current_page" :per-page="roles.per_page" :total="roles.total"

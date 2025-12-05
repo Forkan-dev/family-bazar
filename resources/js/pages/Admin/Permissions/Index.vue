@@ -85,7 +85,7 @@ const handleSort = (column: string, direction: 'asc' | 'desc') => {
 
         <Head title="Permissions" />
 
-        <div class="p-8">
+        <div>
             <DataTable title="Permissions" description="Manage system permissions" :columns="columns"
                 :data="permissions.data" :actions="actions" :create-url="route('admin.permissions.create')"
                 create-text="Add Permission" :current-page="permissions.current_page" :per-page="permissions.per_page"
