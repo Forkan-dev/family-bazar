@@ -83,7 +83,7 @@ const deleteBrand = (id: number) => {
 
         <Head title="Brands" />
 
-        <div class="p-6">
+        <div>
             <DataTable title="Brands" description="Manage product brands and manufacturers" :columns="columns"
                 :data="brands || []" :actions="actions" :create-url="route('product.brands.create')"
                 create-text="Add Brand" searchable :total="brands?.length || 0" />
