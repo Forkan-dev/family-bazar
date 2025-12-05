@@ -112,7 +112,7 @@ const deleteBanner = (id: number) => {
 
         <Head title="Banners" />
 
-        <div class="p-6">
+        <div>
             <DataTable title="Banners" description="Manage website banners and promotional content" :columns="columns"
                 :data="processedBanners" :actions="actions" :create-url="route('admin.banners.create')"
                 create-text="Add Banner" searchable :total="processedBanners.length" />

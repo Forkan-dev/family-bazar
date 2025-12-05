@@ -144,7 +144,7 @@ const fetchCategories = () => {
 
         <Head title="Categories" />
 
-        <div class="p-6">
+        <div>
             <DataTable title="Categories" description="Manage product categories and subcategories" :columns="columns"
                 :data="categories?.data || []" :actions="actions" :create-url="route('product.categories.create')"
                 create-text="Add Category" searchable :total="categories?.total || 0"
