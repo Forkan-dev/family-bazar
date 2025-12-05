@@ -20,7 +20,7 @@ class BrandController extends Controller
             return $brand;
         });
 
-        return Inertia::render('Admin/Brand/index', [
+        return Inertia::render('Admin/Brand/Index', [
             'brands' => $brands,
         ]);
     }

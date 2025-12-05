@@ -21,7 +21,7 @@ class CategoryController extends Controller
     {
         $categories = $this->categoryService->getPaginatedCategories($request);
 
-        return Inertia::render('Admin/Category/index', [
+        return Inertia::render('Admin/Category/Index', [
             'categories' => $categories,
         ]);
     }
@@ -133,7 +133,7 @@ class CategoryController extends Controller
     {
         $query = $request->get('q', '');
         $exclude = $request->get('exclude'); // Category ID to exclude
-        
+
         $categories = Category::query()
             ->when($query, function ($q) use ($query) {
                 $q->where('title_en', 'like', '%' . $query . '%')
