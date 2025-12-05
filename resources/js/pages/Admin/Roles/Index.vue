@@ -1,64 +1,103 @@
 <script setup lang="ts">
-import MasterLayout from '@/layouts/MasterLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
-import { ref } from 'vue';
-import { VButton } from '@/components/ui/button';
+import DataTable from '@/components/ui/DataTable.vue'
+import MasterLayout from '@/layouts/MasterLayout.vue'
+import { Head, router } from '@inertiajs/vue3'
+import { Edit, Trash2 } from 'lucide-vue-next'
 
-const props = defineProps({
-    roles: Array, // Assuming roles will be passed as a prop
-});
+const route = (name: string, params?: any) => {
+    return (window as any).route(name, params)
+}
 
-const headers = [
-    { title: 'Name', key: 'name' },
-    { title: 'Guard Name', key: 'guard_name' },
-    { title: 'Actions', key: 'actions', sortable: false },
-];
-
-const search = ref('');
-
-const deleteRole = (id: number) => {
-    if (confirm('Are you sure you want to delete this role?')) {
-        // Inertia.delete(route('roles.destroy', id));
-        console.log('Delete role with ID:', id);
+const { roles } = defineProps<{
+    roles: {
+        data: any[]
+        current_page: number
+        per_page: number
+        total: number
+        last_page: number
+        from: number
+        to: number
     }
-};
+}>()
+
+const columns = [
+    {
+        key: 'name',
+        label: 'Role Name',
+        sortable: true,
+        searchable: true,
+        class: 'font-medium'
+    },
+    {
+        key: 'guard_name',
+        label: 'Guard Name',
+    },
+    {
+        key: 'permissions_count',
+        label: 'Permissions',
+        render: (item: any) => {
+            const count = item.permissions_count || 0
+            return `${count} permission${count !== 1 ? 's' : ''}`
+        }
+    }
+]
+
+const actions = [
+    {
+        label: 'Edit',
+        icon: Edit,
+        variant: 'ghost' as const,
+        action: (item: any) => {
+            router.visit(route('admin.roles.edit', item.id))
+        }
+    },
+    {
+        label: 'Delete',
+        icon: Trash2,
+        variant: 'destructive' as const,
+        action: (item: any) => {
+            if (confirm('Are you sure you want to delete this role?')) {
+                router.delete(route('admin.roles.destroy', item.id))
+            }
+        }
+    }
+]
+
+const handleSearch = (query: string) => {
+    router.get(route('admin.roles.index'), { search: query }, {
+        preserveState: true,
+        preserveScroll: true
+    })
+}
+
+const handlePagination = (page: number) => {
+    router.get(route('admin.roles.index'), { page }, {
+        preserveState: true,
+        preserveScroll: true
+    })
+}
+
+const handleSort = (column: string, direction: 'asc' | 'desc') => {
+    router.get(route('admin.roles.index'), {
+        sort: column,
+        direction
+    }, {
+        preserveState: true,
+        preserveScroll: true
+    })
+}
 </script>
 
 <template>
     <MasterLayout>
+
         <Head title="Roles" />
 
-        <v-container>
-            <v-row>
-                <v-col cols="12">
-                    <v-card>
-                        <v-card-title class="d-flex align-center justify-space-between">
-                            Roles
-                            <Link :href="route('admin.roles.create')">
-                                <VButton>
-                                    <v-icon left>mdi-plus</v-icon>
-                                    Add Role
-                                </VButton>
-                            </Link>
-                        </v-card-title>
-
-                        <v-card-text>
-                            <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify"
-                                variant="outlined" hide-details single-line density="compact"></v-text-field>
-
-                            <v-data-table :headers="headers" :items="roles" :search="search" class="elevation-1 mt-4"
-                                density="compact">
-                                <template v-slot:item.actions="{ item }">
-                                    <Link :href="route('admin.roles.edit', item.id)">
-                                        <v-icon small class="me-2">mdi-pencil</v-icon>
-                                    </Link>
-                                    <v-icon small @click="deleteRole(item.id)">mdi-delete</v-icon>
-                                </template>
-                            </v-data-table>
-                        </v-card-text>
-                    </v-card>
-                </v-col>
-            </v-row>
-        </v-container>
+        <div class="p-8">
+            <DataTable title="Roles" description="Manage user roles and permissions" :columns="columns"
+                :data="roles.data" :actions="actions" :create-url="route('admin.roles.create')" create-text="Add Role"
+                :current-page="roles.current_page" :per-page="roles.per_page" :total="roles.total"
+                @search="handleSearch" @paginate="handlePagination" @sort="handleSort" />
+        </div>
     </MasterLayout>
 </template>

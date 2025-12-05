@@ -13,9 +13,31 @@ class UnionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $unions = Union::with('upazila.district.division')->get();
+        $query = Union::with('upazila.district.division');
+
+        // Search functionality
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name_en', 'like', "%{$search}%")
+                  ->orWhere('name_bn', 'like', "%{$search}%")
+                  ->orWhereHas('upazila', function ($q) use ($search) {
+                      $q->where('name_en', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // Sorting functionality
+        if ($request->has('sort')) {
+            $direction = $request->get('direction', 'asc');
+            $query->orderBy($request->sort, $direction);
+        } else {
+            $query->latest();
+        }
+
+        $unions = $query->paginate(10);
 
         return Inertia::render('Admin/Location/index', [
             'unions' => $unions,
@@ -28,7 +50,7 @@ class UnionController extends Controller
     public function create()
     {
         $upazilas = Upazila::all();
-        return Inertia::render('Admin/Location/Create', [
+        return Inertia::render('Admin/Location/Form', [
             'upazilas' => $upazilas,
         ]);
     }
@@ -46,7 +68,7 @@ class UnionController extends Controller
 
         Union::create($request->all());
 
-        return redirect()->route('locations.index')->with('success', 'Union created successfully.');
+        return redirect()->route('product.locations.index')->with('success', 'Union created successfully.');
     }
 
     /**
@@ -66,7 +88,7 @@ class UnionController extends Controller
         $union->loadMissing(['upazila']); // Load upazila if not already loaded
 
         $upazilas = Upazila::all();
-        return Inertia::render('Admin/Location/Edit', [
+        return Inertia::render('Admin/Location/Form', [
             'union' => $union->only(['id', 'upazila_id', 'name_en', 'name_bn']),
             'upazilas' => $upazilas,
         ]);
@@ -87,7 +109,7 @@ class UnionController extends Controller
 
         $union->update($request->all());
 
-        return redirect()->route('locations.index')->with('success', 'Union updated successfully!');
+        return redirect()->route('product.locations.index')->with('success', 'Union updated successfully!');
     }
 
     /**
@@ -101,6 +123,6 @@ class UnionController extends Controller
             return response()->json(['success' => true]);
         }
 
-        return redirect()->route('locations.index');
+        return redirect()->route('product.locations.index');
     }
 }

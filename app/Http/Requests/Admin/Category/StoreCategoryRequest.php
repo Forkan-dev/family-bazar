@@ -22,13 +22,14 @@ class StoreCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title_en'   => 'required|string|max:255',
-            'title_bn'   => 'required|string|max:255',
-            'slug'       => 'required|string|max:255|unique:categories,slug',
-            'description'=> 'nullable|string',
-            'icon'       => 'nullable|string',
-            'image'      => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'parent_id'  => 'nullable|exists:categories,id',
+            'title_en'      => 'required|string|max:255',
+            'title_bn'      => 'nullable|string|max:255',
+            'slug'          => 'required|string|max:255|unique:categories,slug',
+            'description_en'=> 'nullable|string',
+            'description_bn'=> 'nullable|string',
+            'icon'          => 'nullable|string',
+            'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'parent_id'     => 'nullable|exists:categories,id',
         ];
     }
 }

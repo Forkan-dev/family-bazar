@@ -11,9 +11,27 @@ use App\Models\User;
 
 class RolesController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $roles = Role::with('permissions')->get();
+        $query = Role::withCount('permissions');
+
+        // Search
+        if ($request->has('search') && $request->search) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('guard_name', 'like', "%{$search}%");
+            });
+        }
+
+        // Sorting
+        $sortColumn = $request->get('sort', 'name');
+        $sortDirection = $request->get('direction', 'asc');
+        $query->orderBy($sortColumn, $sortDirection);
+
+        // Pagination
+        $roles = $query->paginate($request->get('per_page', 10));
+
         return Inertia::render('Admin/Roles/Index', [
             'roles' => $roles,
         ]);
@@ -24,6 +42,7 @@ class RolesController extends Controller
         $permissions = Permission::all();
         return Inertia::render('Admin/Roles/Form', [
             'permissions' => $permissions,
+            'selectedPermissions' => [],
         ]);
     }
 
@@ -59,6 +78,7 @@ class RolesController extends Controller
         return Inertia::render('Admin/Roles/Form', [
             'role' => $role,
             'permissions' => $permissions,
+            'selectedPermissions' => $role->permissions->pluck('id')->toArray(),
         ]);
     }
 

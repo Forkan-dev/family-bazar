@@ -1,5 +1,5 @@
 <template>
-    <footer class="border-t border-border bg-background py-6">
+    <footer class="sticky bottom-0 z-40 border-t border-border bg-background py-6">
         <div class="container mx-auto text-center">
             <p class="text-sm text-muted-foreground">
                 {{ new Date().getFullYear() }} — <strong>Family Bazar</strong>
