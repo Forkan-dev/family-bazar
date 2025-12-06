@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Location\Upazila;
+use App\Models\Location\District;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class UpazilaSeeder extends Seeder
 {
@@ -138,10 +140,10 @@ class UpazilaSeeder extends Seeder
         ];
 
         foreach ($upazilas as $districtName => $upazilaList) {
-            $district = \App\Models\District::where('name_en', $districtName)->first();
+            $district = District::where('name_en', $districtName)->first();
             if ($district) {
                 foreach ($upazilaList as $upazila) {
-                    \App\Models\Upazila::create([
+                    Upazila::create([
                         'district_id' => $district->id,
                         'name_en' => $upazila['name_en'],
                         'name_bn' => $upazila['name_bn'],

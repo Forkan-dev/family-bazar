@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\RolesController;
+use App\Http\Controllers\Admin\ShopController;
 use App\Http\Controllers\Admin\UnionController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\ProductController;
@@ -93,6 +94,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('banners/{banner}/edit', [BannerController::class, 'edit'])->name('admin.banners.edit')->middleware('permission:banner.update');
     Route::put('banners/{banner}', [BannerController::class, 'update'])->name('admin.banners.update')->middleware('permission:banner.update');
     Route::delete('banners/{banner}', [BannerController::class, 'destroy'])->name('admin.banners.destroy')->middleware('permission:banner.delete');
+
+    Route::get('shops', [ShopController::class, 'index'])->name('admin.shops.index')->middleware('permission:shop.view');
+    Route::get('shops/create', [ShopController::class, 'create'])->name('admin.shops.create')->middleware('permission:shop.create');
+    Route::get('shops/search-owners', [ShopController::class, 'searchOwners'])->name('admin.shops.search-owners');
+    Route::post('shops', [ShopController::class, 'store'])->name('admin.shops.store')->middleware('permission:shop.create');
+    Route::get('shops/{shop}', [ShopController::class, 'show'])->name('admin.shops.show')->middleware('permission:shop.view');
+    Route::get('shops/{shop}/edit', [ShopController::class, 'edit'])->name('admin.shops.edit')->middleware('permission:shop.update');
+    Route::put('shops/{shop}', [ShopController::class, 'update'])->name('admin.shops.update')->middleware('permission:shop.update');
+    Route::delete('shops/{shop}', [ShopController::class, 'destroy'])->name('admin.shops.destroy')->middleware('permission:shop.delete');
 });
 
 require __DIR__.'/settings.php';

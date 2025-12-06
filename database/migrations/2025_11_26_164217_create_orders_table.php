@@ -24,8 +24,8 @@ return new class extends Migration
             $table->json('delivery_address')->nullable();
                 // Snapshot of the address used at order time (immutable)
 
-            $table->foreignId('area_id')->nullable()->constrained();
-                // Delivery area / branch (optional)
+            $table->foreignId('zone_id')->nullable()->constrained('zones');
+                // Delivery zone / branch (optional)
 
             // -----------------------------
             // Order Totals & Discounts

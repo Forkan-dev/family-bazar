@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Union;
-use App\Models\Upazila;
+use App\Models\Location\Upazila;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 

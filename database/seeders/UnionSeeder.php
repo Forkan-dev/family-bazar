@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Union;
-use App\Models\Upazila;
+use App\Models\Location\Upazila;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Support\Facades\File;

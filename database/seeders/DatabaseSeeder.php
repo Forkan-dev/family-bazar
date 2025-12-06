@@ -13,12 +13,25 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
+        // Create admin user
+        $admin = User::factory()->create([
+            'name' => 'Admin User',
             'email' => 't@g.com',
             'password' => bcrypt('password'),
+        ]);
+
+        // Create shop owner user
+        $shopOwnerUser = User::factory()->create([
+            'name' => 'Shop Owner',
+            'email' => 'owner@family-bazar.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        // Create shop owner profile linked to the user
+        \App\Models\Shop\ShopOwner::create([
+            'user_id' => $shopOwnerUser->id,
+            'nid' => '1234567890123',
+            'status' => true,
         ]);
 
         $this->call([
@@ -32,6 +45,8 @@ class DatabaseSeeder extends Seeder
             DistrictSeeder::class,
             UpazilaSeeder::class,
             UnionSeeder::class,
+            ThanaSeeder::class,
+            ZoneSeeder::class,
             RolesAndPermissionsSeeder::class,
         ]);
     }
