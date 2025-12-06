@@ -34,12 +34,11 @@ const props = defineProps<{
         is_commission_based: boolean
         status: boolean
     }
-    zones: Array<{ id: number; name: string; address: string }>
+    initialZones?: Array<{ value: number; label: string }>
+    initialZone?: { value: number; label: string } | null
     initialShopOwner?: { value: number; label: string } | null
     initialShopOwners?: Array<{ value: number; label: string }>
 }>()
-
-console.log('Zones:', props.zones)
 
 const form = useForm({
     name: props.shop?.name || '',
@@ -52,13 +51,6 @@ const form = useForm({
     is_commission_based: props.shop?.is_commission_based ?? true,
     status: props.shop?.status ?? true,
 })
-
-const areaOptions = computed(() =>
-    props.zones.map(zone => ({
-        value: zone.id.toString(),
-        label: zone.address ? `${zone.name} - ${zone.address}` : zone.name
-    }))
-)
 
 const shopTypes = [
     { value: 'retail', label: 'Retail' },
@@ -113,28 +105,9 @@ const submit = () => {
                                 :initial-option="initialShopOwner" :initial-options="initialShopOwners" />
 
                             <!-- Zone Selection -->
-                            <div class="space-y-2">
-                                <label class="block text-sm font-medium">
-                                    Zone
-                                    <span class="text-red-500 ml-1">*</span>
-                                </label>
-                                <Select v-model="form.zone_id">
-                                    <SelectTrigger :class="{ 'border-red-500': form.errors.zone_id }">
-                                        <SelectValue placeholder="Choose a zone" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectGroup>
-                                            <SelectItem v-for="zone in zones" :key="zone.id"
-                                                :value="zone.id.toString()">
-                                                {{ zone.address ? `${zone.name} - ${zone.address}` : zone.name }}
-                                            </SelectItem>
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
-                                <p v-if="form.errors.zone_id" class="text-sm text-red-600">
-                                    {{ form.errors.zone_id }}
-                                </p>
-                            </div> <!-- Shop Type -->
+                            <SearchableSelect v-model="form.zone_id" :search-url="route('admin.shops.search-zones')"
+                                label="Zone" required placeholder="Search zone..." :error-messages="form.errors.zone_id"
+                                :initial-option="initialZone" :initial-options="initialZones" /> <!-- Shop Type -->
                             <div class="space-y-2">
                                 <label class="block text-sm font-medium">
                                     Shop Type

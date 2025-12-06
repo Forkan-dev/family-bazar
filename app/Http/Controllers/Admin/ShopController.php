@@ -10,6 +10,7 @@ use App\Services\Shop\ShopService;
 use App\Actions\Shop\CreateShop;
 use App\Actions\Shop\UpdateShop;
 use App\Services\Shop\ShopOwnerService;
+use App\Services\Zone\ZoneService;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Shop\StoreShopRequest;
@@ -19,7 +20,8 @@ class ShopController extends Controller
 {
     public function __construct(
         private ShopService $shopService,
-        private ShopOwnerService $shopOwnerService
+        private ShopOwnerService $shopOwnerService,
+        private ZoneService $zoneService
     ) {}
 
     /**
@@ -40,14 +42,11 @@ class ShopController extends Controller
      */
     public function create()
     {
-        $zones = Zone::where('status', true)
-            ->select('id', 'name', 'address')
-            ->get();
-
+        $initialZones = $this->zoneService->getInitialZones();
         $initialShopOwners = $this->shopOwnerService->getInitialShopOwners();
 
         return Inertia::render('Admin/Shops/Form', [
-            'zones' => $zones,
+            'initialZones' => $initialZones,
             'initialShopOwners' => $initialShopOwners,
         ]);
     }
@@ -88,18 +87,15 @@ class ShopController extends Controller
      */
     public function edit(Shop $shop)
     {
-        $zones = Zone::where('status', true)
-            ->select('id', 'name', 'address')
-            ->get();
-
         $shop->load(['shopOwner.user', 'zone']);
 
-        // Get initial shop owner data for SearchableSelect
+        // Get initial data for SearchableSelects
+        $initialZone = $this->zoneService->getInitialZone($shop->zone);
         $initialShopOwner = $this->shopOwnerService->getInitialShopOwner($shop->shopOwner);
 
         return Inertia::render('Admin/Shops/Form', [
             'shop' => $shop,
-            'zones' => $zones,
+            'initialZone' => $initialZone,
             'initialShopOwner' => $initialShopOwner,
         ]);
     }
@@ -146,6 +142,17 @@ class ShopController extends Controller
         $shopOwners = $this->shopOwnerService->getFormattedShopOwners($query);
 
         return response()->json($shopOwners);
+    }
+
+    /**
+     * Search zones for select dropdown.
+     */
+    public function searchZones(Request $request)
+    {
+        $query = $request->input('q', '');
+        $zones = $this->zoneService->getFormattedZones($query);
+
+        return response()->json($zones);
     }
 }
 

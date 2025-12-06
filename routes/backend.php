@@ -98,6 +98,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('shops', [ShopController::class, 'index'])->name('admin.shops.index')->middleware('permission:shop.view');
     Route::get('shops/create', [ShopController::class, 'create'])->name('admin.shops.create')->middleware('permission:shop.create');
     Route::get('shops/search-owners', [ShopController::class, 'searchOwners'])->name('admin.shops.search-owners');
+    Route::get('shops/search-zones', [ShopController::class, 'searchZones'])->name('admin.shops.search-zones');
     Route::post('shops', [ShopController::class, 'store'])->name('admin.shops.store')->middleware('permission:shop.create');
     Route::get('shops/{shop}', [ShopController::class, 'show'])->name('admin.shops.show')->middleware('permission:shop.view');
     Route::get('shops/{shop}/edit', [ShopController::class, 'edit'])->name('admin.shops.edit')->middleware('permission:shop.update');

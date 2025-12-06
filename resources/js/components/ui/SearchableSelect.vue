@@ -67,6 +67,7 @@ const searchOptions = async (searchQuery: string = '') => {
         const response = await axios.get(props.searchUrl, { params })
         const fetchedOptions = response.data
 
+        // Update options only after receiving response
         // If we have an initial option and it's not in the fetched results, keep it
         if (props.initialOption && props.modelValue) {
             const hasInitialOption = fetchedOptions.some((opt: Option) => opt.value == props.modelValue)
@@ -80,19 +81,24 @@ const searchOptions = async (searchQuery: string = '') => {
         }
     } catch (error) {
         console.error('Error fetching options:', error)
-        options.value = []
+        // Don't clear options on error, keep showing previous results
     } finally {
         loading.value = false
     }
 }
 
 // Debounced search
-let searchTimeout: NodeJS.Timeout
+let searchTimeout: ReturnType<typeof setTimeout>
 const handleSearch = (searchQuery: string) => {
     query.value = searchQuery
 
     // Clear previous timeout
     clearTimeout(searchTimeout)
+
+    // Show loading only if we're going to search
+    if (searchQuery.trim()) {
+        loading.value = true
+    }
 
     // Debounce the actual search
     searchTimeout = setTimeout(() => {
