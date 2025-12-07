@@ -10,14 +10,14 @@ use App\Traits\ImageUploadTrait;
 class CreateBanner
 {
     use ImageUploadTrait;
-   public function handle(StoreBannerRequest $request): Banner
+    public function handle(StoreBannerRequest $request): Banner
     {
         $validatedData = $request->validated();
 
         $processedData = [
             'title' => json_encode([
                 'en' => $validatedData['title_en'],
-                'bn' => $validatedData['title_bn']?? ''
+                'bn' => $validatedData['title_bn'] ?? ''
             ]),
             'sub_title' => json_encode([
                 'en' => $validatedData['sub_title_en'] ?? '',
@@ -36,15 +36,14 @@ class CreateBanner
             'type_id' => $validatedData['type_id'],
         ];
 
-        return DB::transaction(function () use ($processedData, $request) {
-            $banner = Banner::create($processedData);
 
-            // ✅ Single image upload call
+        $banner = Banner::create($processedData);
+
+        // ✅ Single image upload call
+        if ($request->hasFile('image')) {
             $this->uploadSingleImage($request, 'image', 'banners', $banner->documents());
+        }
 
-            return $banner;
-        });
+        return $banner;
     }
-
-
 }

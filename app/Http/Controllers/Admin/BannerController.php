@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Banner;
 use App\Models\Type;
+use Inertia\Inertia;
+use App\Models\Banner;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Actions\Banner\CreateBanner;
 use App\Actions\Banner\UpdateBanner;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Admin\Banner\StoreBannerRequest;
 use App\Http\Requests\Admin\Banner\UpdateBannerRequest;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Illuminate\Support\Facades\DB;
 
 class BannerController extends Controller
 {
