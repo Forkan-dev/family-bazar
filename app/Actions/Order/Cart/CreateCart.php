@@ -2,61 +2,82 @@
 
 namespace App\Actions\Order\Cart;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Facades\ResponseFacade;
 use App\Models\CartItem;
 use App\Models\CartHistory;
 use App\Http\Requests\Order\CartItem\StoreCartItemRequest;
-use App\Http\Requests\Order\CartHistory\StoreCartHistoryRequest;
+use App\Http\Resources\Api\CartItemResource;
+use App\Models\Cart;
 use App\Models\Product;
+use App\Services\Api\ApiResponseService;
+use App\Traits\CheckAuthTrait;
+use ApiResponse;
 
 class CreateCart
 {
-    public function addToCart(StoreCartItemRequest $request)
+    use CheckAuthTrait;
+    protected ApiResponseService $apiResponseService;
+
+    public function __construct(ApiResponseService $apiResponseService)
     {
-        $guestId = session()->get('guest_id');
-
-        if (!$guestId) {
-            $guestId = (string) \Illuminate\Support\Str::uuid();
-            session()->put('guest_id', $guestId);
-        }
-
-        // Determine owner
-        $ownerColumn = Auth::check() ? 'user_id' : 'guest_id';
-        $ownerId = Auth::check() ? Auth::id() : $guestId;
-
-        // Add or update cart item
-        $this->cartItemStore($request, $ownerColumn, $ownerId);
-
-        // Save history
-        $this->cartHistoryStore($request, $ownerColumn, $ownerId);
-
-        return response()->json(['message' => 'Added to cart']);
+        $this->apiResponseService = $apiResponseService;
     }
 
-    private function cartItemStore(StoreCartItemRequest $request, string $ownerColumn, $ownerId)
+    public function addToCart(StoreCartItemRequest $request)
+    {
+        $authenticated = $this->isAuthenticated('customer');
+        $guest_id = null;
+        if (!$authenticated) {
+            $guest_id = (string) \Illuminate\Support\Str::uuid();
+        }
+
+        // Add or update cart item
+        $column = $authenticated ? 'customer_id' : 'guest_id';
+        $c_id = $authenticated ? $this->getAuthenticatedUserId('customer') : $guest_id;
+        $cartItem = $this->storeItemToCart($request, $column, $c_id);
+        return ApiResponse::success(
+            new CartItemResource($cartItem),
+            'Product added to cart successfully'
+        );
+        // return $this->apiResponseService->success(
+        //     new CartItemResource($cartItem),
+        //     'Product added to cart successfully'
+        // );
+    }
+
+
+    private function storeItemToCart(StoreCartItemRequest $request, string $user_column, $c_id)
     {
 
         $product_price = Product::find($request->product_id)->price;
 
-        CartItem::updateOrCreate(
+        $cart = Cart::where($user_column, $c_id)->first();
+        if (!$cart) {
+
+            $cart = Cart::create([
+                $user_column => $c_id,
+            ]);
+        }
+
+
+        $cartItem =  CartItem::updateOrCreate(
             [
-                $ownerColumn => $ownerId,
+                'cart_id' =>  data_get($cart, 'id'),
                 'product_id' => $request->product_id,
             ],
             [
                 'quantity' => $request->quantity,
                 'price' => $product_price,
-                'options' => $request->options,
             ]
         );
+        return $cartItem;
     }
 
-    private function cartHistoryStore(StoreCartItemRequest $request, string $ownerColumn, $ownerId)
+    private function cartHistoryStore(StoreCartItemRequest $request, string $user_column, $c_id)
     {
         $product_price = Product::find($request->product_id)->price;
         CartHistory::create([
-            $ownerColumn => $ownerId,
+            $user_column => $c_id,
             'product_id' => $request->product_id,
             'quantity' => $request->quantity,
             'price' => $product_price,
@@ -81,7 +102,7 @@ class CreateCart
             // Merge into user cart
             CartItem::updateOrCreate(
                 [
-                    'user_id' => auth()->id(),
+                    'user_id' => $this->getAuthenticatedUserId('customer'),
                     'product_id' => $item->product_id
                 ],
                 [
@@ -97,5 +118,16 @@ class CreateCart
 
         // Remove guest session
         session()->forget('guest_id');
+    }
+
+    public function getCartItems()
+    {
+        if ($this->isAuthenticated('customer')) {
+            $c_id = $this->getAuthenticatedUserId('customer');
+            return CartItem::where('customer_id', $c_id)->with('product')->get();
+        } else {
+            $guestId = session()->get('guest_id');
+            return CartItem::where('guest_id', $guestId)->with('product')->get();
+        }
     }
 }

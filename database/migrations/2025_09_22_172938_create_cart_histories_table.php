@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('cart_histories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
+            $table->foreignId('customer_id')->nullable()->constrained('customers')->onDelete('cascade');
             $table->string('guest_id')->nullable();
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             $table->integer('quantity');
@@ -26,9 +26,7 @@ return new class extends Migration
             $table->timestamps();
 
             // Indexes for performance
-            $table->index(['user_id', 'action_date']);
-            $table->index('expires_at');
-            $table->index(['user_id', 'expires_at']);
+            $table->index(['customer_id', 'action_date','expires_at']);
         });
     }
 

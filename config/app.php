@@ -123,4 +123,11 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+     'aliases' => [
+        // Your custom alias
+        'ApiResponse' => App\Facades\Api\ResponseFacade::class,
+
+    ],
+
+
 ];

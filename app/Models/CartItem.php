@@ -15,12 +15,12 @@ class CartItem extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'user_id',
         'guest_id',
         'product_id',
         'quantity',
         'price',
         'options',
+        'cart_id',
     ];
 
     /**
@@ -61,5 +61,9 @@ class CartItem extends Model
                 $q->where('guest_id', $guestId);
             }
         });
+    }
+    public function Cart()
+    {
+        return $this->belongsTo(Cart::class);
     }
 }
