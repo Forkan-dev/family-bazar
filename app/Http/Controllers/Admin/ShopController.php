@@ -2,19 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Inertia\Inertia;
-use App\Models\Shop\Shop;
-use App\Models\Zone\Zone;
-use Illuminate\Http\Request;
-use App\Services\Shop\ShopService;
 use App\Actions\Shop\CreateShop;
 use App\Actions\Shop\UpdateShop;
-use App\Services\Shop\ShopOwnerService;
-use App\Services\Zone\ZoneService;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Shop\StoreShopRequest;
 use App\Http\Requests\Admin\Shop\UpdateShopRequest;
+use App\Models\Shop\Shop;
+use App\Services\Shop\ShopOwnerService;
+use App\Services\Shop\ShopService;
+use App\Services\Zone\ZoneService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class ShopController extends Controller
 {
@@ -155,4 +154,3 @@ class ShopController extends Controller
         return response()->json($zones);
     }
 }
-

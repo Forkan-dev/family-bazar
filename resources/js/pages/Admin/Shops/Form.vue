@@ -11,11 +11,12 @@ import {
 } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import SearchableSelect from '@/components/ui/SearchableSelect.vue'
+import LocationPicker from '@/components/LocationPicker.vue'
 import VInputField from '@/components/VInputField.vue'
 import MasterLayout from '@/layouts/MasterLayout.vue'
 import { Head, useForm, Link } from '@inertiajs/vue3'
 import { ArrowLeft } from 'lucide-vue-next'
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 
 const route = (name: string, params?: any) => {
     return (window as any).route(name, params)
@@ -57,6 +58,21 @@ const shopTypes = [
     { value: 'wholesale', label: 'Wholesale' },
     { value: 'distributor', label: 'Distributor' }
 ]
+
+// Get selected zone name for map search
+const selectedZoneName = computed(() => {
+    const zoneId = form.zone_id
+    if (!zoneId) return ''
+
+    // Check in initialZone (edit mode)
+    if (props.initialZone && props.initialZone.value.toString() === zoneId) {
+        return props.initialZone.label
+    }
+
+    // Check in initialZones (create mode)
+    const zone = props.initialZones?.find(z => z.value.toString() === zoneId)
+    return zone?.label || ''
+})
 
 const submit = () => {
     if (props.shop) {
@@ -148,13 +164,17 @@ const submit = () => {
                                     placeholder="0.00" :error-messages="form.errors.commission_rate" />
                             </div>
 
-                            <!-- Location Coordinates -->
+                            <!-- Location Picker -->
+                            <LocationPicker :lat="form.lat" :lon="form.lon" :zone-name="selectedZoneName"
+                                @update:lat="form.lat = $event" @update:lon="form.lon = $event" />
+
+                            <!-- Location Coordinates (Read-only display) -->
                             <div class="grid grid-cols-2 gap-4">
                                 <VInputField v-model="form.lat" label="Latitude" type="number" step="0.0000001"
-                                    placeholder="23.8103" :error-messages="form.errors.lat" />
+                                    placeholder="23.8103" :error-messages="form.errors.lat" readonly />
 
                                 <VInputField v-model="form.lon" label="Longitude" type="number" step="0.0000001"
-                                    placeholder="90.4125" :error-messages="form.errors.lon" />
+                                    placeholder="90.4125" :error-messages="form.errors.lon" readonly />
                             </div>
 
                             <!-- Status -->

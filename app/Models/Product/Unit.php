@@ -20,6 +20,6 @@ class Unit extends Model
 
     public function getDisplayNameAttribute()
     {
-        return $this->name . ' (' . $this->abbreviation . ')';
+        return $this->name.' ('.$this->abbreviation.')';
     }
 }

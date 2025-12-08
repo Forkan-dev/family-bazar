@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Banner;
-use App\Models\Type;
 use App\Actions\Banner\CreateBanner;
 use App\Actions\Banner\UpdateBanner;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Banner\StoreBannerRequest;
 use App\Http\Requests\Admin\Banner\UpdateBannerRequest;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
+use App\Models\Banner;
+use App\Models\Type;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class BannerController extends Controller
 {
@@ -19,6 +18,7 @@ class BannerController extends Controller
     {
         $banners = Banner::with('type', 'documents')->get()->map(function ($banner) {
             $banner->image = $banner->documents->first() ? $banner->documents->first()->url : null;
+
             return $banner;
         });
 
@@ -30,6 +30,7 @@ class BannerController extends Controller
     public function create()
     {
         $types = Type::all();
+
         return Inertia::render('Admin/Banner/Create', [
             'types' => $types,
         ]);
@@ -41,11 +42,13 @@ class BannerController extends Controller
             DB::beginTransaction();
             $createBanner->handle($request);
             DB::commit();
+
             return redirect()
                 ->route('admin.banners.index')
                 ->with('success', 'Banner created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
+
             return redirect()
                 ->back()
                 ->withErrors(['error' => 'An error occurred while creating the banner.'])
@@ -58,6 +61,7 @@ class BannerController extends Controller
         $banner->load('documents');
         $banner->image = $banner->documents->first() ? $banner->documents->first()->url : null;
         $types = Type::all();
+
         return Inertia::render('Admin/Banner/Edit', [
             'banner' => $banner,
             'types' => $types,
@@ -70,11 +74,13 @@ class BannerController extends Controller
             DB::beginTransaction();
             $updateBanner->handle($request, $banner);
             DB::commit();
+
             return redirect()
                 ->route('admin.banners.index')
                 ->with('success', 'Banner updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
+
             return redirect()
                 ->back()
                 ->withErrors(['error' => 'An error occurred while updating the banner.'])

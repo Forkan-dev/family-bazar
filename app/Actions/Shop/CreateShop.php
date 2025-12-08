@@ -2,8 +2,8 @@
 
 namespace App\Actions\Shop;
 
-use App\Models\Shop\Shop;
 use App\Http\Requests\Admin\Shop\StoreShopRequest;
+use App\Models\Shop\Shop;
 
 class CreateShop
 {

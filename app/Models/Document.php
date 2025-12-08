@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Document extends Model
 {
     use HasFactory;
-
 
     protected $fillable = [
         'documentable_id',
@@ -32,6 +31,6 @@ class Document extends Model
 
     public function getUrlAttribute()
     {
-        return asset('storage/' . $this->file_path);
+        return asset('storage/'.$this->file_path);
     }
 }

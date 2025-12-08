@@ -3,7 +3,6 @@
 namespace App\Services\Shop;
 
 use App\Models\Shop\Shop;
-use App\Services\Shop\ShopFilterPipeline;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pipeline\Pipeline;

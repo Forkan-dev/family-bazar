@@ -23,7 +23,7 @@ class UpdateTagRequest extends FormRequest
     {
         return [
             'name' => ['sometimes', 'required', 'string', 'max:255'],
-            'slug' => ['sometimes', 'required', 'string', 'unique:tags,slug,' . $this->tag->id],
+            'slug' => ['sometimes', 'required', 'string', 'unique:tags,slug,'.$this->tag->id],
         ];
     }
 }

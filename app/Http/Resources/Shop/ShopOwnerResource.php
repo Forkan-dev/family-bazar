@@ -25,4 +25,3 @@ class ShopOwnerResource extends JsonResource
         ];
     }
 }
-

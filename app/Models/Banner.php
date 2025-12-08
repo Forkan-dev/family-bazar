@@ -32,8 +32,6 @@ class Banner extends Model
 
     /**
      * Get the type that owns the Banner
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function type(): BelongsTo
     {

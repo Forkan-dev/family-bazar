@@ -42,7 +42,6 @@ class UpdateBannerRequest extends FormRequest
         ];
     }
 
-
     public function getProcessedData(): array
     {
         $data = $this->validated();
@@ -50,15 +49,15 @@ class UpdateBannerRequest extends FormRequest
         return [
             'title' => json_encode([
                 'en' => $data['title_en'],
-                'bn' => $data['title_bn']
+                'bn' => $data['title_bn'],
             ]),
             'sub_title' => json_encode([
                 'en' => $data['sub_title_en'] ?? '',
-                'bn' => $data['sub_title_bn'] ?? ''
+                'bn' => $data['sub_title_bn'] ?? '',
             ]),
             'description' => json_encode([
                 'en' => $data['description_en'] ?? '',
-                'bn' => $data['description_bn'] ?? ''
+                'bn' => $data['description_bn'] ?? '',
             ]),
             'position' => $data['position'],
             'status' => $data['status'],

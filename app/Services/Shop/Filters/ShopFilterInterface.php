@@ -7,9 +7,7 @@ interface ShopFilterInterface
     /**
      * Apply filter to the query
      *
-     * @param array $data Contains 'query' and 'request'
-     * @param \Closure $next
-     * @return mixed
+     * @param  array  $data  Contains 'query' and 'request'
      */
     public function handle($data, \Closure $next): mixed;
 }

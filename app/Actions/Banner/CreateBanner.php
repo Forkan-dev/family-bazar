@@ -2,32 +2,31 @@
 
 namespace App\Actions\Banner;
 
-use App\Models\Banner;
-use App\Traits\ImageUploadTrait;
-use Illuminate\Support\Facades\DB;
-use App\Services\Contracts\ImageServiceInterface;
 use App\Http\Requests\Admin\Banner\StoreBannerRequest;
+use App\Models\Banner;
+use App\Services\Contracts\ImageServiceInterface;
+use Illuminate\Support\Facades\DB;
 
 class CreateBanner
 {
-
     public function __construct(private ImageServiceInterface $imageService) {}
-   public function handle(StoreBannerRequest $request): Banner
+
+    public function handle(StoreBannerRequest $request): Banner
     {
         $validatedData = $request->validated();
 
         $processedData = [
             'title' => json_encode([
                 'en' => $validatedData['title_en'],
-                'bn' => $validatedData['title_bn']?? ''
+                'bn' => $validatedData['title_bn'] ?? '',
             ]),
             'sub_title' => json_encode([
                 'en' => $validatedData['sub_title_en'] ?? '',
-                'bn' => $validatedData['sub_title_bn'] ?? ''
+                'bn' => $validatedData['sub_title_bn'] ?? '',
             ]),
             'description' => json_encode([
                 'en' => $validatedData['description_en'] ?? '',
-                'bn' => $validatedData['description_bn'] ?? ''
+                'bn' => $validatedData['description_bn'] ?? '',
             ]),
             'position' => $validatedData['position'],
             'status' => $validatedData['status'] ?? 'inactive',
@@ -53,6 +52,4 @@ class CreateBanner
             return $banner;
         });
     }
-
-
 }

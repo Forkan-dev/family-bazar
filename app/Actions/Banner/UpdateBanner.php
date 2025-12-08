@@ -2,10 +2,10 @@
 
 namespace App\Actions\Banner;
 
+use App\Http\Requests\Admin\Banner\UpdateBannerRequest;
 use App\Models\Banner;
 use App\Traits\ImageUploadTrait;
 use Illuminate\Support\Facades\DB;
-use App\Http\Requests\Admin\Banner\UpdateBannerRequest;
 
 class UpdateBanner
 {
@@ -14,19 +14,19 @@ class UpdateBanner
     public function handle(UpdateBannerRequest $request, Banner $banner): Banner
     {
         $validatedData = $request->validated();
-        
+
         $processedData = [
             'title' => json_encode([
                 'en' => $validatedData['title_en'],
-                'bn' => $validatedData['title_bn']
+                'bn' => $validatedData['title_bn'],
             ]),
             'sub_title' => json_encode([
                 'en' => $validatedData['sub_title_en'] ?? '',
-                'bn' => $validatedData['sub_title_bn'] ?? ''
+                'bn' => $validatedData['sub_title_bn'] ?? '',
             ]),
             'description' => json_encode([
                 'en' => $validatedData['description_en'] ?? '',
-                'bn' => $validatedData['description_bn'] ?? ''
+                'bn' => $validatedData['description_bn'] ?? '',
             ]),
             'position' => $validatedData['position'],
             'status' => $validatedData['status'] ?? 'inactive',

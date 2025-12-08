@@ -30,8 +30,6 @@ class StoreCartItemRequest extends FormRequest
 
             'quantity' => 'required|integer|min:1',
 
-
-
             'options' => 'nullable|array',
             'options.*' => 'string|max:255',
         ];

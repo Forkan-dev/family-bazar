@@ -2,13 +2,13 @@
 
 namespace App\Services\Product;
 
-use Illuminate\Http\Request;
-use Illuminate\Pipeline\Pipeline;
-use Illuminate\Database\Eloquent\Builder;
-use App\Services\Product\Filters\SortFilter;
-use App\Services\Product\Filters\SearchFilter;
 use App\Services\Product\Filters\CategoryFilter;
 use App\Services\Product\Filters\PriceRangeFilter;
+use App\Services\Product\Filters\SearchFilter;
+use App\Services\Product\Filters\SortFilter;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+use Illuminate\Pipeline\Pipeline;
 
 class ProductFilterPipeline
 {

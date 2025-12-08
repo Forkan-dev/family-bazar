@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Zone\Zone;
 use App\Models\Location\District;
-use App\Models\Location\Upazila;
 use App\Models\Location\Thana;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Location\Upazila;
+use App\Models\Zone\Zone;
 use Illuminate\Database\Seeder;
 
 class ZoneSeeder extends Seeder
@@ -18,8 +17,9 @@ class ZoneSeeder extends Seeder
     {
         $district = District::where('name_en', 'Chattogram')->first();
 
-        if (!$district) {
+        if (! $district) {
             $this->command->error('Chattogram district not found. Please run district seeder first.');
+
             return;
         }
 
@@ -194,5 +194,3 @@ class ZoneSeeder extends Seeder
         $this->command->info('Zone seeder completed successfully!');
     }
 }
-
-

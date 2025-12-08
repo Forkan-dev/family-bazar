@@ -3,11 +3,11 @@
 namespace App\Models\Zone;
 
 use App\Models\Location\District;
-use App\Models\Location\Upazila;
 use App\Models\Location\Thana;
-use App\Models\User;
-use App\Models\Shop\Shop;
+use App\Models\Location\Upazila;
 use App\Models\Order\Order;
+use App\Models\Shop\Shop;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;

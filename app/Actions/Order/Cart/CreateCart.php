@@ -2,13 +2,11 @@
 
 namespace App\Actions\Order\Cart;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Models\CartItem;
-use App\Models\CartHistory;
 use App\Http\Requests\Order\CartItem\StoreCartItemRequest;
-use App\Http\Requests\Order\CartHistory\StoreCartHistoryRequest;
+use App\Models\CartHistory;
+use App\Models\CartItem;
 use App\Models\Product;
+use Illuminate\Support\Facades\Auth;
 
 class CreateCart
 {
@@ -16,7 +14,7 @@ class CreateCart
     {
         $guestId = session()->get('guest_id');
 
-        if (!$guestId) {
+        if (! $guestId) {
             $guestId = (string) \Illuminate\Support\Str::uuid();
             session()->put('guest_id', $guestId);
         }
@@ -68,12 +66,13 @@ class CreateCart
         ]);
     }
 
-
     public function mergeGuestCart()
     {
         $guestId = session()->get('guest_id');
 
-        if (!$guestId) return;
+        if (! $guestId) {
+            return;
+        }
 
         $guestItems = CartItem::where('guest_id', $guestId)->get();
 
@@ -82,12 +81,12 @@ class CreateCart
             CartItem::updateOrCreate(
                 [
                     'user_id' => auth()->id(),
-                    'product_id' => $item->product_id
+                    'product_id' => $item->product_id,
                 ],
                 [
                     'quantity' => \DB::raw("quantity + {$item->quantity}"),
                     'price' => $item->price,
-                    'options' => $item->options
+                    'options' => $item->options,
                 ]
             );
 

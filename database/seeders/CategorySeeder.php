@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Product\Category;
-use Illuminate\Support\Str;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class CategorySeeder extends Seeder
 {
@@ -25,7 +25,7 @@ class CategorySeeder extends Seeder
         $this->createCategory($data);
     }
 
-    private function createCategory(array $categoryData, int $parentId = null): void
+    private function createCategory(array $categoryData, ?int $parentId = null): void
     {
         $category = Category::create([
             'title_en' => $categoryData['en'],

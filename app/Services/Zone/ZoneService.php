@@ -15,7 +15,7 @@ class ZoneService
         return Zone::where('status', true)
             ->where(function ($q) use ($query) {
                 $q->where('name', 'like', "%{$query}%")
-                  ->orWhere('address', 'like', "%{$query}%");
+                    ->orWhere('address', 'like', "%{$query}%");
             })
             ->select('id', 'name', 'address')
             ->limit($limit)
@@ -63,7 +63,7 @@ class ZoneService
      */
     public function getInitialZone(?Zone $zone): ?array
     {
-        if (!$zone) {
+        if (! $zone) {
             return null;
         }
 

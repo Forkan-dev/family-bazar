@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Product\Brand;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class BrandController extends Controller
 {
@@ -17,6 +17,7 @@ class BrandController extends Controller
     {
         $brands = Brand::latest()->get()->map(function ($brand) {
             $brand->image_url = $brand->image ? asset($brand->image) : null;
+
             return $brand;
         });
 
@@ -49,9 +50,9 @@ class BrandController extends Controller
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = Str::slug($request->en_name) . '.' . $image->getClientOriginalExtension();
+            $imageName = Str::slug($request->en_name).'.'.$image->getClientOriginalExtension();
             $image->move(public_path('images/brand'), $imageName);
-            $data['image'] = 'images/brand/' . $imageName;
+            $data['image'] = 'images/brand/'.$imageName;
         }
 
         Brand::create($data);
@@ -85,7 +86,7 @@ class BrandController extends Controller
         $request->validate([
             'en_name' => 'required|string|max:255',
             'bn_name' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:brands,slug,' . $brand->id,
+            'slug' => 'required|string|max:255|unique:brands,slug,'.$brand->id,
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
@@ -93,14 +94,14 @@ class BrandController extends Controller
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
-            $filename = Str::slug($request->en_name) . '.' . $file->getClientOriginalExtension();
+            $filename = Str::slug($request->en_name).'.'.$file->getClientOriginalExtension();
             $file->move(public_path('images/brand'), $filename);
 
             if ($brand->image && file_exists(public_path($brand->image))) {
                 unlink(public_path($brand->image));
             }
 
-            $data['image'] = 'images/brand/' . $filename;
+            $data['image'] = 'images/brand/'.$filename;
         }
 
         $brand->update($data);

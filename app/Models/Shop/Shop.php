@@ -2,7 +2,6 @@
 
 namespace App\Models\Shop;
 
-use App\Models\Shop\ShopOwner;
 use App\Models\Zone\Zone;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

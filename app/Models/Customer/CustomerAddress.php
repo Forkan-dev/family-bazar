@@ -2,8 +2,8 @@
 
 namespace App\Models\Customer;
 
-use App\Models\Zone\Zone;
 use App\Models\User;
+use App\Models\Zone\Zone;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 

@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Order\CartHistory;
 
-use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreCartHistoryRequest extends FormRequest
 {
@@ -65,5 +65,4 @@ class StoreCartHistoryRequest extends FormRequest
             'expires_at.after' => 'Expires date must be after the action date.',
         ];
     }
-
 }

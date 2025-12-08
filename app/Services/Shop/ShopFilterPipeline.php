@@ -2,14 +2,14 @@
 
 namespace App\Services\Shop;
 
-use Illuminate\Http\Request;
-use Illuminate\Pipeline\Pipeline;
-use Illuminate\Database\Eloquent\Builder;
 use App\Services\Shop\Filters\SearchFilter;
 use App\Services\Shop\Filters\SortFilter;
-use App\Services\Shop\Filters\TypeFilter;
 use App\Services\Shop\Filters\StatusFilter;
+use App\Services\Shop\Filters\TypeFilter;
 use App\Services\Shop\Filters\ZoneFilter;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+use Illuminate\Pipeline\Pipeline;
 
 class ShopFilterPipeline
 {

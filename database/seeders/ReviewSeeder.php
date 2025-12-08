@@ -2,12 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
+use App\Models\Product\Product;
 use App\Models\Product\Review; // Import the Review model
 use App\Models\User; // Import the User model
-use App\Models\Product\Product; // Import the Product model
-use Faker\Factory as Faker;
+use Faker\Factory as Faker; // Import the Product model
+use Illuminate\Database\Seeder;
 
 class ReviewSeeder extends Seeder
 {

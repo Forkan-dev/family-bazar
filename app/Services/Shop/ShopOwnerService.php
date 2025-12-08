@@ -15,7 +15,7 @@ class ShopOwnerService
         return ShopOwner::with('user')
             ->whereHas('user', function ($q) use ($query) {
                 $q->where('name', 'like', "%{$query}%")
-                  ->orWhere('email', 'like', "%{$query}%");
+                    ->orWhere('email', 'like', "%{$query}%");
             })
             ->limit($limit)
             ->get()
@@ -44,11 +44,13 @@ class ShopOwnerService
      */
     public function getInitialShopOwner(?ShopOwner $shopOwner): ?array
     {
-        if (!$shopOwner || !$shopOwner->user) {
+        if (! $shopOwner ||
+        ! $shopOwner->user) {
             return null;
         }
 
         return [
+
             'value' => $shopOwner->id,
             'label' => "{$shopOwner->user->name} ({$shopOwner->user->email})",
         ];

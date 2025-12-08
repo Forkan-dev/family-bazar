@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\Location\Upazila;
 use App\Models\Location\District;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Location\Upazila;
+use Illuminate\Database\Seeder;
 
 class UpazilaSeeder extends Seeder
 {

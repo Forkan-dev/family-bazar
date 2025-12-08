@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Storage;
 
 trait ImageUploadTrait
 {
-
     protected function uploadMultipleImages($request, string $inputName, string $folder, $relation): void
     {
         if ($request->hasFile($inputName)) {
@@ -15,7 +14,6 @@ trait ImageUploadTrait
             }
         }
     }
-
 
     protected function uploadSingleImage($request, string $inputName, string $folder, $relation): void
     {
@@ -38,17 +36,15 @@ trait ImageUploadTrait
     }
 
     public function replaceSingleImage($request, string $inputName, string $folder, $relation, $oldImagePath = null): void
-{
-    if ($request->hasFile($inputName)) {
-      
-        if ($oldImagePath && Storage::disk('public')->exists($oldImagePath)) {
-            Storage::disk('public')->delete($oldImagePath);
+    {
+        if ($request->hasFile($inputName)) {
+
+            if ($oldImagePath && Storage::disk('public')->exists($oldImagePath)) {
+                Storage::disk('public')->delete($oldImagePath);
+            }
+
+            $image = $request->file($inputName);
+            $this->saveImageData($image, $folder, $relation);
         }
-
-
-        $image = $request->file($inputName);
-        $this->saveImageData($image, $folder, $relation);
     }
-}
-
 }

@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class TypeSeeder extends Seeder
 {
@@ -20,7 +19,7 @@ class TypeSeeder extends Seeder
                 'icon' => 'FruitsVegetable',
                 'promotional_sliders' => json_encode([]),
                 'created_at' => '2021-03-08 07:18:25',
-                'updated_at' => '2021-09-26 15:23:32'
+                'updated_at' => '2021-09-26 15:23:32',
             ],
             [
                 'id' => 2,
@@ -31,7 +30,7 @@ class TypeSeeder extends Seeder
                 'icon' => 'Bakery',
                 'promotional_sliders' => null,
                 'created_at' => '2021-03-08 07:18:46',
-                'updated_at' => '2021-08-18 13:34:28'
+                'updated_at' => '2021-08-18 13:34:28',
             ],
             [
                 'id' => 3,
@@ -42,7 +41,7 @@ class TypeSeeder extends Seeder
                 'icon' => 'FacialCare',
                 'promotional_sliders' => json_encode([]),
                 'created_at' => '2021-03-08 07:19:12',
-                'updated_at' => '2021-08-18 13:35:43'
+                'updated_at' => '2021-08-18 13:35:43',
             ],
             [
                 'id' => 8,
@@ -53,7 +52,7 @@ class TypeSeeder extends Seeder
                 'icon' => 'BookIcon',
                 'promotional_sliders' => json_encode([]),
                 'created_at' => '2021-12-07 16:30:18',
-                'updated_at' => '2021-12-08 13:06:56'
+                'updated_at' => '2021-12-08 13:06:56',
             ],
             [
                 'id' => 5,
@@ -64,8 +63,8 @@ class TypeSeeder extends Seeder
                 'icon' => 'pharmacy',
                 'promotional_sliders' => json_encode([]),
                 'created_at' => '2021-12-07 16:30:18',
-                'updated_at' => '2021-12-08 13:06:56'
-            ]
+                'updated_at' => '2021-12-08 13:06:56',
+            ],
         ];
 
         DB::table('types')->insert($types);

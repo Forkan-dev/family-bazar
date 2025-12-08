@@ -2,9 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Location\District;
 use App\Models\Location\Thana;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class ThanaSeeder extends Seeder
@@ -37,4 +35,3 @@ class ThanaSeeder extends Seeder
         }
     }
 }
-
