@@ -41,6 +41,10 @@ const props = defineProps<{
     initialShopOwners?: Array<{ value: number; label: string }>
 }>()
 
+console.log('Shop data:', props.shop)
+console.log('Status:', props.shop?.status, 'Type:', typeof props.shop?.status)
+console.log('Commission based:', props.shop?.is_commission_based, 'Type:', typeof props.shop?.is_commission_based)
+
 const form = useForm({
     name: props.shop?.name || '',
     shop_owner_id: props.shop?.shop_owner_id?.toString() || '',
@@ -49,8 +53,8 @@ const form = useForm({
     lat: props.shop?.lat || null,
     lon: props.shop?.lon || null,
     type: props.shop?.type || 'retail',
-    is_commission_based: props.shop?.is_commission_based ?? true,
-    status: props.shop?.status ?? true,
+    is_commission_based: props.shop ? props.shop.is_commission_based : true,
+    status: props.shop ? props.shop.status : true,
 })
 
 const shopTypes = [
@@ -91,10 +95,10 @@ const submit = () => {
         <!-- Header -->
         <div class="mb-8">
             <Link :href="route('admin.shops.index')">
-            <Button variant="ghost" size="sm">
-                <ArrowLeft class="h-4 w-4 mr-2" />
-                Back to Shops
-            </Button>
+                <Button variant="ghost" size="sm">
+                    <ArrowLeft class="h-4 w-4 mr-2" />
+                    Back to Shops
+                </Button>
             </Link>
         </div>
 
@@ -155,8 +159,8 @@ const submit = () => {
                                             Enable commission for this shop
                                         </p>
                                     </div>
-                                    <Switch :checked="form.is_commission_based"
-                                        @update:checked="form.is_commission_based = $event" />
+                                    <Switch v-model="form.is_commission_based"
+                                        @update:checked="(val) => form.is_commission_based = val" />
                                 </div>
 
                                 <VInputField v-if="form.is_commission_based" v-model="form.commission_rate"
@@ -170,10 +174,10 @@ const submit = () => {
 
                             <!-- Location Coordinates (Read-only display) -->
                             <div class="grid grid-cols-2 gap-4">
-                                <VInputField v-model="form.lat" label="Latitude" type="number"
+                                <VInputField v-model="form.lat" label="Latitude" type="number" step="any"
                                     placeholder="23.8103" :error-messages="form.errors.lat" readonly />
 
-                                <VInputField v-model="form.lon" label="Longitude" type="number"
+                                <VInputField v-model="form.lon" label="Longitude" type="number" step="any"
                                     placeholder="90.4125" :error-messages="form.errors.lon" readonly />
                             </div>
 
@@ -185,15 +189,15 @@ const submit = () => {
                                         Set shop as active or inactive
                                     </p>
                                 </div>
-                                <Switch :checked="form.status" @update:checked="form.status = $event" />
+                                <Switch v-model="form.status" @update:checked="(val) => form.status = val" />
                             </div>
 
                             <!-- Form Actions -->
                             <div class="flex justify-end space-x-3 pt-6 border-t">
                                 <Link :href="route('admin.shops.index')">
-                                <Button type="button" variant="outline">
-                                    Cancel
-                                </Button>
+                                    <Button type="button" variant="outline">
+                                        Cancel
+                                    </Button>
                                 </Link>
                                 <Button type="submit" :disabled="form.processing">
                                     {{ form.processing
