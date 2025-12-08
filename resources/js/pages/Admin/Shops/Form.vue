@@ -170,10 +170,10 @@ const submit = () => {
 
                             <!-- Location Coordinates (Read-only display) -->
                             <div class="grid grid-cols-2 gap-4">
-                                <VInputField v-model="form.lat" label="Latitude" type="number" step="0.0000001"
+                                <VInputField v-model="form.lat" label="Latitude" type="number"
                                     placeholder="23.8103" :error-messages="form.errors.lat" readonly />
 
-                                <VInputField v-model="form.lon" label="Longitude" type="number" step="0.0000001"
+                                <VInputField v-model="form.lon" label="Longitude" type="number"
                                     placeholder="90.4125" :error-messages="form.errors.lon" readonly />
                             </div>
 

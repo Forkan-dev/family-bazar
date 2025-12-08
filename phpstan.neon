@@ -1,0 +1,10 @@
+
+includes:
+    - ./vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 5          # Strictness: 0 = loose, 9 = strictest
+    paths:
+        - app         # directories to analyze
+        - database
+    ignoreErrors: []   # optional, skip known false positives
