@@ -14,7 +14,7 @@ class UpdateBanner
     public function handle(UpdateBannerRequest $request, Banner $banner): Banner
     {
         $validatedData = $request->validated();
-        
+
         $processedData = [
             'title' => json_encode([
                 'en' => $validatedData['title_en'],
@@ -37,7 +37,7 @@ class UpdateBanner
             'type_id' => $validatedData['type_id'],
         ];
 
-        return DB::transaction(function () use ($processedData, $request, $banner) {
+
             $banner->update($processedData);
 
             // Load the documents relationship to get the old image path
@@ -53,6 +53,6 @@ class UpdateBanner
             );
 
             return $banner;
-        });
-    }
+        }
+
 }
