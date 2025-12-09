@@ -4,13 +4,15 @@ namespace App\Services\Api;
 
 use App\Models\Customer\Customer;
 use Illuminate\Support\Facades\Hash;
+use ApiResponse;
+use App\Actions\Order\Cart\CreateCart;
 
 class AuthService
 {
-    protected  $apiResponseService;
-    public function __construct(ApiResponseService $apiResponseService)
+    protected  $cartAction;
+    public function __construct(CreateCart $cartAction)
     {
-        $this->apiResponseService = $apiResponseService;
+        $this->cartAction = $cartAction;
     }
     public function registerCustomer($request)
     {
@@ -24,14 +26,14 @@ class AuthService
 
             $token_string  = bin2hex(random_bytes(40)) . time() . $customer->email;
             $token = $customer->createToken($token_string)->plainTextToken;
-            return $this->apiResponseService->success(
+            return ApiResponse::success(
                 ['access_token' => $token],
                 'User registered successfully',
             );
         } catch (\Exception $e) {
-            return $this->apiResponseService->error(
-                null,
+            return ApiResponse::error(
                 'Registration failed: ' . $e->getMessage(),
+                null,
                 500
             );
         }
@@ -39,28 +41,31 @@ class AuthService
     public function loginCustomer($request)
     {
         try {
-            $credentials = $request->only('email', 'password');
 
             $customer = Customer::where('email', $request->email)->first();
 
             if ($customer && Hash::check($request->password, $customer->password)) {
                 $token_string  = bin2hex(random_bytes(40)) . time() . $customer->email;
                 $token = $customer->createToken($token_string)->plainTextToken;
-                return $this->apiResponseService->success(
+
+                //merge cart item if cart exists as a guest
+                $this->cartAction->mergeGuestCart($request->guest_id ?? null, $customer->id);
+
+                return ApiResponse::success(
                     ['access_token' => $token],
                     'User logged in successfully',
                 );
             } else {
-                return $this->apiResponseService->error(
-                    null,
+                return ApiResponse::error(
                     'Invalid credentials',
+                    null,
                     401
                 );
             }
         } catch (\Exception $e) {
-            return $this->apiResponseService->error(
-                null,
+            return ApiResponse::error(
                 'Login failed: ' . $e->getMessage(),
+                null,
                 500
             );
         }
@@ -72,23 +77,23 @@ class AuthService
 
             // Check if customer is authenticated
             if (!$customer) {
-                return $this->apiResponseService->error(
-                    null,
+                return ApiResponse::error(
                     'User already logged out or invalid token',
+                    null,
                     401
                 );
             }
 
             // Delete current token only 
             $customer->currentAccessToken()->delete();
-            return $this->apiResponseService->success(
+            return ApiResponse::success(
                 null,
                 'User logged out successfully'
             );
         } catch (\Exception $e) {
-            return $this->apiResponseService->error(
-                null,
+            return ApiResponse::error(
                 'Logout failed: ' . $e->getMessage(),
+                null,
                 500
             );
         }

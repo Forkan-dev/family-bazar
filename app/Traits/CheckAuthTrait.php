@@ -12,7 +12,7 @@ trait CheckAuthTrait
    }
    protected function getAuthenticatedUserId($guard)
    {
-       return auth($guard)->user()->id;
+       return auth($guard)->user()?->id;
    }
 
 }

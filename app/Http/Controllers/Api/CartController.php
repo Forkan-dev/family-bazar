@@ -6,6 +6,7 @@ use App\Actions\Order\Cart\CreateCart;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Order\CartItem\StoreCartItemRequest;
 use App\Services\Api\CartService;
+use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
@@ -22,8 +23,9 @@ class CartController extends Controller
        return $this->cartAction->addToCart($request);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $this->cartService->getCustomerCart();
+        $guest_id = $request->input('guest_id');
+        return $this->cartService->getCustomerCart($guest_id);
     }
 }
