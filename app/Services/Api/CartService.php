@@ -15,17 +15,11 @@ class CartService
         if ($guest_id) {
             $cartItems =  Cart::where('guest_id', $guest_id)->with('cartItems')->get();
             return $cartItems;
-            return ApiResponse::success(
-                CartResource::collection($cartItems),
-                'Customer cart retrieved successfully'
-            );
+           
         } else {
             $customer = auth('customer')->user();
             $cartItems =  Cart::where('customer_id', $customer->id)->get();
-            return ApiResponse::success(
-                CartResource::collection($cartItems),
-                'Customer cart retrieved successfully'
-            );
+            return $cartItems;
         }
     }
 }

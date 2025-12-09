@@ -28,14 +28,10 @@ class CreateCart
         $column = $authenticated ? 'customer_id' : 'guest_id';
         $c_id = $authenticated ? $this->getAuthenticatedUserId('customer') : $guest_id;
         $cartItem = $this->storeItemToCart($request, $column, $c_id);
-
-        return ApiResponse::success(
-            [
-                'guest_id'  => $guest_id,
-                'cart_item' => new CartItemResource($cartItem),
-            ],
-            'Product added to cart successfully'
-        );
+        return [
+            'guest_id' => $guest_id,
+            'cart_item' => $cartItem,
+        ];
     }
 
 
@@ -112,10 +108,7 @@ class CreateCart
         }
         Cart::where('guest_id', $guest_id)->delete();
 
-        return ApiResponse::success(
-            null,
-            'Guest cart merged successfully'
-        );
+       
     }
 
 }

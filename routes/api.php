@@ -13,3 +13,4 @@ Route::post('logout', [AuthController::class, 'logout']);
 
 Route::get('cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('cart/add', [CartController::class, 'store'])->name('cart.store');
+Route::get('cart/merge', [CartController::class, 'mergeCart']);

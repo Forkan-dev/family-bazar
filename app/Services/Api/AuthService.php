@@ -9,11 +9,7 @@ use App\Actions\Order\Cart\CreateCart;
 
 class AuthService
 {
-    protected  $cartAction;
-    public function __construct(CreateCart $cartAction)
-    {
-        $this->cartAction = $cartAction;
-    }
+    
     public function registerCustomer($request)
     {
         try {
@@ -48,8 +44,7 @@ class AuthService
                 $token_string  = bin2hex(random_bytes(40)) . time() . $customer->email;
                 $token = $customer->createToken($token_string)->plainTextToken;
 
-                //merge cart item if cart exists as a guest
-                $this->cartAction->mergeGuestCart($request->guest_id ?? null, $customer->id);
+               
 
                 return ApiResponse::success(
                     ['access_token' => $token],

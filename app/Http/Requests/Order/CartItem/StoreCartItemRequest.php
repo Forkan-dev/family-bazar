@@ -30,6 +30,7 @@ class StoreCartItemRequest extends FormRequest
 
             'quantity' => 'required|integer|min:1',
             'price' => 'required',
+            'guest_id' => 'nullable|string',
         ];
     }
 
