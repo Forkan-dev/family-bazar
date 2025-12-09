@@ -44,4 +44,11 @@ class Product extends Model
     {
         return $this->belongsTo(Unit::class);
     }
+
+    public function cartItems()
+    {
+        return $this->hasMany(CartItem::class);
+    }
+
+   
 }

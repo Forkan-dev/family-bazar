@@ -2,25 +2,21 @@
 
 namespace App\Models\Customer;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\User; // Import the User model
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
-class Customer extends Model
+class Customer extends Authenticatable
 {
+    use HasApiTokens;
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
-     */
+     */ 
     protected $fillable = [
-        'user_id',
-        'name',
         'email',
-        'phone_number',
-        'address',
-        'location',
-        'avatar_url',
+        'password',
+        
     ];
 
     /**
@@ -35,8 +31,5 @@ class Customer extends Model
     /**
      * Get the user that owns the customer.
      */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
+    
 }

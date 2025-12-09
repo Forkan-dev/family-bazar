@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\Api\ApiResponseService;
 use App\Services\ImageService;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -15,6 +16,9 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(ImageServiceInterface::class, ImageService::class);
+        $this->app->singleton('apiResponseService', function () {
+            return new ApiResponseService();
+        });
     }
 
     /**
@@ -22,8 +26,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
- Gate::before(function ($user, $ability) {
-        return $user->hasRole('super_admin') ? true : null;
-    });
+        Gate::before(function ($user, $ability) {
+            return $user->hasRole('super_admin') ? true : null;
+        });
     }
 }
