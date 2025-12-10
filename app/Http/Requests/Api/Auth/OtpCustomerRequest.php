@@ -4,7 +4,7 @@ namespace App\Http\Requests\Api\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterCustomerRequest extends FormRequest
+class OtpCustomerRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,8 @@ class RegisterCustomerRequest extends FormRequest
     public function rules(): array
     {
         return [
-
-            'phone_number' => ['required', 'regex:/^(01)[3-9][0-9]{8}$/','unique:customers,phone_number'],
+            'phone_number' => 'required|exists:customers,phone_number',
+            'otp_code' => 'required'
         ];
     }
 }

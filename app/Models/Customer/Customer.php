@@ -12,11 +12,24 @@ class Customer extends Authenticatable
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
-     */ 
+     */
     protected $fillable = [
         'email',
         'password',
+        'phone_number',
+        'address',
+        'location',
+        'avatar_url',
+        'ip_address',
+        'mac_address',
+        'otp_code',
+        'otp_expires_at',
+        'otp_attempts',
+        'last_otp_sent_at',
+        'is_phone_verified',
         
+
+
     ];
 
     /**
@@ -31,5 +44,5 @@ class Customer extends Authenticatable
     /**
      * Get the user that owns the customer.
      */
-    
+
 }
