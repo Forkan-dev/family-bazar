@@ -2,25 +2,36 @@
 
 namespace App\Services\Api;
 
+use ApiResponse;
+use App\Services\Otp\OtpService;
 use App\Models\Customer\Customer;
 use Illuminate\Support\Facades\Hash;
-use ApiResponse;
 use App\Actions\Order\Cart\CreateCart;
 
 class AuthService
 {
-    
+
+    protected $otpService;
+
+    public function __construct(OtpService $otpService)
+    {
+        $this->otpService = $otpService;
+    }
+
+
     public function registerCustomer($request)
     {
+
         try {
             $validatedData = $request->validated();
 
-            $customer = \App\Models\Customer\Customer::create([
-                'email' => $validatedData['email'],
-                'password' => Hash::make($validatedData['password']),
-            ]);
+            $customer = Customer::create([
+                'phone_number' => $validatedData['phone_number'],
 
-            $token_string  = bin2hex(random_bytes(40)) . time() . $customer->email;
+            ]);
+            $otp = $this->generateOtp();
+
+            $token_string  = bin2hex(random_bytes(40)) . time() . $customer->phone_number;
             $token = $customer->createToken($token_string)->plainTextToken;
             return ApiResponse::success(
                 ['access_token' => $token],
@@ -37,26 +48,26 @@ class AuthService
     public function loginCustomer($request)
     {
         try {
+            $validatedData = $request->validated();
+            // Find or create customer
+            $customer = Customer::firstOrCreate(
+                ['phone_number' => $validatedData['phone_number']]
+            );
 
-            $customer = Customer::where('email', $request->email)->first();
+            // Use injected OtpService
+            $otp = $this->otpService->storeOtp($customer);
 
-            if ($customer && Hash::check($request->password, $customer->password)) {
-                $token_string  = bin2hex(random_bytes(40)) . time() . $customer->email;
-                $token = $customer->createToken($token_string)->plainTextToken;
+            // Create API token
+            $token_string = bin2hex(random_bytes(40)) . time() . $customer->phone_number;
+            $token = $customer->createToken($token_string)->plainTextToken;
 
-               
-
-                return ApiResponse::success(
-                    ['access_token' => $token],
-                    'User logged in successfully',
-                );
-            } else {
-                return ApiResponse::error(
-                    'Invalid credentials',
-                    null,
-                    401
-                );
-            }
+            return ApiResponse::success(
+                [
+                    'access_token' => $token,
+                    'otp' => $otp, // optionally return OTP for SMS
+                ],
+                'Enter Your Otp',
+            );
         } catch (\Exception $e) {
             return ApiResponse::error(
                 'Login failed: ' . $e->getMessage(),
@@ -65,6 +76,8 @@ class AuthService
             );
         }
     }
+
+
     public function logoutCustomer()
     {
         try {
@@ -79,7 +92,7 @@ class AuthService
                 );
             }
 
-            // Delete current token only 
+            // Delete current token only
             $customer->currentAccessToken()->delete();
             return ApiResponse::success(
                 null,

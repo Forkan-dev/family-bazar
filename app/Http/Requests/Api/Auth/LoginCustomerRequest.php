@@ -22,9 +22,8 @@ class LoginCustomerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email',
-            'password' => 'required|min:6',
-            'guest_id' => 'nullable|string',
+            'phone_number' => ['required', 'regex:/^(01)[3-9][0-9]{8}$/'],
+
         ];
     }
 }
