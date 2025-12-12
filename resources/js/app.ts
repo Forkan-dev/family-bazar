@@ -8,7 +8,7 @@ import '../css/custom-ui.css';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
-// Initialize theme on load
+// Initialize theme on load - must run immediately before Vue renders
 function initializeTheme() {
     const theme = localStorage.getItem('theme') || 'system';
     const prefersDark = window.matchMedia(
@@ -25,10 +25,8 @@ function initializeTheme() {
     }
 }
 
-// Initialize theme immediately
-if (typeof window !== 'undefined') {
-    initializeTheme();
-}
+// Initialize theme immediately before anything else
+initializeTheme();
 
 createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),

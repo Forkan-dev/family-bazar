@@ -10,6 +10,13 @@ import { register } from '@/routes';
 import { request } from '@/routes/password';
 import { Form, Head } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
+import { useDarkMode } from '@/composables/useDarkMode';
+
+const { isDark } = useDarkMode();
+
+const logoSrc = () => isDark.value
+    ? '/images/logo/login_page_logo_dark.png'
+    : '/images/logo/login_page_logo_light.png';
 
 defineProps<{
     status?: string;
@@ -36,19 +43,16 @@ defineProps<{
                 <!-- Header -->
                 <div class="text-center pt-10 pb-8 px-8 border-b">
                     <!-- Logo -->
-                    <div class="mb-6 flex justify-center">
-                        <img src="/images/logo/login_page_logo_light.png" alt="Elaach Logo"
-                            class="h-24 w-auto object-contain dark:hidden" />
-                        <img src="/images/logo/login_page_logo_dark.png" alt="Elaach Logo"
-                            class="h-24 w-auto object-contain hidden dark:block" />
+                    <div class="mb-0 flex justify-center">
+                        <img :src="logoSrc()" alt="Elaach Logo" class="h-34 w-auto object-contain" />
                     </div>
 
-                    <h1 class="text-xl font-semibold mb-1">
+                    <!-- <h1 class="text-xl font-semibold mb-1">
                         Elaach
-                    </h1>
-                    <p class="text-sm text-muted-foreground">
+                    </h1> -->
+                   <!--  <p class="text-sm text-muted-foreground">
                         Grocery Admin Dashboard
-                    </p>
+                    </p> -->
                 </div>
 
                 <!-- Form -->
