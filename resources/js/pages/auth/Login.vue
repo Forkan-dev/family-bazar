@@ -22,43 +22,13 @@ defineProps<{
 
         <Head title="Log in - Elaach" />
 
-        <!-- Faint Grocery Icons Background Texture -->
+        <!-- Background Image with Overlay -->
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
-            <!-- Oil Bottle - Top Left -->
-            <div class="absolute -top-16 -left-16 w-40 h-40 text-muted-foreground opacity-[0.05]">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                    <path d="M12 2v4M10 6h4v2h-4M10 8v10c0 1.1.9 2 2 2s2-.9 2-2V8M9 6h6l1-2H8l1 2M9 14h6M8 22h8" />
-                </svg>
-            </div>
-
-            <!-- Milk Bottle - Top Right -->
-            <div class="absolute -top-12 right-0 w-48 h-48 text-muted-foreground opacity-[0.05]">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                    <path
-                        d="M8 2h8v2H8zM7 4h10v14c0 1.1-.9 2-2 2h-6c-1.1 0-2-.9-2-2V4zM10 6v12M14 6v12M9 10h6M9 14h6" />
-                </svg>
-            </div>
-
-            <!-- Carrot - Bottom Left -->
-            <div class="absolute bottom-0 -left-20 w-44 h-44 text-muted-foreground opacity-[0.05]">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                    <path d="M8 4l6 12H8c-1 0-2 1-2 2v2h10v-2c0-1-1-2-2-2h-6l6-12M14 2l2-1 1 2" />
-                </svg>
-            </div>
-
-            <!-- Seed - Bottom Right -->
-            <div class="absolute bottom-12 right-4 w-32 h-32 text-muted-foreground opacity-[0.05]">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                    <path d="M12 2v12M6 8c-2-1-4-1-4 2s2 5 4 6M18 8c2-1 4-1 4 2s-2 5-4 6" />
-                </svg>
-            </div>
-
-            <!-- Turnip - Top Center -->
-            <div class="absolute top-20 left-1/3 w-36 h-36 text-muted-foreground opacity-[0.05]">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                    <path d="M10 6c-2 0-3 2-3 4 0 3 2 7 5 9s5 0 5-3c0-2-1-4-3-4M11 4l-1-2M13 4l1-2M12 4l1-2" />
-                </svg>
-            </div>
+            <!-- Background Image -->
+            <img src="/images/logo/login_page_doodles.jpg" alt="Background Pattern"
+                class="absolute inset-0 w-full h-full object-cover opacity-20" />
+            <!-- Overlay to blend with background -->
+            <div class="absolute inset-0 bg-background/40 dark:bg-background/60"></div>
         </div>
         <!-- Login Card -->
         <div class="w-full max-w-sm relative z-10">
