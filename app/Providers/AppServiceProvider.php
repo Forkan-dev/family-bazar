@@ -6,7 +6,6 @@ use App\Services\Api\ApiResponseService;
 use App\Services\ImageService;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
-use App\Services\Contracts\ImageServiceInterface;
 
 class AppServiceProvider extends ServiceProvider
 {

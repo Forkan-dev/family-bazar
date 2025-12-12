@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('address_line');
             $table->foreignId('customer_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('area_id')->constrained('areas')->onDelete('cascade');
+            $table->foreignId('zone_id')->constrained('zones')->onDelete('cascade');
             $table->string('state')->nullable();
             $table->string('postal_code')->nullable();
             $table->string('phone')->nullable();
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->integer('district_id')->nullable();
             $table->integer('upazila_id')->nullable();
             $table->integer('union_id')->nullable();
-            $table->integer('city_id')->nullable();
+            $table->integer('thana_id')->nullable();
             $table->timestamps();
         });
     }

@@ -22,11 +22,11 @@ class CreateBanner
             ]),
             'sub_title' => json_encode([
                 'en' => $validatedData['sub_title_en'] ?? '',
-                'bn' => $validatedData['sub_title_bn'] ?? ''
+                'bn' => $validatedData['sub_title_bn'] ?? '',
             ]),
             'description' => json_encode([
                 'en' => $validatedData['description_en'] ?? '',
-                'bn' => $validatedData['description_bn'] ?? ''
+                'bn' => $validatedData['description_bn'] ?? '',
             ]),
             'position' => $validatedData['position'],
             'status' => $validatedData['status'] ?? 'inactive',

@@ -24,6 +24,10 @@ const props = withDefaults(defineProps<Props>(), {
     required: false,
 })
 
+defineOptions({
+    inheritAttrs: false
+})
+
 const emit = defineEmits<{
     'update:modelValue': [value: string | number]
 }>()
@@ -35,31 +39,13 @@ const internalValue = computed({
 </script>
 
 <template>
-    <FormField
-        :label="label"
-        :required="required"
-        :error="errorMessages"
-        :description="description"
-        :class="class"
-    >
+    <FormField :label="label" :required="required" :error="errorMessages" :description="description" :class="class">
         <template #default="{ hasError }">
-            <Textarea
-                v-if="multiline"
-                v-model="internalValue"
-                :placeholder="placeholder"
-                :disabled="disabled"
-                :class="{ 'border-destructive focus-visible:ring-destructive': hasError }"
-                rows="4"
-            />
+            <Textarea v-if="multiline" v-model="internalValue" :placeholder="placeholder" :disabled="disabled"
+                :class="{ 'border-destructive focus-visible:ring-destructive': hasError }" rows="4" v-bind="$attrs" />
 
-            <Input
-                v-else
-                v-model="internalValue"
-                :type="type"
-                :placeholder="placeholder"
-                :disabled="disabled"
-                :class="{ 'border-destructive focus-visible:ring-destructive': hasError }"
-            />
+            <Input v-else v-model="internalValue" :type="type" :placeholder="placeholder" :disabled="disabled"
+                :class="{ 'border-destructive focus-visible:ring-destructive': hasError }" v-bind="$attrs" />
         </template>
     </FormField>
 </template>

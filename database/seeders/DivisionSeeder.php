@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Location\Division;
 use Illuminate\Database\Seeder;
 
 class DivisionSeeder extends Seeder
@@ -12,7 +12,7 @@ class DivisionSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\Division::create([
+        Division::create([
             'name_en' => 'Chittagong',
             'name_bn' => 'চট্টগ্রাম',
         ]);

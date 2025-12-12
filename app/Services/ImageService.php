@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use Intervention\Image\Image;
-use Illuminate\Support\Facades\Storage;
 use App\Services\Contracts\ImageServiceInterface;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Image;
 
 class ImageService implements ImageServiceInterface
 {
@@ -36,10 +36,10 @@ class ImageService implements ImageServiceInterface
             $constraint->upsize();
         });
 
-        $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+        $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
         $path = "resized/{$filename}";
 
-        Storage::disk('public')->put($path, (string)$image->encode());
+        Storage::disk('public')->put($path, (string) $image->encode());
 
         return $path;
     }
@@ -49,10 +49,10 @@ class ImageService implements ImageServiceInterface
         $path = $file->store($folder, 'public');
 
         $relation->create([
-            'file_path'   => $path,
-            'file_name'   => $file->getClientOriginalName(),
-            'mime_type'   => $file->getClientMimeType(),
-            'file_size'   => $file->getSize(),
+            'file_path' => $path,
+            'file_name' => $file->getClientOriginalName(),
+            'mime_type' => $file->getClientMimeType(),
+            'file_size' => $file->getSize(),
         ]);
     }
 }

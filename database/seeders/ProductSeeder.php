@@ -18,14 +18,16 @@ class ProductSeeder extends Seeder
 
         foreach ($products as $productData) {
             $category = Category::where('title_en', $productData['category'])->first();
-            if (!$category) {
+            if (! $category) {
                 $this->command->warn("Skipping product '{$productData['name_en']}'. Category '{$productData['category']}' not found.");
+
                 continue;
             }
 
             $unit = Unit::where('abbreviation', $productData['unit'])->first();
-            if (!$unit) {
+            if (! $unit) {
                 $this->command->warn("Skipping product '{$productData['name_en']}'. Unit '{$productData['unit']}' not found.");
+
                 continue;
             }
 

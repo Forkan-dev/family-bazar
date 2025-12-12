@@ -2,12 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
+use App\Models\Cart;
 use App\Models\Order\Order; // Import the Order model
 use App\Models\User; // Import the User model
-use App\Models\Cart; // Import the Cart model
-use Faker\Factory as Faker;
+use Faker\Factory as Faker; // Import the Cart model
+use Illuminate\Database\Seeder;
 
 class OrderSeeder extends Seeder
 {

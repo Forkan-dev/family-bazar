@@ -11,6 +11,11 @@ use App\Models\Product;
 use App\Traits\CheckAuthTrait;
 use ApiResponse;
 use stdClass;
+use App\Http\Requests\Order\CartItem\StoreCartItemRequest;
+use App\Models\CartHistory;
+use App\Models\CartItem;
+use App\Models\Product;
+use Illuminate\Support\Facades\Auth;
 
 class CreateCart
 {
@@ -75,7 +80,7 @@ class CreateCart
 
     public function mergeGuestCart($guest_id, $customer_id)
     {
- 
+
         if (!$guest_id) return;
 
         $cart = Cart::where('guest_id', $guest_id)->get();
@@ -96,7 +101,7 @@ class CreateCart
                     'product_id' => $item->product_id,
                 ],
                 [
-                    
+
                     'price'    => $item->price,
                     'options'  => $item->options,
                 ]
@@ -108,7 +113,7 @@ class CreateCart
         }
         Cart::where('guest_id', $guest_id)->delete();
 
-       
+
     }
 
 }

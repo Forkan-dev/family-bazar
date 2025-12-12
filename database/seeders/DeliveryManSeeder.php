@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Order\DeliveryMan;
+use Faker\Factory as Faker; // Import the DeliveryMan model
 use Illuminate\Database\Seeder;
-use App\Models\Order\DeliveryMan; // Import the DeliveryMan model
-use Faker\Factory as Faker;
 
 class DeliveryManSeeder extends Seeder
 {

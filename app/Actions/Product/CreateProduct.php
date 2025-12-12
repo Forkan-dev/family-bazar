@@ -2,8 +2,8 @@
 
 namespace App\Actions\Product;
 
-use App\Models\Product\Product;
 use App\Http\Requests\Admin\Product\StoreProductRequest;
+use App\Models\Product\Product;
 use App\Models\Product\Tag;
 
 class CreateProduct
@@ -40,6 +40,7 @@ class CreateProduct
             if (is_numeric($tag)) {
                 return $tag;
             }
+
             return Tag::firstOrCreate(['name' => $tag], ['slug' => \Illuminate\Support\Str::slug($tag)])->id;
         });
 

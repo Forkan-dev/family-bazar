@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('upazilas', function (Blueprint $table) {
+        Schema::create('divisions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('district_id')->constrained()->onDelete('cascade');
             $table->string('name_en');
-            $table->string('name_bn')->nullable();;
+            $table->string('name_bn')->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('upazilas');
+        Schema::dropIfExists('divisions');
     }
 };

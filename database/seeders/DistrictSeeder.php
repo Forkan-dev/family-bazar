@@ -2,7 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Location\District;
+use App\Models\Location\Division;
 use Illuminate\Database\Seeder;
 
 class DistrictSeeder extends Seeder
@@ -12,7 +13,7 @@ class DistrictSeeder extends Seeder
      */
     public function run(): void
     {
-        $chittagong = \App\Models\Division::where('name_en', 'Chittagong')->first();
+        $chittagong = Division::where('name_en', 'Chittagong')->first();
 
         $districts = [
             ['name_en' => 'Bandarban', 'name_bn' => 'বান্দরবান'],
@@ -29,7 +30,7 @@ class DistrictSeeder extends Seeder
         ];
 
         foreach ($districts as $district) {
-            \App\Models\District::create([
+            District::create([
                 'division_id' => $chittagong->id,
                 'name_en' => $district['name_en'],
                 'name_bn' => $district['name_bn'],

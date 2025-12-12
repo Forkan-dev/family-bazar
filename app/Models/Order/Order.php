@@ -2,12 +2,12 @@
 
 namespace App\Models\Order;
 
+use App\Models\Cart;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use App\Models\User; // Import the User model
-use App\Models\Cart; // Import the Cart model
+use Illuminate\Database\Eloquent\Relations\HasMany; // Import the User model
+use Illuminate\Database\Eloquent\Relations\HasOne; // Import the Cart model
 
 class Order extends Model
 {

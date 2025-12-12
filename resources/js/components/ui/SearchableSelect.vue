@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import { ref, watch, computed, onMounted } from 'vue'
 import { Button } from '@/components/ui/button'
-// Removed Command imports - using custom implementation for better control
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Check, ChevronsUpDown } from 'lucide-vue-next'
 import { cn } from '@/lib/utils'
@@ -20,6 +27,8 @@ interface Props {
     errorMessages?: string | string[]
     label?: string
     required?: boolean
+    initialOption?: Option | null
+    initialOptions?: Option[]
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -27,7 +36,9 @@ const props = withDefaults(defineProps<Props>(), {
     excludeId: null,
     errorMessages: undefined,
     label: '',
-    required: false
+    required: false,
+    initialOption: null,
+    initialOptions: () => []
 })
 
 const emit = defineEmits<{
@@ -41,7 +52,7 @@ const open = ref(false)
 
 const selectedLabel = computed(() => {
     if (!props.modelValue) return ''
-    const found = options.value.find(opt => opt.value === props.modelValue)
+    const found = options.value.find(opt => opt.value == props.modelValue) // Using == for loose equality
     return found?.label || ''
 })
 
@@ -54,22 +65,40 @@ const searchOptions = async (searchQuery: string = '') => {
         }
 
         const response = await axios.get(props.searchUrl, { params })
-        options.value = response.data
+        const fetchedOptions = response.data
+
+        // Update options only after receiving response
+        // If we have an initial option and it's not in the fetched results, keep it
+        if (props.initialOption && props.modelValue) {
+            const hasInitialOption = fetchedOptions.some((opt: Option) => opt.value == props.modelValue)
+            if (!hasInitialOption) {
+                options.value = [props.initialOption, ...fetchedOptions]
+            } else {
+                options.value = fetchedOptions
+            }
+        } else {
+            options.value = fetchedOptions
+        }
     } catch (error) {
         console.error('Error fetching options:', error)
-        options.value = []
+        // Don't clear options on error, keep showing previous results
     } finally {
         loading.value = false
     }
 }
 
 // Debounced search
-let searchTimeout: NodeJS.Timeout
+let searchTimeout: ReturnType<typeof setTimeout>
 const handleSearch = (searchQuery: string) => {
     query.value = searchQuery
 
     // Clear previous timeout
     clearTimeout(searchTimeout)
+
+    // Show loading only if we're going to search
+    if (searchQuery.trim()) {
+        loading.value = true
+    }
 
     // Debounce the actual search
     searchTimeout = setTimeout(() => {
@@ -79,11 +108,22 @@ const handleSearch = (searchQuery: string) => {
 
 // Initial search
 onMounted(() => {
-    searchOptions()
+    // If there are initial options, use them
+    if (props.initialOptions && props.initialOptions.length > 0) {
+        options.value = props.initialOptions
+    }
+    // If there's an initial option (for edit), add it to the options list
+    else if (props.initialOption) {
+        options.value = [props.initialOption]
+    }
+    // Only fetch if no initial data provided
+    else {
+        searchOptions()
+    }
 })
 
-const handleSelection = (optionValue: any) => {
-    emit('update:modelValue', optionValue)
+const selectOption = (selectedValue: any) => {
+    emit('update:modelValue', selectedValue)
     open.value = false
 }
 
@@ -120,38 +160,28 @@ watch(() => props.modelValue, (newValue) => {
                 </Button>
             </PopoverTrigger>
             <PopoverContent class="w-[--radix-popover-trigger-width] p-0" align="start">
-                <div class="flex flex-col">
-                    <!-- Search Input -->
-                    <div class="flex items-center border-b px-3" cmdk-input-wrapper="">
-                        <input :value="query" @input="handleSearch($event.target.value)"
-                            :placeholder="`Search ${label?.toLowerCase() || 'options'}...`"
-                            class="flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50" />
-                    </div>
-
-                    <!-- Results -->
-                    <div class="max-h-[300px] overflow-y-auto">
-                        <div v-if="loading" class="px-2 py-6 text-center text-sm text-muted-foreground">
+                <Command :filter-function="() => 1">
+                    <CommandInput :placeholder="`Search ${label?.toLowerCase() || 'options'}...`" :model-value="query"
+                        @update:model-value="handleSearch" />
+                    <CommandList>
+                        <CommandEmpty v-if="!loading">
+                            {{ options.length === 0 ? 'No options found.' : 'Start typing to search...' }}
+                        </CommandEmpty>
+                        <CommandEmpty v-else>
                             Searching...
-                        </div>
-
-                        <div v-else-if="options.length === 0"
-                            class="px-2 py-6 text-center text-sm text-muted-foreground">
-                            No options found.
-                        </div>
-
-                        <div v-else class="p-1">
-                            <div v-for="option in options" :key="option.value || 'null'"
-                                @click="handleSelection(option.value)"
-                                class="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground cursor-pointer">
-                                <Check :class="cn(
-                                    'mr-2 h-4 w-4',
-                                    modelValue === option.value ? 'opacity-100' : 'opacity-0'
-                                )" />
+                        </CommandEmpty>
+                        <CommandGroup v-if="options.length > 0">
+                            <CommandItem v-for="option in options" :key="option.value" :value="option.value"
+                                @select="(ev) => selectOption(ev.detail.value)">
                                 {{ option.label }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                                <Check :class="cn(
+                                    'ml-auto h-4 w-4',
+                                    modelValue == option.value ? 'opacity-100' : 'opacity-0'
+                                )" />
+                            </CommandItem>
+                        </CommandGroup>
+                    </CommandList>
+                </Command>
             </PopoverContent>
         </Popover>
 

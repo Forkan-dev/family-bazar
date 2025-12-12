@@ -3,11 +3,9 @@
 namespace App\Models\Product;
 
 use App\Models\Document;
-use App\Models\Product\Brand; // Import the Brand model
-use App\Models\Product\Category;
-use App\Models\Product\Tag;
-use App\Models\Product\Unit; // Import the Unit model
-use App\Models\Product\Review; // Import the Review model
+// Import the Brand model
+// Import the Unit model
+// Import the Review model
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

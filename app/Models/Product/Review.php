@@ -2,9 +2,9 @@
 
 namespace App\Models\Product;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\User; // Import the User model
+use Illuminate\Database\Eloquent\Relations\BelongsTo; // Import the User model
 
 class Review extends Model
 {
