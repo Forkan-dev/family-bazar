@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Services\Contracts\ImageServiceInterface;
+use App\Services\Api\ApiResponseService;
 use App\Services\ImageService;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -15,6 +15,9 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(ImageServiceInterface::class, ImageService::class);
+        $this->app->singleton('apiResponseService', function () {
+            return new ApiResponseService();
+        });
     }
 
     /**

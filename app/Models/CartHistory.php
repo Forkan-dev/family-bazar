@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Customer\Customer;
+use App\Models\Product;
 use App\Models\Order\Order;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -42,9 +44,9 @@ class CartHistory extends Model
     /**
      * Get the user that owns the cart history.
      */
-    public function user(): BelongsTo
+    public function customer(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Customer::class);
     }
 
     /**

@@ -2,99 +2,113 @@
 
 namespace App\Actions\Order\Cart;
 
-use App\Http\Requests\Order\CartItem\StoreCartItemRequest;
-use App\Models\CartHistory;
 use App\Models\CartItem;
+use App\Models\CartHistory;
+use App\Http\Requests\Order\CartItem\StoreCartItemRequest;
+use App\Http\Resources\Api\CartItemResource;
+use App\Models\Cart;
 use App\Models\Product;
-use Illuminate\Support\Facades\Auth;
+use App\Traits\CheckAuthTrait;
+use ApiResponse;
+use stdClass;
 
 class CreateCart
 {
+    use CheckAuthTrait;
+
     public function addToCart(StoreCartItemRequest $request)
     {
-        $guestId = session()->get('guest_id');
-
-        if (! $guestId) {
-            $guestId = (string) \Illuminate\Support\Str::uuid();
-            session()->put('guest_id', $guestId);
+        $authenticated = $this->isAuthenticated('customer');
+        $guest_id = $request->guest_id;
+        if (!$authenticated && !$guest_id) {
+            $guest_id = (string) \Illuminate\Support\Str::uuid();
         }
-
-        // Determine owner
-        $ownerColumn = Auth::check() ? 'user_id' : 'guest_id';
-        $ownerId = Auth::check() ? Auth::id() : $guestId;
 
         // Add or update cart item
-        $this->cartItemStore($request, $ownerColumn, $ownerId);
-
-        // Save history
-        $this->cartHistoryStore($request, $ownerColumn, $ownerId);
-
-        return response()->json(['message' => 'Added to cart']);
+        $column = $authenticated ? 'customer_id' : 'guest_id';
+        $c_id = $authenticated ? $this->getAuthenticatedUserId('customer') : $guest_id;
+        $cartItem = $this->storeItemToCart($request, $column, $c_id);
+        return [
+            'guest_id' => $guest_id,
+            'cart_item' => $cartItem,
+        ];
     }
 
-    private function cartItemStore(StoreCartItemRequest $request, string $ownerColumn, $ownerId)
+
+    private function storeItemToCart(StoreCartItemRequest $request, string $user_column, $c_id)
     {
 
         $product_price = Product::find($request->product_id)->price;
 
-        CartItem::updateOrCreate(
-            [
-                $ownerColumn => $ownerId,
-                'product_id' => $request->product_id,
-            ],
-            [
-                'quantity' => $request->quantity,
-                'price' => $product_price,
-                'options' => $request->options,
-            ]
-        );
-    }
-
-    private function cartHistoryStore(StoreCartItemRequest $request, string $ownerColumn, $ownerId)
-    {
-        $product_price = Product::find($request->product_id)->price;
-        CartHistory::create([
-            $ownerColumn => $ownerId,
-            'product_id' => $request->product_id,
-            'quantity' => $request->quantity,
-            'price' => $product_price,
-            'options' => $request->options,
-            'action' => 'added',
-            // 'expires_at' => now()->addMonth(),
-            'expires_at' => now()->addMinute(),
-
-        ]);
-    }
-
-    public function mergeGuestCart()
-    {
-        $guestId = session()->get('guest_id');
-
-        if (! $guestId) {
-            return;
+        $cart = Cart::where($user_column, $c_id)->first();
+        if (!$cart) {
+            $cart = Cart::create([
+                $user_column => $c_id,
+            ]);
         }
 
-        $guestItems = CartItem::where('guest_id', $guestId)->get();
+        $cartItem = CartItem::where('cart_id', data_get($cart, 'id'))
+            ->where('product_id', $request->product_id)
+            ->first();
+
+        if ($cartItem) {
+            // Increment quantity
+            $cartItem->quantity += $request->quantity;
+            $cartItem->save();
+        } else {
+            // Create new cart item
+            $cartItem = CartItem::create([
+                'cart_id' => data_get($cart, 'id'),
+                'product_id' => $request->product_id,
+                'quantity' => $request->quantity,
+                'price' => $product_price,
+            ]);
+        }
+        return $cartItem;
+    }
+
+    private function cartHistoryStore(StoreCartItemRequest $request, string $user_column, $c_id)
+    {
+        // will create later
+    }
+
+
+    public function mergeGuestCart($guest_id, $customer_id)
+    {
+
+        if (!$guest_id) return;
+
+        $cart = Cart::where('guest_id', $guest_id)->get();
+
+        if ($cart->isEmpty()) return;
+        // Get or create the authenticated user's cart
+        $userCart = Cart::firstOrCreate(
+            ['customer_id' => $customer_id]
+        );
+
+        $guestItems = CartItem::whereIn('cart_id', $cart->pluck('id'))->get();
 
         foreach ($guestItems as $item) {
-            // Merge into user cart
-            CartItem::updateOrCreate(
+
+            $userItem = CartItem::firstOrCreate(
                 [
-                    'user_id' => auth()->id(),
+                    'cart_id' => $userCart->id,
                     'product_id' => $item->product_id,
                 ],
                 [
-                    'quantity' => \DB::raw("quantity + {$item->quantity}"),
-                    'price' => $item->price,
-                    'options' => $item->options,
+
+                    'price'    => $item->price,
+                    'options'  => $item->options,
                 ]
             );
 
-            // Delete guest item
-            $item->delete();
-        }
+            // atomic increment
+            $userItem->increment('quantity', $item->quantity);
 
-        // Remove guest session
-        session()->forget('guest_id');
+        }
+        Cart::where('guest_id', $guest_id)->delete();
+
+
     }
+
 }

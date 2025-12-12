@@ -9,8 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class CreateBanner
 {
-    public function __construct(private ImageServiceInterface $imageService) {}
-
+    use ImageUploadTrait;
     public function handle(StoreBannerRequest $request): Banner
     {
         $validatedData = $request->validated();
@@ -18,7 +17,7 @@ class CreateBanner
         $processedData = [
             'title' => json_encode([
                 'en' => $validatedData['title_en'],
-                'bn' => $validatedData['title_bn'] ?? '',
+                'bn' => $validatedData['title_bn'] ?? ''
             ]),
             'sub_title' => json_encode([
                 'en' => $validatedData['sub_title_en'] ?? '',
@@ -37,19 +36,14 @@ class CreateBanner
             'type_id' => $validatedData['type_id'],
         ];
 
-        return DB::transaction(function () use ($processedData, $request) {
-            $banner = Banner::create($processedData);
 
-            // ✅ Single image upload call
-            if ($request->hasFile('image')) {
-                $this->imageService->uploadSingle(
-                    $request->file('image'),
-                    'banners',
-                    $banner->documents()
-                );
-            }
+        $banner = Banner::create($processedData);
 
-            return $banner;
-        });
+        // ✅ Single image upload call
+        if ($request->hasFile('image')) {
+            $this->uploadSingleImage($request, 'image', 'banners', $banner->documents());
+        }
+
+        return $banner;
     }
 }
