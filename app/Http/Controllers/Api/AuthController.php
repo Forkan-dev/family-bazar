@@ -41,7 +41,7 @@ class AuthController extends Controller
 
     public function otpVerify(OtpCustomerRequest $request)
     {
-        return $this->otpService->verifyOtp($request);
+        return $this->otpService->verifyOtp($request)
     }
 
 

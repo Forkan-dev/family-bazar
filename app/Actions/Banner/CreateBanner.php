@@ -2,10 +2,11 @@
 
 namespace App\Actions\Banner;
 
-use App\Http\Requests\Admin\Banner\StoreBannerRequest;
 use App\Models\Banner;
-use App\Services\Contracts\ImageServiceInterface;
+use App\Traits\ImageUploadTrait;
 use Illuminate\Support\Facades\DB;
+use App\Services\Contracts\ImageServiceInterface;
+use App\Http\Requests\Admin\Banner\StoreBannerRequest;
 
 class CreateBanner
 {
