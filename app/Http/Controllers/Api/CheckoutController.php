@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use ApiResponse;
 use App\Http\Requests\Api\OrderRequest;
 use App\Services\Order\OrderService;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 
-class OrderController extends Controller
+class CheckoutController extends Controller
 {
     protected OrderService $orderService;
 
