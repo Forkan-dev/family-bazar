@@ -15,10 +15,13 @@ function initializeTheme() {
         '(prefers-color-scheme: dark)',
     ).matches;
 
+    const root = document.documentElement;
+    root.classList.remove('light', 'dark');
+
     if (theme === 'system') {
-        document.documentElement.classList.toggle('dark', prefersDark);
+        root.classList.add(prefersDark ? 'dark' : 'light');
     } else {
-        document.documentElement.classList.toggle('dark', theme === 'dark');
+        root.classList.add(theme);
     }
 }
 

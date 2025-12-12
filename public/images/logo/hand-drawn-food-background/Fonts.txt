@@ -1,0 +1,9 @@
+Fonts used in this design:
+
+Font: Frente H1
+Author: Frente
+Url: http://www.fontsquirrel.com/fonts/frente-h1
+
+Font: Metropolis
+Author: Chris Simpson
+Url: https://www.fontsquirrel.com/fonts/metropolis

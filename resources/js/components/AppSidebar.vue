@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { Separator } from '@/components/ui/separator'
-import { Link, usePage } from '@inertiajs/vue3'
+import { Link, usePage, router } from '@inertiajs/vue3'
 import {
     BarChart3,
     ChevronDown,
@@ -41,8 +41,14 @@ const hasPermission = (permission: string) => {
 }
 
 const logout = () => {
-    console.log('Logging out...')
-    // Add your logout logic here
+    router.post(route('logout'), {}, {
+        onSuccess: () => {
+            // Redirect will be handled by Laravel
+        },
+        onError: (errors) => {
+            console.error('Logout failed:', errors)
+        }
+    })
 }
 
 const isActive = (routeName: string) => {
