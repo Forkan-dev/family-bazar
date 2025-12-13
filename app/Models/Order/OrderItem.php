@@ -2,9 +2,9 @@
 
 namespace App\Models\Order;
 
+use App\Models\Product\Product;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\Product\Product; // Import the Product model
+use Illuminate\Database\Eloquent\Relations\BelongsTo; // Import the Product model
 
 class OrderItem extends Model
 {
@@ -24,7 +24,8 @@ class OrderItem extends Model
         'order_id',
         'product_id',
         'quantity',
-        'price',
+        'unit_price',
+        'total_price',
     ];
 
     /**

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Location\Upazila;
 use App\Models\Union;
-use App\Models\Upazila;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -22,10 +22,10 @@ class UnionController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('name_en', 'like', "%{$search}%")
-                  ->orWhere('name_bn', 'like', "%{$search}%")
-                  ->orWhereHas('upazila', function ($q) use ($search) {
-                      $q->where('name_en', 'like', "%{$search}%");
-                  });
+                    ->orWhere('name_bn', 'like', "%{$search}%")
+                    ->orWhereHas('upazila', function ($q) use ($search) {
+                        $q->where('name_en', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -50,6 +50,7 @@ class UnionController extends Controller
     public function create()
     {
         $upazilas = Upazila::all();
+
         return Inertia::render('Admin/Location/Form', [
             'upazilas' => $upazilas,
         ]);
@@ -88,6 +89,7 @@ class UnionController extends Controller
         $union->loadMissing(['upazila']); // Load upazila if not already loaded
 
         $upazilas = Upazila::all();
+
         return Inertia::render('Admin/Location/Form', [
             'union' => $union->only(['id', 'upazila_id', 'name_en', 'name_bn']),
             'upazilas' => $upazilas,

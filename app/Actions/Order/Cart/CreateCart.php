@@ -75,7 +75,7 @@ class CreateCart
 
     public function mergeGuestCart($guest_id, $customer_id)
     {
- 
+
         if (!$guest_id) return;
 
         $cart = Cart::where('guest_id', $guest_id)->get();
@@ -96,7 +96,7 @@ class CreateCart
                     'product_id' => $item->product_id,
                 ],
                 [
-                    
+
                     'price'    => $item->price,
                     'options'  => $item->options,
                 ]
@@ -108,7 +108,7 @@ class CreateCart
         }
         Cart::where('guest_id', $guest_id)->delete();
 
-       
+
     }
 
 }

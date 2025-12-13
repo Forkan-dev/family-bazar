@@ -8,24 +8,25 @@ import '../css/custom-ui.css';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
-// Initialize theme on load
+// Initialize theme on load - must run immediately before Vue renders
 function initializeTheme() {
     const theme = localStorage.getItem('theme') || 'system';
     const prefersDark = window.matchMedia(
         '(prefers-color-scheme: dark)',
     ).matches;
 
+    const root = document.documentElement;
+    root.classList.remove('light', 'dark');
+
     if (theme === 'system') {
-        document.documentElement.classList.toggle('dark', prefersDark);
+        root.classList.add(prefersDark ? 'dark' : 'light');
     } else {
-        document.documentElement.classList.toggle('dark', theme === 'dark');
+        root.classList.add(theme);
     }
 }
 
-// Initialize theme immediately
-if (typeof window !== 'undefined') {
-    initializeTheme();
-}
+// Initialize theme immediately before anything else
+initializeTheme();
 
 createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),

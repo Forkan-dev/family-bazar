@@ -5,8 +5,8 @@ namespace App\Models;
 use App\Models\Customer\Customer;
 use App\Models\Product;
 use App\Models\Order\Order;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CartHistory extends Model
@@ -78,7 +78,6 @@ class CartHistory extends Model
             }
         });
     }
-
 
     public function scopeExpired(Builder $query): Builder
     {

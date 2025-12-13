@@ -16,9 +16,9 @@ class PermissionsController extends Controller
         // Search
         if ($request->has('search') && $request->search) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('guard_name', 'like', "%{$search}%");
+                    ->orWhere('guard_name', 'like', "%{$search}%");
             });
         }
 
@@ -63,7 +63,7 @@ class PermissionsController extends Controller
     public function update(Request $request, Permission $permission)
     {
         $request->validate([
-            'name' => 'required|unique:permissions,name,' . $permission->id,
+            'name' => 'required|unique:permissions,name,'.$permission->id,
             'guard_name' => 'nullable|string',
         ]);
 

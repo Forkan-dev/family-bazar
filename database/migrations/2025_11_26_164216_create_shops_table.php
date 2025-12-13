@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('shop_owner_id')->nullable()->constrained('shop_owners')->onDelete('set null');
             $table->string('name');
             $table->decimal('commission_rate', 5, 2)->nullable();
-            $table->foreignId('area_id')->constrained('areas');
+            $table->foreignId('zone_id')->constrained('zones');
             $table->decimal('lat', 10, 7)->nullable();
             $table->decimal('lon', 10, 7)->nullable();
             $table->string('type')->comment('retail, wholesale, distributor');

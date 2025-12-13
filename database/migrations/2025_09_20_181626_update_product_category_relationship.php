@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::dropIfExists('category_product');
 
         Schema::table('products', function (Blueprint $table) {
-            if (!Schema::hasColumn('products', 'category_id')) {
+            if (! Schema::hasColumn('products', 'category_id')) {
                 $table->foreignId('category_id')->nullable()->constrained('categories')->onDelete('set null');
             }
         });

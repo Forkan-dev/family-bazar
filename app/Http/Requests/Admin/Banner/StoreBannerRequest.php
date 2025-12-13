@@ -41,6 +41,4 @@ class StoreBannerRequest extends FormRequest
             'type_id' => 'required|integer|exists:types,id',
         ];
     }
-
-
 }

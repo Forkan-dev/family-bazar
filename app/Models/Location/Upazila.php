@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Location;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Upazila extends Model
 {
@@ -12,7 +13,10 @@ class Upazila extends Model
         'name_bn',
     ];
 
-    public function district()
+    /**
+     * Get the district that owns the upazila.
+     */
+    public function district(): BelongsTo
     {
         return $this->belongsTo(District::class);
     }

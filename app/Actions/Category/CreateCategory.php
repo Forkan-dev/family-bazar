@@ -2,10 +2,9 @@
 
 namespace App\Actions\Category;
 
+use App\Http\Requests\Admin\Category\StoreCategoryRequest;
 use App\Models\Product\Category;
 use Illuminate\Support\Facades\DB;
-use App\Http\Requests\Admin\Category\StoreCategoryRequest;
-use Illuminate\Http\Request;
 
 class CreateCategory
 {
@@ -29,10 +28,9 @@ class CreateCategory
         });
     }
 
-
     private function storeImages(StoreCategoryRequest $request, Category $category): void
     {
-        if (!$request->hasFile('image')) {
+        if (! $request->hasFile('image')) {
             return;
         }
 
@@ -45,7 +43,7 @@ class CreateCategory
 
         // Save in documents table
         $category->documents()->create([
-            'file_path' => 'storage/' . $path, // use storage link path for browser
+            'file_path' => 'storage/'.$path, // use storage link path for browser
             'file_name' => $image->getClientOriginalName(),
             'mime_type' => $image->getClientMimeType(),
             'file_size' => $image->getSize(),

@@ -24,7 +24,7 @@ class UpdateCategoryRequest extends FormRequest
         return [
             'title_en' => ['sometimes', 'required', 'string', 'max:255'],
             'title_bn' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'slug' => ['sometimes', 'required', 'string', 'unique:categories,slug,' . $this->category->id],
+            'slug' => ['sometimes', 'required', 'string', 'unique:categories,slug,'.$this->category->id],
             'description_en' => ['nullable', 'string'],
             'description_bn' => ['nullable', 'string'],
             'icon' => ['nullable', 'string'],

@@ -27,7 +27,7 @@ class Customer extends Authenticatable
         'otp_attempts',
         'last_otp_sent_at',
         'is_phone_verified',
-        
+
 
 
     ];

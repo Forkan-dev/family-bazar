@@ -136,8 +136,8 @@ class CategoryController extends Controller
 
         $categories = Category::query()
             ->when($query, function ($q) use ($query) {
-                $q->where('title_en', 'like', '%' . $query . '%')
-                  ->orWhere('title_bn', 'like', '%' . $query . '%');
+                $q->where('title_en', 'like', '%'.$query.'%')
+                    ->orWhere('title_bn', 'like', '%'.$query.'%');
             })
             ->when($exclude, function ($q) use ($exclude) {
                 $q->where('id', '!=', $exclude);
@@ -148,14 +148,14 @@ class CategoryController extends Controller
             ->map(function ($category) {
                 return [
                     'value' => $category->id,
-                    'label' => $category->title_en . ($category->title_bn ? ' (' . $category->title_bn . ')' : '')
+                    'label' => $category->title_en.($category->title_bn ? ' ('.$category->title_bn.')' : ''),
                 ];
             });
 
         // Add "No Parent" option at the beginning
         $categories->prepend([
             'value' => null,
-            'label' => 'No Parent (Root Category)'
+            'label' => 'No Parent (Root Category)',
         ]);
 
         return response()->json($categories);

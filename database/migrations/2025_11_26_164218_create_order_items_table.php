@@ -43,7 +43,7 @@ return new class extends Migration
             $table->integer('offer_id')->nullable();
             $table->json('applied_offer')->nullable(); // snapshot of offer at purchase time
 
-           // Refund fields (only)
+            // Refund fields (only)
             $table->decimal('refunded_amount', 10, 2)->default(0);
             $table->string('refund_status')->default('none'); // 'none', 'requested', 'processed', 'completed'
             $table->text('refund_notes')->nullable();

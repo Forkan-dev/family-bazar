@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use App\Models\User;
+use Spatie\Permission\Models\Role;
 
 class RolesController extends Controller
 {
@@ -18,9 +18,9 @@ class RolesController extends Controller
         // Search
         if ($request->has('search') && $request->search) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('guard_name', 'like', "%{$search}%");
+                    ->orWhere('guard_name', 'like', "%{$search}%");
             });
         }
 
@@ -40,6 +40,7 @@ class RolesController extends Controller
     public function create()
     {
         $permissions = Permission::all();
+
         return Inertia::render('Admin/Roles/Form', [
             'permissions' => $permissions,
             'selectedPermissions' => [],
@@ -65,6 +66,7 @@ class RolesController extends Controller
     {
         $permissions = Permission::all();
         $role->load('permissions');
+
         return Inertia::render('Admin/Roles/Form', [
             'role' => $role,
             'permissions' => $permissions,
@@ -75,6 +77,7 @@ class RolesController extends Controller
     {
         $permissions = Permission::all();
         $role->load('permissions');
+
         return Inertia::render('Admin/Roles/Form', [
             'role' => $role,
             'permissions' => $permissions,
@@ -85,7 +88,7 @@ class RolesController extends Controller
     public function update(Request $request, Role $role)
     {
         $request->validate([
-            'name' => 'required|unique:roles,name,' . $role->id,
+            'name' => 'required|unique:roles,name,'.$role->id,
             'guard_name' => 'nullable|string',
             'selectedPermissions' => 'array',
         ]);

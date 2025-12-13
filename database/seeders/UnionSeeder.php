@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Location\Upazila;
 use App\Models\Union;
-use App\Models\Upazila;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Support\Facades\File;
 
 class UnionSeeder extends Seeder
@@ -15,16 +14,18 @@ class UnionSeeder extends Seeder
         // JSON ফাইল থেকে ডেটা পড়া
         $path = public_path('data/chittagong_upazila_unions_full.json');
 
-        if (!File::exists($path)) {
+        if (! File::exists($path)) {
             $this->command->error("❌ JSON ফাইল পাওয়া যায়নি: {$path}");
+
             return;
         }
 
         $json = File::get($path);
         $data = json_decode($json, true);
 
-        if (!$data || !isset($data['upazilas'])) {
-            $this->command->error("❌ JSON ফাইলের গঠন সঠিক নয়!");
+        if (! $data || ! isset($data['upazilas'])) {
+            $this->command->error('❌ JSON ফাইলের গঠন সঠিক নয়!');
+
             return;
         }
 
@@ -49,6 +50,6 @@ class UnionSeeder extends Seeder
             }
         }
 
-        $this->command->info("✅ Union ডেটা সফলভাবে seed করা হয়েছে!");
+        $this->command->info('✅ Union ডেটা সফলভাবে seed করা হয়েছে!');
     }
 }

@@ -20,6 +20,7 @@ class BannerController extends Controller
     {
         $banners = Banner::with('type', 'documents')->get()->map(function ($banner) {
             $banner->image = $banner->documents->first() ? $banner->documents->first()->url : null;
+
             return $banner;
         });
 
@@ -31,6 +32,7 @@ class BannerController extends Controller
     public function create()
     {
         $types = Type::all();
+
         return Inertia::render('Admin/Banner/Create', [
             'types' => $types,
         ]);
@@ -42,11 +44,13 @@ class BannerController extends Controller
             DB::beginTransaction();
             $createBanner->handle($request);
             DB::commit();
+
             return redirect()
                 ->route('admin.banners.index')
                 ->with('success', 'Banner created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
+
             return redirect()
                 ->back()
                 ->withErrors(['error' => 'An error occurred while creating the banner.'])
@@ -59,6 +63,7 @@ class BannerController extends Controller
         $banner->load('documents');
         $banner->image = $banner->documents->first() ? $banner->documents->first()->url : null;
         $types = Type::all();
+
         return Inertia::render('Admin/Banner/Edit', [
             'banner' => $banner,
             'types' => $types,
@@ -71,11 +76,13 @@ class BannerController extends Controller
             DB::beginTransaction();
             $updateBanner->handle($request, $banner);
             DB::commit();
+
             return redirect()
                 ->route('admin.banners.index')
                 ->with('success', 'Banner updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
+
             return redirect()
                 ->back()
                 ->withErrors(['error' => 'An error occurred while updating the banner.'])
