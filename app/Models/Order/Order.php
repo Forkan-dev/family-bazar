@@ -17,13 +17,21 @@ class Order extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'user_id',
-        'cart_id',
-        'total_price',
-        'status',
+        'customer_id',
+        'customer_address_id',
         'delivery_address',
-        'expected_delivery_time',
+        'zone_id',
+        'total_amount',
+        'discount_amount',
+        'discount_type',
+        'discount_value',
+        'offer_id',
+        'applied_offer',
+        'payment_method',
         'payment_status',
+        'status',
+        'notes',
+        'total_commission_amount',
     ];
 
     /**
@@ -32,7 +40,11 @@ class Order extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'expected_delivery_time' => 'datetime',
+        'delivery_address' => 'array',
+        'applied_offer' => 'array',
+        'total_amount' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
+        'total_commission_amount' => 'decimal:2',
     ];
 
     /**

@@ -1,5 +1,5 @@
 import { useStorage } from '@vueuse/core';
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 
 type Theme = 'dark' | 'light' | 'system';
 
@@ -44,6 +44,11 @@ export function useDarkMode() {
     // Initialize on first load
     if (typeof window !== 'undefined') {
         updateDocumentClass();
+
+        // Watch for theme changes
+        watch(theme, () => {
+            updateDocumentClass();
+        });
 
         // Listen for system theme changes
         window

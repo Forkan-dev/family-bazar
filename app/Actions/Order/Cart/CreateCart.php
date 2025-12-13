@@ -11,11 +11,6 @@ use App\Models\Product;
 use App\Traits\CheckAuthTrait;
 use ApiResponse;
 use stdClass;
-use App\Http\Requests\Order\CartItem\StoreCartItemRequest;
-use App\Models\CartHistory;
-use App\Models\CartItem;
-use App\Models\Product;
-use Illuminate\Support\Facades\Auth;
 
 class CreateCart
 {
