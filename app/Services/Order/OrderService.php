@@ -47,15 +47,16 @@ class OrderService
             $this->createOrderItems($order, $cart);
 
             // Step 6: Process payment
-            $paymentResult = $this->processPayment($order, $data['payment_method']);
+            // $paymentResult = $this->processPayment($order, $data['payment_method']);
 
             // Step 7: Update order with payment status
             $order->update([
-                'payment_status' => $paymentResult['status'],
+                // 'payment_status' => $paymentResult['status'],
+                'payment_status' => 'pending',
             ]);
 
             // Step 8: Update product inventory
-            $this->updateInventory($cart);
+            // $this->updateInventory($cart);
 
             // Step 9: Clear cart
             $this->clearCart($cart);
@@ -63,7 +64,7 @@ class OrderService
             // Step 10: Send notifications (can be queued)
             $this->sendNotifications($order);
 
-            return $order->fresh(['orderItems', 'payment']);
+            return $order->fresh(['orderItems']);
         });
     }
 
@@ -97,9 +98,9 @@ class OrderService
                 throw new \Exception("Product not found for cart item.");
             }
 
-            if ($item->product->stock < $item->quantity) {
-                throw new \Exception("Insufficient stock for product: {$item->product->name}");
-            }
+            // if ($item->product->stock < $item->quantity) {
+            //     throw new \Exception("Insufficient stock for product: {$item->product->name}");
+            // }
         }
 
         return $cart;
@@ -239,13 +240,20 @@ class OrderService
     protected function createOrderItems(Order $order, Cart $cart): void
     {
         foreach ($cart->cartItems as $cartItem) {
+            $totalPrice = $this->calculateTotalPrice($cartItem);
             OrderItem::create([
                 'order_id' => $order->id,
                 'product_id' => $cartItem->product_id,
                 'quantity' => $cartItem->quantity,
-                'price' => $cartItem->price,
+                'unit_price' => $cartItem->price,
+                'total_price' => $cartItem->price * $cartItem->quantity,
             ]);
         }
+    }
+
+    protected function calculateTotalPrice($cartItem)
+    {
+        return $cartItem->price * $cartItem->quantity;
     }
 
     /**

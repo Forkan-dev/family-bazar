@@ -41,16 +41,19 @@ defineProps<{
         <div class="w-full max-w-sm relative z-10">
             <div class="bg-card rounded-xl border shadow-sm">
                 <!-- Header -->
-                <div class="text-center pt-10 pb-8 px-8 border-b">
+                <div class="text-center pt-6 pb-6 px-8 border-b">
                     <!-- Logo -->
                     <div class="mb-0 flex justify-center">
-                        <img :src="logoSrc()" alt="Elaach Logo" class="h-34 w-auto object-contain" />
+                        <div class="flex items-center justify-center w-40 h-40 rounded-full bg-white shadow-sm border-2"
+                            style="border-color: #63493f;">
+                            <img :src="logoSrc()" alt="Elaach Logo" class="h-36 w-auto object-contain" />
+                        </div>
                     </div>
 
                     <!-- <h1 class="text-xl font-semibold mb-1">
                         Elaach
                     </h1> -->
-                   <!--  <p class="text-sm text-muted-foreground">
+                    <!--  <p class="text-sm text-muted-foreground">
                         Grocery Admin Dashboard
                     </p> -->
                 </div>
