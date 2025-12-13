@@ -16,7 +16,17 @@ class Customer extends Authenticatable
     protected $fillable = [
         'email',
         'password',
-
+        'phone_number',
+        'address',
+        'location',
+        'avatar_url',
+        'ip_address',
+        'mac_address',
+        'otp_code',
+        'otp_expires_at',
+        'otp_attempts',
+        'last_otp_sent_at',
+        'is_phone_verified',
     ];
 
     /**
