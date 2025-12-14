@@ -10,7 +10,7 @@ import MasterLayout from '../layouts/MasterLayout.vue'
     <MasterLayout>
         <Head title="Dashboard" />
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 p-6">
             <Card>
                 <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
                     <div class="flex items-center space-x-2">
