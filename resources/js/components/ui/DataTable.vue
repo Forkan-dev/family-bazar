@@ -169,7 +169,7 @@ const shouldShowAction = (action: Action, item: any) => {
                     <thead>
                         <tr class="border-b">
                             <th v-for="column in columns" :key="column.key"
-                                :class="cn('px-6 py-4 text-left text-sm font-medium text-muted-foreground', column.class)">
+                                :class="cn('px-6 py-3 text-left text-sm font-medium text-muted-foreground', column.class)">
                                 <button v-if="column.sortable" @click="handleSort(column.key)"
                                     class="flex items-center space-x-1 hover:text-foreground">
                                     <span>{{ column.label }}</span>
@@ -181,7 +181,7 @@ const shouldShowAction = (action: Action, item: any) => {
                                 <span v-else>{{ column.label }}</span>
                             </th>
                             <th v-if="actions && actions.length > 0"
-                                class="px-6 py-4 text-right text-sm font-medium text-muted-foreground">
+                                class="px-6 py-3 text-right text-sm font-medium text-muted-foreground">
                                 Actions
                             </th>
                         </tr>
@@ -202,11 +202,11 @@ const shouldShowAction = (action: Action, item: any) => {
                         <tr v-else v-for="(item, index) in (data || [])" :key="index"
                             class="border-b hover:bg-muted/50">
                             <td v-for="column in columns" :key="column.key"
-                                :class="cn('px-6 py-4 text-sm', column.class)">
+                                :class="cn('px-6 py-1 text-sm', column.class)">
                                 <span v-if="column.render" v-html="column.render(item)"></span>
                                 <span v-else>{{ item[column.key] }}</span>
                             </td>
-                            <td v-if="actions && actions.length > 0" class="px-6 py-4 text-right">
+                            <td v-if="actions && actions.length > 0" class="px-6 py-1 text-right">
                                 <div class="flex items-center justify-end space-x-2">
                                     <Button v-for="action in actions" v-show="shouldShowAction(action, item)"
                                         :key="action.label" :variant="action.variant || 'ghost'"
@@ -221,7 +221,7 @@ const shouldShowAction = (action: Action, item: any) => {
             </div>
 
             <!-- Pagination -->
-            <div v-if="totalPages > 1" class="flex items-center justify-between px-6 py-4 border-t">
+            <div v-if="totalPages > 1" class="flex items-center justify-between px-6 py-2 ">
                 <div class="text-sm text-muted-foreground">
                     Showing {{ ((currentPage - 1) * perPage) + 1 }} to {{ Math.min(currentPage * perPage, total) }} of
                     {{ total }} results
