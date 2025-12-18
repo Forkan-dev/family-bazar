@@ -3,9 +3,7 @@
 namespace App\Models\Product;
 
 use App\Models\Document;
-// Import the Brand model
-// Import the Unit model
-// Import the Review model
+use App\Models\Unit;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,16 +20,24 @@ class Product extends Model
         'slug',
         'description',
         'price',
+        'sell_price',
         'quantity',
         'unit_id',
-        'brand_id', // Add this line
+        'brand_id',
         'stock_quantity',
-        'is_active',
+        'status',
         'category_id',
+        'is_featured',
+        'is_taxable',
+        'is_cod_available',
+        'is_refundable',
     ];
 
     protected $casts = [
-        'is_active' => 'boolean',
+        'is_featured' => 'boolean',
+        'is_taxable' => 'boolean',
+        'is_cod_available' => 'boolean',
+        'is_refundable' => 'boolean',
     ];
 
     public function documents()

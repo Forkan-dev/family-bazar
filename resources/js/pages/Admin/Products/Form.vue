@@ -9,6 +9,7 @@ import { Head, useForm } from '@inertiajs/vue3'
 import { ref, watch, onMounted, reactive, computed } from 'vue'
 import axios from 'axios'
 import { Button } from '@/components/ui/button'
+import { Switch } from '@/components/ui/switch'
 import { ArrowLeft, X } from 'lucide-vue-next'
 import { Link } from '@inertiajs/vue3'
 
@@ -36,13 +37,19 @@ const form = useForm({
     slug: props.product?.slug || '',
     description: props.product?.description || '',
     price: props.product?.price || 0,
+    sell_price: props.product?.sell_price || 0,
     stock_quantity: props.product?.stock_quantity || 0,
+    status: props.product?.status || 'active',
     images: [] as File[],
     category_id: props.product?.category_id || null,
     unit_id: props.product?.unit_id || null,
     brand_id: props.product?.brand_id || null,
     quantity: props.product?.quantity || 0,
     tags: props.product?.tags?.map((tag: any) => tag.id) || [],
+    is_featured: props.product?.is_featured || false,
+    is_taxable: props.product?.is_taxable || false,
+    is_cod_available: props.product?.is_cod_available !== false,
+    is_refundable: props.product?.is_refundable !== false,
 });
 
 form.transform((data: any) => {
@@ -196,10 +203,10 @@ const tagOptions = computed(() =>
         <!-- Header -->
         <div class="mb-8">
             <Link :href="route('product.products.index')">
-            <Button variant="ghost" size="sm">
-                <ArrowLeft class="h-4 w-4 mr-2" />
-                Back to Products
-            </Button>
+                <Button variant="ghost" size="sm">
+                    <ArrowLeft class="h-4 w-4 mr-2" />
+                    Back to Products
+                </Button>
             </Link>
         </div>
 
@@ -228,15 +235,23 @@ const tagOptions = computed(() =>
                                 multiline rows="3" />
 
                             <div class="grid grid-cols-2 gap-4">
-                                <VInputField v-model="form.price" label="Price (৳)" type="number" step="0.01"
+                                <VInputField v-model="form.price" label="Regular Price (৳)" type="number" step="0.01"
                                     placeholder="0.00" :error-messages="form.errors.price" required />
 
-                                <VInputField v-model="form.stock_quantity" label="Stock Quantity" type="number"
-                                    placeholder="0" :error-messages="form.errors.stock_quantity" required />
+                                <VInputField v-model="form.sell_price" label="Sell Price (৳)" type="number" step="0.01"
+                                    placeholder="0.00" :error-messages="form.errors.sell_price" />
                             </div>
 
-                            <VInputField v-model="form.quantity" label="Package Quantity" type="number" placeholder="1"
-                                :error-messages="form.errors.quantity" required />
+                            <VInputField v-model="form.stock_quantity" label="Stock Quantity" type="number"
+                                placeholder="0" :error-messages="form.errors.stock_quantity" required />
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <VInputField v-model="form.quantity" label="Package Quantity" type="number"
+                                    placeholder="1" :error-messages="form.errors.quantity" required />
+
+                                <FormSelect v-model="form.unit_id" label="Unit" placeholder="Select unit"
+                                    :options="unitOptions" :error-messages="form.errors.unit_id" required />
+                            </div>
 
                             <MultiFileDropzone v-model="form.images" label="Product Images" accept="image/*"
                                 :max-files="5" :error-messages="form.errors.images" />
@@ -259,9 +274,9 @@ const tagOptions = computed(() =>
 
                             <div class="flex justify-end space-x-3 pt-6 border-t">
                                 <Link :href="route('product.products.index')">
-                                <Button type="button" variant="outline">
-                                    Cancel
-                                </Button>
+                                    <Button type="button" variant="outline">
+                                        Cancel
+                                    </Button>
                                 </Link>
                                 <Button type="submit" :disabled="form.processing">
                                     {{ form.processing ? (props.product ? 'Updating...' : 'Creating...') :
@@ -293,9 +308,6 @@ const tagOptions = computed(() =>
                 <div class="bg-card border rounded-lg p-4">
                     <h3 class="font-semibold mb-4">Attributes</h3>
                     <div class="space-y-4">
-                        <FormSelect v-model="form.unit_id" label="Unit" placeholder="Select unit" :options="unitOptions"
-                            :error-messages="form.errors.unit_id" />
-
                         <FormSelect v-model="form.brand_id" label="Brand" placeholder="Select brand"
                             :options="brandOptions" :error-messages="form.errors.brand_id" />
                     </div>
@@ -307,6 +319,66 @@ const tagOptions = computed(() =>
                     <MultiSelectInput v-model="form.tags" :options="tagOptions" label="Product Tags"
                         placeholder="Select or create tags..." :allow-create="true" create-text="Create tag"
                         :error-messages="form.errors.tags" @create="handleCreateTag" />
+                </div>
+
+                <!-- Status -->
+                <div class="bg-card border rounded-lg p-4">
+                    <h3 class="font-semibold mb-4">Status</h3>
+                    <FormSelect v-model="form.status" label="Product Status" placeholder="Select status" :options="[
+                        { value: 'active', label: 'Active' },
+                        { value: 'inactive', label: 'Inactive' }
+                    ]" :error-messages="form.errors.status" />
+                </div>
+
+                <!-- Settings -->
+                <div class="bg-card border rounded-lg p-4">
+                    <h3 class="font-semibold mb-4">Settings</h3>
+                    <div class="space-y-4">
+                        <!-- Featured -->
+                        <div class="flex items-center justify-between">
+                            <div class="space-y-0.5">
+                                <label class="text-sm font-medium">Featured Product</label>
+                                <p class="text-sm text-muted-foreground">
+                                    Show this product in featured section
+                                </p>
+                            </div>
+                            <Switch v-model="form.is_featured" @update:checked="(val) => form.is_featured = val" />
+                        </div>
+
+                        <!-- Taxable -->
+                        <div class="flex items-center justify-between">
+                            <div class="space-y-0.5">
+                                <label class="text-sm font-medium">Taxable</label>
+                                <p class="text-sm text-muted-foreground">
+                                    Apply tax to this product
+                                </p>
+                            </div>
+                            <Switch v-model="form.is_taxable" @update:checked="(val) => form.is_taxable = val" />
+                        </div>
+
+                        <!-- COD Available -->
+                        <div class="flex items-center justify-between">
+                            <div class="space-y-0.5">
+                                <label class="text-sm font-medium">Cash on Delivery</label>
+                                <p class="text-sm text-muted-foreground">
+                                    Allow COD for this product
+                                </p>
+                            </div>
+                            <Switch v-model="form.is_cod_available"
+                                @update:checked="(val) => form.is_cod_available = val" />
+                        </div>
+
+                        <!-- Refundable -->
+                        <div class="flex items-center justify-between">
+                            <div class="space-y-0.5">
+                                <label class="text-sm font-medium">Refundable</label>
+                                <p class="text-sm text-muted-foreground">
+                                    Allow refunds for this product
+                                </p>
+                            </div>
+                            <Switch v-model="form.is_refundable" @update:checked="(val) => form.is_refundable = val" />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
