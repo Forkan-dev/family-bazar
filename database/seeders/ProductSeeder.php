@@ -41,7 +41,7 @@ class ProductSeeder extends Seeder
                 'unit_id' => $unit->id,
                 'description' => $productData['description_en'] ?? null,
                 'stock_quantity' => 100, // Default stock
-                'status' => true,
+                'status' => 'active',
             ]);
         }
     }

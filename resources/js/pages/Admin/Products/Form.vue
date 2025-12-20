@@ -342,7 +342,8 @@ const tagOptions = computed(() =>
                                     Show this product in featured section
                                 </p>
                             </div>
-                            <Switch v-model="form.is_featured" @update:checked="(val) => form.is_featured = val" />
+                            <Switch :model-value="form.is_featured"
+                                @update:modelValue="(val) => form.is_featured = val" />
                         </div>
 
                         <!-- Taxable -->
@@ -353,7 +354,8 @@ const tagOptions = computed(() =>
                                     Apply tax to this product
                                 </p>
                             </div>
-                            <Switch v-model="form.is_taxable" @update:checked="(val) => form.is_taxable = val" />
+                            <Switch :model-value="form.is_taxable"
+                                @update:modelValue="(val) => form.is_taxable = val" />
                         </div>
 
                         <!-- COD Available -->
@@ -364,8 +366,8 @@ const tagOptions = computed(() =>
                                     Allow COD for this product
                                 </p>
                             </div>
-                            <Switch v-model="form.is_cod_available"
-                                @update:checked="(val) => form.is_cod_available = val" />
+                            <Switch :model-value="form.is_cod_available"
+                                @update:modelValue="(val) => form.is_cod_available = val" />
                         </div>
 
                         <!-- Refundable -->
@@ -376,7 +378,8 @@ const tagOptions = computed(() =>
                                     Allow refunds for this product
                                 </p>
                             </div>
-                            <Switch v-model="form.is_refundable" @update:checked="(val) => form.is_refundable = val" />
+                            <Switch :model-value="form.is_refundable"
+                                @update:modelValue="(val) => form.is_refundable = val" />
                         </div>
                     </div>
                 </div>
