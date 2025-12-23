@@ -155,19 +155,16 @@ class OrderService
             // }
         }
 
-        // Calculate tax (example: 5% tax)
-        $taxRate = 0.05;
-        $tax = ($subtotal - $discount) * $taxRate;
+        // Calculate tax will be here(example: 5% tax)
 
         // Calculate shipping (example: flat rate)
         $shipping = 50.00;
 
-        $total = $subtotal - $discount + $tax + $shipping;
+        $total = $subtotal - $discount + $shipping;
 
         return [
             'subtotal' => round($subtotal, 2),
             'discount' => round($discount, 2),
-            'tax' => round($tax, 2),
             'shipping' => round($shipping, 2),
             'total' => round($total, 2),
             'coupon_id' => $couponId,
@@ -293,7 +290,7 @@ class OrderService
     {
         $cart->cartItems()->delete();
         // Optionally delete the cart itself
-        // $cart->delete();
+        $cart->delete();
     }
 
     /**

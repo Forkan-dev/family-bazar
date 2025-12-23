@@ -166,6 +166,16 @@ class ZoneSeeder extends Seeder
                 'status' => true,
             ],
             [
+                'name' => 'Chattogram - Nazumiahat Zone',
+                'description' => 'Covers Hathazari upazila Burishchar Nazumiahat area',
+                'district_id' => $district->id,
+                'upazila_id' => $hathazari?->id,
+                'address' => 'Hathazari, Chattogram',
+                'lat' => 22.4833,
+                'lon' => 91.8000,
+                'status' => true,
+            ],
+            [
                 'name' => 'Chattogram - Rangunia Zone',
                 'description' => 'Covers Rangunia upazila area',
                 'district_id' => $district->id,
