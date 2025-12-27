@@ -3,6 +3,8 @@
 namespace App\Models\Product;
 
 use App\Models\Document;
+use App\Models\Offer;
+use App\Models\OfferTarget;
 use App\Models\Product\Product;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -48,5 +50,19 @@ class Category extends Model
     public function getDisplayNameAttribute()
     {
         return $this->title_en . ' (' . $this->title_bn . ')';
+    }
+
+   public function offerTargets()
+    {
+        return $this->morphMany(OfferTarget::class, 'target');
+    }
+    public function offers()
+    {
+        return $this->belongsToMany(
+            Offer::class,
+            'offer_targets',
+            'target_id',
+            'offer_id'
+        )->wherePivot('target_type', self::class);
     }
 }

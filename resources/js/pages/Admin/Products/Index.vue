@@ -104,6 +104,11 @@ const handleSort = (column: string, direction: 'asc' | 'desc') => {
         preserveScroll: true
     })
 }
+
+const handleRedirectUrl = (id) => {
+    router.visit(route('product.products.edit', id));
+}
+
 </script>
 
 <template>
@@ -115,7 +120,7 @@ const handleSort = (column: string, direction: 'asc' | 'desc') => {
             <DataTable title="Products" description="Manage your product inventory" :columns="columns"
                 :data="products.data" :actions="actions" :create-url="route('product.products.create')"
                 create-text="Add Product" :current-page="products.current_page" :per-page="products.per_page"
-                :total="products.total" @search="handleSearch" @paginate="handlePagination" @sort="handleSort" />
+                :total="products.total" @search="handleSearch" @paginate="handlePagination" @sort="handleSort" @redirectUrl="handleRedirectUrl"/>
         </div>
     </MasterLayout>
 </template>

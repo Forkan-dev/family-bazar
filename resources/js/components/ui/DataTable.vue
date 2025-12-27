@@ -47,13 +47,18 @@ const props = withDefaults(defineProps<Props>(), {
     currentPage: 1,
     total: 0,
     loading: false,
-    data: () => []
+    data: () => [],
 })
+
+const redirectUrl = ( id: number) => {
+    emit('redirectUrl', id);
+}
 
 const emit = defineEmits<{
     search: [query: string]
     paginate: [page: number]
-    sort: [column: string, direction: 'asc' | 'desc']
+    sort: [column: string, direction: 'asc' | 'desc'],
+    redirectUrl: [id: number]
 }>()
 
 const searchQuery = ref('')
@@ -169,9 +174,9 @@ const shouldShowAction = (action: Action, item: any) => {
                     <thead>
                         <tr class="border-b">
                             <th v-for="column in columns" :key="column.key"
-                                :class="cn('px-6 py-4 text-left text-sm font-medium text-muted-foreground', column.class)">
+                                :class="cn('px-6 py-2 text-left text-xs text-black  uppercase font-semibold', column.class)">
                                 <button v-if="column.sortable" @click="handleSort(column.key)"
-                                    class="flex items-center space-x-1 hover:text-foreground">
+                                    class="flex items-center space-x-1 hover:text-foreground uppercase">
                                     <span>{{ column.label }}</span>
                                     <ChevronLeft class="h-3 w-3 transition-transform" :class="{
                                         'rotate-90': sortColumn === column.key && sortDirection === 'asc',
@@ -181,7 +186,7 @@ const shouldShowAction = (action: Action, item: any) => {
                                 <span v-else>{{ column.label }}</span>
                             </th>
                             <th v-if="actions && actions.length > 0"
-                                class="px-6 py-4 text-right text-sm font-medium text-muted-foreground">
+                                class="px-6 py-2 text-right text-sm uppercase font-semibold text-black">
                                 Actions
                             </th>
                         </tr>
@@ -202,11 +207,11 @@ const shouldShowAction = (action: Action, item: any) => {
                         <tr v-else v-for="(item, index) in (data || [])" :key="index"
                             class="border-b hover:bg-muted/50">
                             <td v-for="column in columns" :key="column.key"
-                                :class="cn('px-6 py-4 text-sm', column.class)">
+                                :class="cn('px-6 py-2 text-sm cursor-pointer', column.class)" @click="redirectUrl(item.id)">
                                 <span v-if="column.render" v-html="column.render(item)"></span>
                                 <span v-else>{{ item[column.key] }}</span>
                             </td>
-                            <td v-if="actions && actions.length > 0" class="px-6 py-4 text-right">
+                            <td v-if="actions && actions.length > 0" class="px-6 py-2 text-right">
                                 <div class="flex items-center justify-end space-x-2">
                                     <Button v-for="action in actions" v-show="shouldShowAction(action, item)"
                                         :key="action.label" :variant="action.variant || 'ghost'"
