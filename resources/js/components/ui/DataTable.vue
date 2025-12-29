@@ -226,7 +226,7 @@ const shouldShowAction = (action: Action, item: any) => {
             </div>
 
             <!-- Pagination -->
-            <div v-if="totalPages > 1" class="flex items-center justify-between px-6 py-4 border-t">
+            <div v-if="totalPages > 1" class="flex items-center justify-between px-6 py-2 ">
                 <div class="text-sm text-muted-foreground">
                     Showing {{ ((currentPage - 1) * perPage) + 1 }} to {{ Math.min(currentPage * perPage, total) }} of
                     {{ total }} results

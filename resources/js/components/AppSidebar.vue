@@ -75,7 +75,7 @@ const isGroupActive = (routes: string[]) => {
                         <AvatarFallback>JL</AvatarFallback>
                     </Avatar>
                     <div>
-                        <p class="text-sm font-medium text-sidebar-foreground">John Leider</p>
+                        <p class="text-xs font-medium text-sidebar-foreground">John Leider</p>
                         <p class="text-xs text-sidebar-foreground/60">Administrator</p>
                     </div>
                 </div>
@@ -137,7 +137,7 @@ const isGroupActive = (routes: string[]) => {
                                 variant="ghost"
                                 size="sm"
                                 :class="[
-                                    'w-full justify-start text-sm',
+                                    'w-full justify-start text-xs',
                                     isActive('admin.banners.index') && 'bg-sidebar-accent text-sidebar-accent-foreground'
                                 ]"
                             >
@@ -175,7 +175,7 @@ const isGroupActive = (routes: string[]) => {
                                 variant="ghost"
                                 size="sm"
                                 :class="[
-                                    'w-full justify-start text-sm',
+                                    'w-full justify-start text-xs',
                                     isActive('product.products') && 'bg-sidebar-accent text-sidebar-accent-foreground'
                                 ]"
                             >
@@ -193,7 +193,7 @@ const isGroupActive = (routes: string[]) => {
                                 variant="ghost"
                                 size="sm"
                                 :class="[
-                                    'w-full justify-start text-sm',
+                                    'w-full justify-start text-xs',
                                     isActive('product.categories') && 'bg-sidebar-accent text-sidebar-accent-foreground'
                                 ]"
                             >
@@ -228,7 +228,7 @@ const isGroupActive = (routes: string[]) => {
                                 variant="ghost"
                                 size="sm"
                                 :class="[
-                                    'w-full justify-start text-sm',
+                                    'w-full justify-start text-xs',
                                     isActive('product.brands') && 'bg-sidebar-accent text-sidebar-accent-foreground'
                                 ]"
                             >
@@ -246,7 +246,7 @@ const isGroupActive = (routes: string[]) => {
                                 variant="ghost"
                                 size="sm"
                                 :class="[
-                                    'w-full justify-start text-sm',
+                                    'w-full justify-start text-xs',
                                     isActive('product.locations') && 'bg-sidebar-accent text-sidebar-accent-foreground'
                                 ]"
                             >
@@ -278,7 +278,7 @@ const isGroupActive = (routes: string[]) => {
                             v-if="hasPermission('user.view')"
                             variant="ghost"
                             size="sm"
-                            class="w-full justify-start text-sm"
+                            class="w-full justify-start text-xs"
                         >
                             <Users class="h-4 w-4" />
                             <span v-if="!isCollapsed" class="ml-2">Users</span>
@@ -286,7 +286,7 @@ const isGroupActive = (routes: string[]) => {
                         <Button
                             variant="ghost"
                             size="sm"
-                            class="w-full justify-start text-sm"
+                            class="w-full justify-start text-xs"
                         >
                             <Users class="h-4 w-4" />
                             <span v-if="!isCollapsed" class="ml-2">My Account</span>
@@ -321,7 +321,7 @@ const isGroupActive = (routes: string[]) => {
                                 variant="ghost"
                                 size="sm"
                                 :class="[
-                                    'w-full justify-start text-sm',
+                                    'w-full justify-start text-xs',
                                     isActive('admin.roles.index') && 'bg-sidebar-accent text-sidebar-accent-foreground'
                                 ]"
                             >
@@ -339,7 +339,7 @@ const isGroupActive = (routes: string[]) => {
                                 variant="ghost"
                                 size="sm"
                                 :class="[
-                                    'w-full justify-start text-sm',
+                                    'w-full justify-start text-xs',
                                     isActive('admin.permissions.index') && 'bg-sidebar-accent text-sidebar-accent-foreground'
                                 ]"
                             >
@@ -357,7 +357,7 @@ const isGroupActive = (routes: string[]) => {
                                 variant="ghost"
                                 size="sm"
                                 :class="[
-                                    'w-full justify-start text-sm',
+                                    'w-full justify-start text-xs',
                                     isActive('admin.roles.assign') && 'bg-sidebar-accent text-sidebar-accent-foreground'
                                 ]"
                             >
