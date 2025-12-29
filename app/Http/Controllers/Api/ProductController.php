@@ -28,50 +28,7 @@ class ProductController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        dd($request->all());
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+   
 
     public function productDropdown(Request $request)
     {
@@ -80,7 +37,8 @@ class ProductController extends Controller
             $products = Product::get();
             return SelectTagResource::collection($products);
         } else {
-            $products = Product::select('id', 'name_en')->where('name_en', 'like', "%$param%")->get();
+            $products = Product::select('id', 'name_en')->where('name_en', 'LIKE',
+             $param . '%')->get();
             return SelectTagResource::collection($products);
         }
     }

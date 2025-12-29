@@ -79,7 +79,6 @@ const handleType = () => {
 	selectedTarget.value = null
 	selectedOption.value = null
 }
-console.log(form.errors.targets);
 
 </script>
 

@@ -17,8 +17,7 @@ class ProductService
     /**
      * Get paginated products with filters applied through pipeline
      */
-    public function 
-    getPaginatedProducts(Request $request, ?array $customFilters = null): LengthAwarePaginator
+    public function getPaginatedProducts(Request $request, ?array $customFilters = null): LengthAwarePaginator
     {
         $query = Product::with(['category', 'tags']);
 

@@ -13,20 +13,22 @@ const page = usePage()
 const offer = (page.props as any).offer ?? {}
 const offerTargets = (page.props as any).targets ?? []
 
-console.log();
-
 
 const form = useForm({
 	name: offer.name ?? '',
 	name_bn: offer.name_bn ?? '',
-	start_at: offer.start_at ? String(offer.start_at).substring(0, 10) : '',
-	end_at: offer.end_at ? String(offer.end_at).substring(0, 10) : '',
+	start_at: offer.start_at ? offer.start_at : '',
+	end_at: offer.end_at ? offer.end_at : '',
 	discount_type: offer.discount_type ?? 'percentage',
 	flat_amount: offer.discount_type === 'flat' ? offer.value : null,
 	percentage: offer.discount_type === 'percentage' ? offer.value : null,
 	type: (offer.offerTargets && offer.offerTargets.length > 0) ? offer.offerTargets[0].target_type : 'product',
 	targets:  offerTargets as Array<any>,
 })
+
+console.log(offer);
+
+
 
 const selectedTarget = ref<number | null>(null)
 const selectedOption = ref<{ value: any; label: string } | null>(null)

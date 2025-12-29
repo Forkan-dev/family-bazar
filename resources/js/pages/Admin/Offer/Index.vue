@@ -12,6 +12,10 @@ const props = defineProps({
     offers: Array,
 })
 
+
+
+
+
 const columns = [
     {
         key: 'image',
@@ -87,6 +91,31 @@ const deleteOffer = (id: number) => {
     }
 }
 
+const handleSearch = (query: string) => {
+    router.get(route('admin.offers.index'), { search: query }, {
+        preserveState: true,
+        preserveScroll: true
+    })
+}
+
+const handlePagination = (page: number) => {
+    router.get(route('admin.offers.index'), { page }, {
+        preserveState: true,
+        preserveScroll: true
+    })
+}
+
+const handleSort = (column: string, direction: 'asc' | 'desc') => {
+    router.get(route('admin.offers.index'), {
+        sort: column,
+        direction
+    }, {
+        preserveState: true,
+        preserveScroll: true
+    })
+}
+
+
 
 const handleRedirectUrl = (id: number) => {
     router.visit(route('admin.offers.edit', id));
@@ -104,7 +133,7 @@ const handleRedirectUrl = (id: number) => {
         <div>
             <DataTable title="Offers" description="Manage offers" :columns="columns"
                 :data="offers?.data || []" :actions="actions" :create-url="route('admin.offers.create')"
-                create-text="Add Offer" searchable :total="offers?.data?.length || 0"  @redirectUrl="handleRedirectUrl"/>
+                create-text="Add Offer" searchable :total="offers?.data?.length || 0" :current-page="offers?.current_page" :per-page="offers?.per_page" @search="handleSearch" @paginate="handlePagination" @sort="handleSort"   @redirectUrl="handleRedirectUrl"/>
         </div>
     </MasterLayout>
 </template>

@@ -19,9 +19,9 @@ class SearchFilter implements FilterInterface
 
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('name_en', 'like', "%{$search}%") 
-                    ->orWhere('type', 'like', "%{$search}%") 
-                    ->orWhereHas('offer_items', function ($items) use ($search) {
+                    ->orWhere('name_bn', 'like', "%{$search}%") 
+                    ->orWhere('discount_type', 'like', "%{$search}%") 
+                    ->orWhereHas('offerTargets', function ($items) use ($search) {
                         $items->where('name', 'like', "%{$search}%")
                             ->orWhere('name_bn', 'like', "%{$search}%");
                     });

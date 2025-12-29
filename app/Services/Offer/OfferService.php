@@ -4,6 +4,7 @@ namespace App\Services\Offer;
 
 use App\Models\Offer;
 use App\Services\Offer\Filters\OfferFilterPipeline;
+use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class OfferService
@@ -15,7 +16,7 @@ class OfferService
         $this->filterPipeline = $filterPipeline;
     }
 
-     public function getPaginatedOffers($request, ?array $customFilters = null): LengthAwarePaginator
+    public function getPaginatedOffers($request, ?array $customFilters = null): LengthAwarePaginator
     {
         $query = Offer::with(['offerTargets.target']);
 
@@ -25,11 +26,17 @@ class OfferService
         // Apply filters through pipeline
         $query = $this->filterPipeline->applyFilter($query, $request, $filters);
 
-        // Get pagination settings
+        // transform and paginate data
         $perPage = $request->get('per_page', 10);
-        // dd($query );
 
+        $offers = $query->paginate($perPage);
 
-        return $query->paginate($perPage);
+        // Transform the items inside the paginator
+        $offers->getCollection()->transform(function ($offer) {
+            $offer->start_at = datetime_parse_utc_to_local($offer->start_at, 'Y-m-d\TH:i');
+            $offer->end_at   = datetime_parse_utc_to_local($offer->end_at, 'Y-m-d\TH:i');
+            return $offer;
+        });
+        return $offers;
     }
 }
