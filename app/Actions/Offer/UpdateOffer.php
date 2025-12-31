@@ -6,13 +6,14 @@ use App\Models\Offer;
 
 class UpdateOffer
 {
-    public function 
-    handle(Offer $offer, array $data): Offer
+    public function  handle(Offer $offer, array $data): Offer
     {
+        $start_date_utc = datetime_parse_local_to_utc($data['start_at'], 'Y-m-d\TH:i', 'Y-m-d H:i:s');
+        $end_date_utc = datetime_parse_local_to_utc($data['end_at'], 'Y-m-d\TH:i', 'Y-m-d H:i:s');
         $offer->name = $data['name'];
         $offer->name_bn = $data['name_bn'] ?? null;
-        $offer->start_at = $data['start_at'] ? \Carbon\Carbon::parse($data['start_at']) : null;
-        $offer->end_at = $data['end_at'] ? \Carbon\Carbon::parse($data['end_at']) : null;
+        $offer->start_at = $start_date_utc;
+        $offer->end_at = $end_date_utc;
         $offer->discount_type = $data['discount_type'];
 
         if ($data['discount_type'] === 'flat') {
