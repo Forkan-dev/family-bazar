@@ -29,4 +29,5 @@ Route::get('cart/merge', [CartController::class, 'mergeCart']);
 Route::get('products/dropdown', [ProductController::class, 'productDropdown']);
 Route::apiResource('products', ProductController::class);
 
+Route::get('sidebar/categories', [CategoryController::class, 'sidebarCategories']);
 Route::get('categories/dropdown', [CategoryController::class, 'categoryDropdown']);
