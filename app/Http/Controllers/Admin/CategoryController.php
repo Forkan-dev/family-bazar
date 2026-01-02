@@ -21,7 +21,7 @@ class CategoryController extends Controller
     {
         $categories = $this->categoryService->getPaginatedCategories($request);
 
-        return Inertia::render('Admin/Category/Index', [
+        return Inertia::render('Admin/Category/index', [
             'categories' => $categories,
         ]);
     }
@@ -48,7 +48,7 @@ class CategoryController extends Controller
         } catch (\Exception $e) {
 
             DB::rollBack();
-            // dd($e->getMessage());
+            dd($e->getMessage());
 
             return redirect()
                 ->back()
