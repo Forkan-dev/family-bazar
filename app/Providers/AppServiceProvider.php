@@ -7,6 +7,9 @@ use App\Services\ImageService;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use App\Services\Contracts\ImageServiceInterface;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use App\Models\Product\Product;
+use App\Models\Product\Category;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,5 +32,11 @@ class AppServiceProvider extends ServiceProvider
         Gate::before(function ($user, $ability) {
             return $user->hasRole('super_admin') ? true : null;
         });
+
+        Relation::morphMap([
+            'product'  => Product::class,
+            'category' => Category::class,
+        ]);
+
     }
 }

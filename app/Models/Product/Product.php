@@ -3,6 +3,8 @@
 namespace App\Models\Product;
 
 use App\Models\Document;
+use App\Models\Offer;
+use App\Models\OfferTarget;
 use App\Models\Product\Brand; // Import the Brand model
 use App\Models\Product\Category;
 use App\Models\Product\Tag;
@@ -64,5 +66,19 @@ class Product extends Model
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);
+    }
+
+     public function offerTargets()
+    {
+        return $this->morphMany(OfferTarget::class, 'target');
+    }
+     public function offers()
+    {
+        return $this->belongsToMany(
+            Offer::class,
+            'offer_targets',
+            'target_id',
+            'offer_id'
+        )->wherePivot('target_type', self::class);
     }
 }

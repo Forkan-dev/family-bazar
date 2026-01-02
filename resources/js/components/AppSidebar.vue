@@ -60,7 +60,7 @@ const isGroupActive = (routes: string[]) => {
     <div
         :class="[
             'fixed left-0 top-0 z-40 h-screen border-r bg-sidebar transition-all duration-300',
-            isCollapsed ? 'w-16' : 'w-50'
+            isCollapsed ? 'w-16' : 'w-48'
         ]"
     >
         <div class="flex h-full flex-col">
@@ -199,6 +199,23 @@ const isGroupActive = (routes: string[]) => {
                             >
                                 <Tag class="h-4 w-4" />
                                 <span v-if="!isCollapsed" class="ml-2">Categories</span>
+                            </Button>
+                        </Link>
+                          <Link
+                            v-if="hasPermission('category.view')"
+                            :href="route('admin.offers.index')"
+                            class="block"
+                        >
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                :class="[
+                                    'w-full justify-start text-sm',
+                                    isActive('product.offers') && 'bg-sidebar-accent text-sidebar-accent-foreground'
+                                ]"
+                            >
+                                <Tag class="h-4 w-4" />
+                                <span v-if="!isCollapsed" class="ml-2">Offers</span>
                             </Button>
                         </Link>
 

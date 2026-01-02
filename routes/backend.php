@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DocumentController;
+use App\Http\Controllers\Admin\OfferController;
 use App\Http\Controllers\Admin\PermissionsController;
 
 // All backend routes will be defined here.
@@ -93,6 +94,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('banners/{banner}/edit', [BannerController::class, 'edit'])->name('admin.banners.edit')->middleware('permission:banner.update');
     Route::put('banners/{banner}', [BannerController::class, 'update'])->name('admin.banners.update')->middleware('permission:banner.update');
     Route::delete('banners/{banner}', [BannerController::class, 'destroy'])->name('admin.banners.destroy')->middleware('permission:banner.delete');
+    Route::resource('offers', OfferController::class)->names('admin.offers');
 });
 
 require __DIR__.'/settings.php';

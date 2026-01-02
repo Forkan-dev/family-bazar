@@ -15,7 +15,8 @@ interface Option {
 interface Props {
     modelValue?: any
     placeholder?: string
-    searchUrl: string
+    searchUrl?: string
+    options?: any[]
     excludeId?: number | null
     errorMessages?: string | string[]
     label?: string
@@ -24,6 +25,8 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
     placeholder: 'Search and select...',
+    searchUrl: 'http://127.0.0.1:8000/api/products',
+    options: undefined,
     excludeId: null,
     errorMessages: undefined,
     label: '',
@@ -32,10 +35,12 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
     'update:modelValue': [value: any]
+    'select-option': [option: Option]
 }>()
 
 const query = ref('')
 const options = ref<Option[]>([])
+const localSource = ref<Option[] | null>(null)
 const loading = ref(false)
 const open = ref(false)
 
@@ -48,13 +53,34 @@ const selectedLabel = computed(() => {
 const searchOptions = async (searchQuery: string = '') => {
     loading.value = true
     try {
-        const params: any = { q: searchQuery }
-        if (props.excludeId) {
-            params.exclude = props.excludeId
+        // If local options provided, filter them client-side
+        if (props.options && Array.isArray(props.options)) {
+            if (!localSource.value) {
+                // normalize incoming options to { value, label }
+                localSource.value = props.options.map((o: any) => ({ value: o.value ?? o.id ?? o, label: o.label ?? o.name ?? o.title ?? String(o) }))
+            }
+            const q = searchQuery.toLowerCase().trim()
+            options.value = q ? localSource.value.filter(opt => String(opt.label).toLowerCase().includes(q)) : [...localSource.value]
+            return
         }
 
-        const response = await axios.get(props.searchUrl, { params })
-        options.value = response.data
+        // Otherwise fallback to HTTP search when searchUrl provided
+        if (props.searchUrl) {
+            const params: any = { q: searchQuery }
+            if (props.excludeId) {
+                params.exclude = props.excludeId
+            }
+
+            const response = await axios.get(props.searchUrl, { params , headers: { Accept: 'application/json' , ContentType: 'application/json' } })
+            const data = response.data?.data || []
+            console.log(response,'search');
+            
+            options.value = Array.isArray(data) ? data.map((o: any) => ({ value: o.value ?? o.id ?? o, label: o.label ?? o.name ?? o.title ?? String(o) })) : []
+            return
+        }
+
+        // No source available
+        options.value = []
     } catch (error) {
         console.error('Error fetching options:', error)
         options.value = []
@@ -71,19 +97,33 @@ const handleSearch = (searchQuery: string) => {
     // Clear previous timeout
     clearTimeout(searchTimeout)
 
+    // If query is empty, clear results and don't call API
+    const q = String(searchQuery || '').trim()
+    if (!q) {
+        options.value = []
+        return
+    }
+
     // Debounce the actual search
     searchTimeout = setTimeout(() => {
         searchOptions(searchQuery)
-    }, 300)
+    }, 150)
 }
 
 // Initial search
 onMounted(() => {
-    searchOptions()
+    // only preload when local options are provided
+    if (props.options && Array.isArray(props.options)) {
+        searchOptions('')
+    }
 })
 
-const handleSelection = (optionValue: any) => {
-    emit('update:modelValue', optionValue)
+const handleSelection = (option: Option) => {
+    // keep selected option visible and update model
+    options.value = [option]
+    query.value = String(option.label)
+    emit('update:modelValue', option.value)
+    emit('select-option', option)
     open.value = false
 }
 
@@ -96,7 +136,8 @@ const errorArray = computed(() => {
 watch(() => props.modelValue, (newValue) => {
     // If there's a value but we don't have options or the selected option is not in the list
     if (newValue && !options.value.find(opt => opt.value === newValue)) {
-        searchOptions()
+        // attempt to fetch the single matching value (empty query)
+        searchOptions(newValue)
     }
 }, { immediate: true })
 </script>
@@ -141,7 +182,7 @@ watch(() => props.modelValue, (newValue) => {
 
                         <div v-else class="p-1">
                             <div v-for="option in options" :key="option.value || 'null'"
-                                @click="handleSelection(option.value)"
+                                @click="handleSelection(option)"
                                 class="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground cursor-pointer">
                                 <Check :class="cn(
                                     'mr-2 h-4 w-4',
