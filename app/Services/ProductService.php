@@ -17,9 +17,10 @@ class ProductService
     /**
      * Get paginated products with filters applied through pipeline
      */
-    public function getPaginatedProducts(Request $request, ?array $customFilters = null): LengthAwarePaginator
+    public function getPaginatedProducts(Request $request, ?array $customFilters = null, $isApi = false): LengthAwarePaginator
     {
-        $query = Product::with(['category', 'tags']);
+        $query = $isApi ? $this->productData() : Product::with(['category', 'tags']);
+
 
         // Get filters to apply
         $filters = $customFilters ?? $this->filterPipeline->getDefaultFilters();
@@ -28,7 +29,14 @@ class ProductService
         $query = $this->applyFilters($query, $request, $filters);
 
         // Get pagination settings
-        $perPage = $request->get('per_page', 10);
+        $perPage = $request->input('per_page') ?? 10;
+        $perPage = $request->get('per_page', $perPage);
+
+        if ($isApi) {
+            $products = $query->paginate($perPage);
+            // $this->productOfferCheck($products);
+            return $products;
+        }
 
         return $query->paginate($perPage);
     }
@@ -96,4 +104,17 @@ class ProductService
     {
         return ['name_en', 'price', 'stock_quantity', 'created_at'];
     }
+
+    private function productData()
+    {
+        return  Product::with(['offers' => function ($query) {
+            $currentTimeUTC = now(config('app.timezone'))->setTimezone('UTC');
+
+            return $query->where('start_at', '<=', $currentTimeUTC)
+                ->where('end_at', '>=', $currentTimeUTC)
+                ->where('is_active', true);
+        }, 'category', 'tags', 'unit']);
+    }
+
+   
 }
