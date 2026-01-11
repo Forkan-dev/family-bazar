@@ -51,7 +51,7 @@ class ProductResource extends JsonResource
                     $maxDiscount = $offer->max_discount_amount;
                     if ($offer->value > $maxDiscount) {
                         $finalPrice -= $maxDiscount;
-                        continue;;
+                        break;
                     }
                     $finalPrice -= $offer->value;
                 }
