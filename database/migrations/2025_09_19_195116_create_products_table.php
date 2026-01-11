@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->decimal('price', 8, 2);
+            $table->decimal('sale_price', 8, 2)->default(0);
             $table->decimal('quantity', 8, 2); // Numeric quantity (e.g., 3)
             $table->foreignId('unit_id')->constrained()->onDelete('cascade');
             $table->foreignId('brand_id')->nullable()->constrained()->onDelete('set null');

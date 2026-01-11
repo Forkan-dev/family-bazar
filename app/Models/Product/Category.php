@@ -63,6 +63,6 @@ class Category extends Model
             'offer_targets',
             'target_id',
             'offer_id'
-        )->wherePivot('target_type', self::class);
+        )->wherePivot('target_type','category');
     }
 }

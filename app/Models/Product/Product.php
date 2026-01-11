@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Product extends Model
 {
     use HasFactory;
+    
 
     protected $fillable = [
         'name_en',
@@ -79,6 +80,6 @@ class Product extends Model
             'offer_targets',
             'target_id',
             'offer_id'
-        )->wherePivot('target_type', self::class);
+        )->wherePivot('target_type', 'product');
     }
 }

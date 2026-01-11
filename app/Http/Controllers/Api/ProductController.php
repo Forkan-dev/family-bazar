@@ -21,7 +21,7 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $products = $this->productService->getPaginatedProducts($request);
+        $products = $this->productService->getPaginatedProducts($request, null, true);
         return ProductResource::collection($products);
     }
 

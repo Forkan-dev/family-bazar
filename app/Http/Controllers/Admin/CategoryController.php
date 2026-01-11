@@ -48,11 +48,10 @@ class CategoryController extends Controller
         } catch (\Exception $e) {
 
             DB::rollBack();
-            dd($e->getMessage());
 
             return redirect()
                 ->back()
-                ->withErrors(['error' => 'An error occurred while creating the category.'])
+                ->withErrors(['error' => $e->getMessage()])
                 ->withInput();
         }
     }

@@ -15,6 +15,11 @@ class CategoryFilter implements ProductFilterInterface
         if ($request->filled('category_id')) {
             $categoryId = $request->get('category_id');
             $query->where('category_id', $categoryId);
+        }else if ($request->filled('slug')) {
+            $categorySlug = $request->get('slug');
+            $query->whereHas('category', function ($q) use ($categorySlug) {
+                $q->where('slug', $categorySlug);
+            });
         }
 
         return $next($data);
